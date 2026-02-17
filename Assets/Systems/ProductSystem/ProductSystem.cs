@@ -455,7 +455,7 @@ namespace TechMogul.Products
 
         Employee GetEmployeeData(string employeeId)
         {
-            var employeeSystem = FindObjectOfType<EmployeeSystem>();
+            var employeeSystem = FindFirstObjectByType<EmployeeSystem>();
             if (employeeSystem == null) return null;
 
             return employeeSystem.Employees.FirstOrDefault(e => e.employeeId == employeeId);

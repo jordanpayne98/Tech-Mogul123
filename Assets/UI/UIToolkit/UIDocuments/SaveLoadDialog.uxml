@@ -1,0 +1,29 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/UIToolkit/Styles/SaveLoadDialog.uss?fileID=7433441132597879392&amp;guid=0319439801cb51246ab61696d8b5b94f&amp;type=3#SaveLoadDialog"/>
+    <ui:VisualElement name="save-dialog" class="dialog-overlay">
+        <ui:VisualElement class="dialog-container">
+            <ui:Label text="Save Game" class="dialog-title"/>
+            <ui:VisualElement class="dialog-content">
+                <ui:Label text="Save Name:" class="input-label"/>
+                <ui:TextField name="save-name-input" value="My Save" class="save-name-input"/>
+                <ui:Label text="Select a slot:" class="section-label"/>
+                <ui:ScrollView name="save-slots-list" class="slots-scroll"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="dialog-footer">
+                <ui:Button name="close-save-btn" text="Cancel" class="dialog-button"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="load-dialog" class="dialog-overlay">
+        <ui:VisualElement class="dialog-container">
+            <ui:Label text="Load Game" class="dialog-title"/>
+            <ui:VisualElement class="dialog-content">
+                <ui:Label text="Select a save to load:" class="section-label"/>
+                <ui:ScrollView name="load-slots-list" class="slots-scroll"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="dialog-footer">
+                <ui:Button name="close-load-btn" text="Cancel" class="dialog-button"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

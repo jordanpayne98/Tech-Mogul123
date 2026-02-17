@@ -18,7 +18,7 @@ namespace TechMogul.UI
             EventBus.Subscribe<OnDayTickEvent>(HandleDayTick);
             
             // Try to get initial date from TimeSystem
-            var timeSystem = FindObjectOfType<TimeSystem>();
+            var timeSystem = FindFirstObjectByType<TimeSystem>();
             if (timeSystem != null && timeSystem.CurrentDate != null)
             {
                 UpdateDisplay(timeSystem.CurrentDate);

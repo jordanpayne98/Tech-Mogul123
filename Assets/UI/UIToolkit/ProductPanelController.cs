@@ -56,8 +56,8 @@ namespace TechMogul.UI
             productPanel = panel;
             
             // Find systems
-            productSystem = FindObjectOfType<ProductSystem>();
-            employeeSystem = FindObjectOfType<EmployeeSystem>();
+            productSystem = FindFirstObjectByType<ProductSystem>();
+            employeeSystem = FindFirstObjectByType<EmployeeSystem>();
             
             if (productSystem == null)
             {

@@ -1,0 +1,240 @@
+/* Dialog Overlay */
+.dialog-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.85);
+    justify-content: center;
+    align-items: center;
+    display: none;
+}
+
+/* Dialog Container */
+.dialog-container {
+    background-color: rgb(30, 30, 35);
+    border-width: 2px;
+    border-color: rgb(60, 60, 70);
+    border-radius: 12px;
+    padding: 30px;
+    min-width: 600px;
+    max-width: 800px;
+    min-height: 400px;
+    max-height: 80%;
+}
+
+/* Dialog Title */
+.dialog-title {
+    font-size: 28px;
+    -unity-font-style: bold;
+    color: rgb(220, 220, 230);
+    -unity-text-align: middle-center;
+    margin-bottom: 20px;
+}
+
+/* Dialog Content */
+.dialog-content {
+    flex-grow: 1;
+    margin-bottom: 20px;
+}
+
+/* Input Label */
+.input-label {
+    font-size: 14px;
+    color: rgb(180, 180, 190);
+    margin-bottom: 5px;
+}
+
+/* Save Name Input */
+.save-name-input {
+    height: 35px;
+    font-size: 16px;
+    background-color: rgb(40, 40, 50);
+    border-width: 2px;
+    border-color: rgb(70, 70, 85);
+    border-radius: 6px;
+    color: rgb(220, 220, 230);
+    margin-bottom: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.save-name-input:focus {
+    border-color: rgb(80, 120, 200);
+}
+
+/* Section Label */
+.section-label {
+    font-size: 16px;
+    color: rgb(200, 200, 210);
+    -unity-font-style: bold;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+/* Slots Scroll View */
+.slots-scroll {
+    flex-grow: 1;
+    background-color: rgb(20, 20, 25);
+    border-width: 2px;
+    border-color: rgb(50, 50, 60);
+    border-radius: 8px;
+    padding: 10px;
+    max-height: 400px;
+}
+
+/* Save Slot Card */
+.save-slot-card {
+    background-color: rgb(40, 40, 50);
+    border-width: 2px;
+    border-color: rgb(60, 60, 75);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    transition-duration: 0.2s;
+}
+
+.save-slot-card:hover {
+    background-color: rgb(50, 50, 65);
+    border-color: rgb(80, 80, 100);
+}
+
+/* Slot Header */
+.slot-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* Slot Number */
+.slot-number {
+    font-size: 16px;
+    -unity-font-style: bold;
+    color: rgb(180, 180, 200);
+}
+
+/* Slot Info */
+.slot-info {
+    margin-bottom: 10px;
+}
+
+/* Slot Name */
+.slot-name {
+    font-size: 18px;
+    -unity-font-style: bold;
+    color: rgb(220, 220, 240);
+    margin-bottom: 5px;
+}
+
+/* Slot Date */
+.slot-date {
+    font-size: 13px;
+    color: rgb(150, 150, 170);
+    margin-bottom: 5px;
+}
+
+/* Slot Stats */
+.slot-stats {
+    font-size: 14px;
+    color: rgb(180, 180, 200);
+}
+
+/* Slot Empty */
+.slot-empty {
+    font-size: 15px;
+    color: rgb(120, 120, 140);
+    -unity-font-style: italic;
+    margin-bottom: 10px;
+}
+
+/* Slot Buttons Container */
+.slot-buttons {
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+/* Slot Button */
+.slot-button {
+    height: 35px;
+    min-width: 100px;
+    font-size: 14px;
+    background-color: rgb(50, 50, 65);
+    border-width: 2px;
+    border-color: rgb(80, 80, 95);
+    border-radius: 6px;
+    color: rgb(220, 220, 230);
+    margin-left: 10px;
+    transition-duration: 0.2s;
+    -unity-font-style: bold;
+}
+
+.slot-button:hover {
+    background-color: rgb(70, 70, 90);
+    border-color: rgb(100, 100, 125);
+}
+
+.slot-button:active {
+    background-color: rgb(40, 40, 55);
+}
+
+.slot-button-primary {
+    background-color: rgb(40, 100, 180);
+    border-color: rgb(60, 120, 200);
+}
+
+.slot-button-primary:hover {
+    background-color: rgb(50, 120, 200);
+    border-color: rgb(70, 140, 220);
+}
+
+.slot-button-danger {
+    background-color: rgb(140, 40, 40);
+    border-color: rgb(180, 50, 50);
+}
+
+.slot-button-danger:hover {
+    background-color: rgb(180, 50, 50);
+    border-color: rgb(220, 60, 60);
+}
+
+/* Dialog Footer */
+.dialog-footer {
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+/* Dialog Button */
+.dialog-button {
+    height: 40px;
+    min-width: 120px;
+    font-size: 15px;
+    background-color: rgb(50, 50, 65);
+    border-width: 2px;
+    border-color: rgb(80, 80, 95);
+    border-radius: 6px;
+    color: rgb(220, 220, 230);
+    -unity-font-style: bold;
+    transition-duration: 0.2s;
+}
+
+.dialog-button:hover {
+    background-color: rgb(70, 70, 90);
+    border-color: rgb(100, 100, 125);
+}
+
+.dialog-button:active {
+    background-color: rgb(40, 40, 55);
+}
+
+/* Empty State Message */
+.empty-state-message {
+    font-size: 16px;
+    color: rgb(150, 150, 170);
+    -unity-text-align: middle-center;
+    -unity-font-style: italic;
+    margin-top: 40px;
+    margin-bottom: 40px;
+}

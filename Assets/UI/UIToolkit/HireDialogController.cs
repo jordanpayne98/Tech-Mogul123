@@ -279,7 +279,7 @@ namespace TechMogul.UI
         }
         void PauseTime()
         {
-            var timeSystem = FindObjectOfType<TimeSystem>();
+            var timeSystem = FindFirstObjectByType<TimeSystem>();
             if (timeSystem != null)
             {
                 previousTimeSpeed = timeSystem.CurrentSpeed;

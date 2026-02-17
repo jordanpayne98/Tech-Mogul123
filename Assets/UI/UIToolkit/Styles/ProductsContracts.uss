@@ -320,10 +320,6 @@
     margin-right: 15px;
 }
 
-.contract-section:last-child {
-    margin-right: 0;
-}
-
 .section-title {
     font-size: 13px;
     -unity-font-style: bold;

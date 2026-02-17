@@ -1,0 +1,20 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/UIToolkit/Styles/MainMenu.uss?fileID=7433441132597879392&amp;guid=2c0995b793319e2459e2bce83ef06f4d&amp;type=3#MainMenu"/>
+    <ui:VisualElement name="root" class="main-menu-root">
+        <ui:VisualElement name="background" class="main-menu-background"/>
+        <ui:VisualElement name="overlay" class="main-menu-overlay"/>
+        <ui:VisualElement name="content" class="main-menu-content">
+            <ui:VisualElement name="title-container" class="title-container">
+                <ui:Label text="TECH MOGUL" name="title" class="game-title"/>
+                <ui:Label text="Build Your Software Empire" name="subtitle" class="game-subtitle"/>
+            </ui:VisualElement>
+            <ui:VisualElement name="button-container" class="button-container">
+                <ui:Button text="New Game" name="new-game-button" class="menu-button menu-button--primary"/>
+                <ui:Button text="Load Game" name="load-game-button" class="menu-button"/>
+                <ui:Button text="Settings" name="settings-button" class="menu-button"/>
+                <ui:Button text="Quit" name="quit-button" class="menu-button"/>
+            </ui:VisualElement>
+            <ui:Label text="v1.0.0" name="version-label" class="version-label"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

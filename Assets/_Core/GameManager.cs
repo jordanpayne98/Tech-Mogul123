@@ -198,32 +198,6 @@ namespace TechMogul.Core
             EventBus.Publish(new RequestAddCashEvent { Amount = 10000 });
         }
         
-        [ContextMenu("Debug: Save Game")]
-        void DebugSaveGame()
-        {
-            if (SaveManager.Instance != null)
-            {
-                SaveManager.Instance.SaveGame();
-            }
-            else
-            {
-                Debug.LogWarning("SaveManager instance not found");
-            }
-        }
-        
-        [ContextMenu("Debug: Load Game")]
-        void DebugLoadGame()
-        {
-            if (SaveManager.Instance != null)
-            {
-                SaveManager.Instance.LoadGame();
-            }
-            else
-            {
-                Debug.LogWarning("SaveManager instance not found");
-            }
-        }
-        
         [ContextMenu("Debug: Trigger Game Over")]
         void DebugTriggerGameOver()
         {

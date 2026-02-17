@@ -713,10 +713,6 @@
     border-bottom-color: rgba(255, 255, 255, 0.05);
 }
 
-.info-row:last-child {
-    border-bottom-width: 0;
-}
-
 .info-label {
     font-size: 13px;
     color: rgb(180, 180, 190);

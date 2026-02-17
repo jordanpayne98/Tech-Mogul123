@@ -87,7 +87,7 @@ namespace TechMogul.Systems
         void HandleContractCompleted(OnContractCompletedEvent evt)
         {
             // Get contract data
-            var contractSystem = FindObjectOfType<ContractSystem>();
+            var contractSystem = FindFirstObjectByType<ContractSystem>();
             if (contractSystem == null) return;
             
             var contract = contractSystem.GetContractById(evt.contractId);

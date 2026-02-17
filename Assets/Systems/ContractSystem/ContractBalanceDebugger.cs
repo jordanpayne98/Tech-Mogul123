@@ -10,9 +10,6 @@ namespace TechMogul.Tools
     /// </summary>
     public class ContractBalanceDebugger : MonoBehaviour
     {
-        [Header("Test Settings")]
-        [SerializeField] private bool enableDebugCommands = true;
-        
         [Header("References")]
         private ReputationSystem reputationSystem;
         

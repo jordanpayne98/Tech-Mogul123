@@ -655,7 +655,7 @@ namespace TechMogul.Contracts
             }
 
             // Get player reputation to influence contract difficulty
-            var reputationSystem = FindObjectOfType<ReputationSystem>();
+            var reputationSystem = FindFirstObjectByType<ReputationSystem>();
             float reputation = reputationSystem != null ? reputationSystem.CurrentReputation : 0f;
 
             // Select template based on reputation
@@ -772,7 +772,7 @@ namespace TechMogul.Contracts
 
         Employee GetEmployeeData(string employeeId)
         {
-            var employeeSystem = FindObjectOfType<EmployeeSystem>();
+            var employeeSystem = FindFirstObjectByType<EmployeeSystem>();
             if (employeeSystem == null) return null;
 
             return employeeSystem.Employees.FirstOrDefault(e => e.employeeId == employeeId);

@@ -210,15 +210,15 @@ namespace TechMogul.UI
         
         void OnSaveGameClicked()
         {
-            EventBus.Publish(new RequestSaveGameEvent());
-            Debug.Log("Save game requested");
+            EventBus.Publish(new RequestOpenSaveDialogEvent());
+            Debug.Log("Opening save dialog");
         }
         
         void OnLoadGameClicked()
         {
-            if (!SaveManager.Instance.SaveFileExists())
+            if (!SaveManager.Instance.HasAnySaveFiles())
             {
-                Debug.LogWarning("No save file found");
+                Debug.LogWarning("No save files found");
                 return;
             }
             
@@ -265,7 +265,7 @@ namespace TechMogul.UI
         
         void OnConfirmSaveClicked()
         {
-            EventBus.Publish(new RequestSaveGameEvent());
+            EventBus.Publish(new RequestOpenSaveDialogEvent());
             
             HidePauseMenu();
             
@@ -323,9 +323,13 @@ namespace TechMogul.UI
         
         void ConfirmLoadGame()
         {
-            EventBus.Publish(new RequestLoadGameEvent());
+            EventBus.Publish(new RequestOpenLoadDialogEvent());
             HidePauseMenu();
-            Debug.Log("Game loaded");
+            Debug.Log("Opening load dialog");
         }
     }
+    
+    public class RequestOpenSaveDialogEvent { }
+    
+    public class RequestOpenLoadDialogEvent { }
 }

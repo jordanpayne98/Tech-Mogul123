@@ -62,8 +62,8 @@ namespace TechMogul.UI
             contractPanel = panel;
             
             // Find systems
-            contractSystem = FindObjectOfType<ContractSystem>();
-            employeeSystem = FindObjectOfType<EmployeeSystem>();
+            contractSystem = FindFirstObjectByType<ContractSystem>();
+            employeeSystem = FindFirstObjectByType<EmployeeSystem>();
             
             if (contractSystem == null)
             {
@@ -1161,7 +1161,7 @@ namespace TechMogul.UI
         
         void PauseTime()
         {
-            var timeSystem = FindObjectOfType<TimeSystem>();
+            var timeSystem = FindFirstObjectByType<TimeSystem>();
             if (timeSystem != null)
             {
                 previousTimeSpeed = timeSystem.CurrentSpeed;

@@ -599,8 +599,8 @@ namespace TechMogul.UI
         
         void UpdateSidebarStats()
         {
-            var employeeSystem = FindObjectOfType<EmployeeSystem>();
-            var productSystem = FindObjectOfType<TechMogul.Products.ProductSystem>();
+            var employeeSystem = FindFirstObjectByType<EmployeeSystem>();
+            var productSystem = FindFirstObjectByType<TechMogul.Products.ProductSystem>();
             
             if (employeeCount != null && employeeSystem != null)
             {
@@ -812,26 +812,9 @@ namespace TechMogul.UI
                 return;
             }
             
-            if (ShowFireConfirmation(employee))
-            {
-                EventBus.Publish(new RequestFireEmployeeEvent { EmployeeId = employee.employeeId });
-                CloseEmployeeDetailDialog();
-            }
-        }
-        
-        bool ShowFireConfirmation(Employee employee)
-        {
-            return UnityEditor.EditorUtility.DisplayDialog(
-                "Fire Employee",
-                $"Are you sure you want to fire {employee.employeeName}?\n\n" +
-                $"Role: {employee.role.roleName}\n" +
-                $"Skills: Dev {employee.devSkill:F0}, Design {employee.designSkill:F0}, Marketing {employee.marketingSkill:F0}\n" +
-                $"Salary: ${employee.monthlySalary:N0}/month\n\n" +
-                $"NOTE: They will receive their full salary (${employee.monthlySalary:N0}) at the end of this month.\n" +
-                "This action cannot be undone.",
-                "Fire Employee",
-                "Cancel"
-            );
+            Debug.Log($"Firing employee: {employee.employeeName}");
+            EventBus.Publish(new RequestFireEmployeeEvent { EmployeeId = employee.employeeId });
+            CloseEmployeeDetailDialog();
         }
         
         void AddDetailHeader(VisualElement container, string text)
@@ -1254,13 +1237,13 @@ namespace TechMogul.UI
         void OnSaveGameClicked()
         {
             Debug.Log("Save Game button clicked");
-            EventBus.Publish(new RequestSaveGameEvent());
+            EventBus.Publish(new RequestOpenSaveDialogEvent());
         }
         
         void OnLoadGameClicked()
         {
             Debug.Log("Load Game button clicked");
-            EventBus.Publish(new RequestLoadGameEvent());
+            EventBus.Publish(new RequestOpenLoadDialogEvent());
         }
     }
 }
