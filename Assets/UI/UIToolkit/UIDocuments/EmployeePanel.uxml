@@ -1,0 +1,28 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xsi:noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd">
+    <Style src="project://database/Assets/UI/UIToolkit/Styles/Common.uss?fileID=7433441132597879392&amp;guid=40a1dfd300fcc414a98e5675e153ad71&amp;type=3#Common"/>
+    
+    <ui:VisualElement name="employee-panel" class="content-panel hidden">
+        <ui:VisualElement class="panel-header">
+            <ui:Label text="EMPLOYEE ROSTER" class="panel-title"/>
+            <ui:VisualElement class="spacer"/>
+            <ui:Button name="hire-btn" text="+ Hire Employee" class="action-btn primary"/>
+        </ui:VisualElement>
+        <ui:VisualElement class="filter-bar">
+            <ui:Label text="FILTER:" class="filter-label"/>
+            <ui:Button name="filter-all-roles" text="All Roles" class="filter-btn filter-btn-active"/>
+            <ui:Button name="filter-developer" text="Developer" class="filter-btn"/>
+            <ui:Button name="filter-designer" text="Designer" class="filter-btn"/>
+            <ui:Button name="filter-marketer" text="Marketer" class="filter-btn"/>
+            <ui:VisualElement class="spacer"/>
+            <ui:Button name="filter-all-status" text="All Status" class="filter-btn filter-btn-active"/>
+            <ui:Button name="filter-available" text="Available" class="filter-btn"/>
+            <ui:Button name="filter-busy" text="Busy" class="filter-btn"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="employee-table-container" class="employee-table-container"/>
+        <ui:VisualElement name="empty-state" class="empty-state">
+            <ui:Label name="empty-icon" text="👥" class="empty-icon"/>
+            <ui:Label name="empty-text" text="No employees hired yet" class="empty-text"/>
+            <ui:Label name="empty-subtext" text="Click &apos;Hire Employee&apos; to get started" class="empty-subtext"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

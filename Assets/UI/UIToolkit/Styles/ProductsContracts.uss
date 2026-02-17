@@ -1,0 +1,417 @@
+/* ==================== PRODUCT & CONTRACT SHARED STYLES ==================== */
+
+.dialog-overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+.dialog-overlay.hidden {
+    display: none;
+}
+
+.dialog-box {
+    width: 700px;
+    max-height: 85%;
+    background-color: rgb(30, 30, 35);
+    border-radius: 8px;
+    border-width: 2px;
+    border-color: rgb(52, 152, 219);
+    padding: 0;
+}
+
+.dialog-box-wide {
+    width: 1300px;
+    max-width: 95%;
+    max-height: 92%;
+}
+
+.dialog-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    background-color: rgb(25, 25, 30);
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(52, 152, 219, 0.3);
+}
+
+.dialog-title {
+    font-size: 16px;
+    -unity-font-style: bold;
+    color: rgb(52, 152, 219);
+    letter-spacing: 1px;
+}
+
+.close-btn {
+    width: 30px;
+    height: 30px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-width: 0;
+    border-radius: 4px;
+    font-size: 16px;
+    color: rgb(200, 200, 200);
+}
+
+.close-btn:hover {
+    background-color: rgb(231, 76, 60);
+    color: white;
+}
+
+.dialog-content {
+    padding: 20px;
+    max-height: 700px;
+    overflow: hidden;
+}
+
+.two-column-layout {
+    flex-direction: row;
+    flex-grow: 1;
+    height: 100%;
+}
+
+.left-column {
+    flex-basis: 42%;
+    flex-shrink: 0;
+    margin-right: 20px;
+    padding-right: 20px;
+    border-right-width: 1px;
+    border-right-color: rgba(255, 255, 255, 0.1);
+    overflow: auto;
+    max-height: 650px;
+}
+
+.right-column {
+    flex-grow: 1;
+    flex-basis: 58%;
+    padding-left: 5px;
+    padding-right: 5px;
+    background-color: rgb(30, 30, 35);
+    display: flex;
+    flex-direction: column;
+}
+
+.dialog-footer {
+    padding: 15px 20px;
+    flex-direction: row;
+    justify-content: flex-end;
+    border-top-width: 1px;
+    border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+.field-label {
+    font-size: 12px;
+    -unity-font-style: bold;
+    color: rgb(180, 180, 190);
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+
+.text-input {
+    height: 35px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.2);
+    border-width: 1px;
+    border-radius: 4px;
+    padding-left: 10px;
+    padding-right: 10px;
+    color: white;
+    font-size: 14px;
+}
+
+.dropdown {
+    height: 35px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.2);
+    border-width: 1px;
+    border-radius: 4px;
+    color: white;
+    font-size: 14px;
+}
+
+.employee-selector-scroll {
+    max-height: 250px;
+    min-height: 180px;
+    background-color: rgb(22, 22, 27);
+    border-radius: 4px;
+    padding: 8px;
+    margin-top: 5px;
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+/* Hide default scrollbar appearance */
+.employee-selector-scroll > .unity-scroll-view__content-viewport {
+    margin-right: 0;
+}
+
+.employee-selector-scroll .unity-scroller--vertical {
+    width: 10px;
+    margin-left: 4px;
+}
+
+.employee-selector-scroll .unity-scroller--vertical .unity-base-slider__dragger {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+}
+
+.employee-selector-scroll .unity-scroller--vertical .unity-base-slider__dragger:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.skill-coverage-container {
+    background-color: rgb(25, 25, 30);
+    border-radius: 6px;
+    padding: 15px 10px 15px 15px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    min-height: 130px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-color: rgba(255, 255, 255, 0.15);
+    border-bottom-color: rgba(255, 255, 255, 0.15);
+    border-left-color: rgba(255, 255, 255, 0.15);
+    border-right-color: rgba(255, 255, 255, 0.15);
+}
+
+.employee-selector-row {
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 5px 8px 8px;
+    margin-bottom: 5px;
+    background-color: rgba(255, 255, 255, 0.02);
+    border-radius: 4px;
+}
+
+.employee-selector-row:hover {
+    background-color: rgba(52, 152, 219, 0.1);
+}
+
+.employee-name {
+    flex-grow: 1;
+    margin-left: 10px;
+    font-size: 13px;
+    color: white;
+}
+
+.employee-skills {
+    font-size: 11px;
+    color: rgb(150, 150, 160);
+    margin-left: 15px;
+}
+
+.estimate-text {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: rgba(52, 152, 219, 0.1);
+    border-radius: 4px;
+    font-size: 12px;
+    color: rgb(52, 152, 219);
+    -unity-text-align: middle-center;
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+.empty-state-text {
+    color: rgb(120, 120, 130);
+    font-size: 14px;
+    -unity-text-align: middle-center;
+    padding: 20px;
+}
+
+/* ==================== PRODUCT LIST STYLES ==================== */
+
+.product-list-scroll {
+    flex-grow: 1;
+    padding: 20px;
+}
+
+.product-card {
+    background-color: rgba(255, 255, 255, 0.03);
+    border-radius: 6px;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    margin-bottom: 10px;
+    cursor: link;
+}
+
+.product-card:hover {
+    background-color: rgba(52, 152, 219, 0.05);
+    border-color: rgba(52, 152, 219, 0.3);
+}
+
+.card-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.product-name {
+    font-size: 16px;
+    -unity-font-style: bold;
+    color: white;
+}
+
+.product-category {
+    font-size: 12px;
+    color: rgb(52, 152, 219);
+    background-color: rgba(52, 152, 219, 0.1);
+    padding: 4px 8px;
+    border-radius: 3px;
+}
+
+.state-badge {
+    padding: 4px 10px;
+    border-radius: 3px;
+    font-size: 11px;
+    -unity-font-style: bold;
+    margin-bottom: 10px;
+}
+
+.state-indevelopment {
+    background-color: rgba(243, 156, 18, 0.2);
+    color: rgb(243, 156, 18);
+}
+
+.state-released {
+    background-color: rgba(46, 204, 113, 0.2);
+    color: rgb(46, 204, 113);
+}
+
+.state-deprecated {
+    background-color: rgba(149, 165, 166, 0.2);
+    color: rgb(149, 165, 166);
+}
+
+.product-info {
+    padding-left: 10px;
+    border-left-width: 3px;
+    border-left-color: rgba(52, 152, 219, 0.3);
+}
+
+.product-info Label {
+    font-size: 13px;
+    color: rgb(180, 180, 190);
+    margin-bottom: 3px;
+}
+
+/* ==================== CONTRACT LIST STYLES ==================== */
+
+.contract-sections {
+    flex-direction: row;
+    flex-grow: 1;
+    padding: 20px;
+}
+
+.contract-section {
+    flex-grow: 1;
+    margin-right: 15px;
+}
+
+.contract-section:last-child {
+    margin-right: 0;
+}
+
+.section-title {
+    font-size: 13px;
+    -unity-font-style: bold;
+    color: rgb(150, 150, 160);
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.contract-list-scroll {
+    max-height: 600px;
+}
+
+.contract-card {
+    background-color: rgba(255, 255, 255, 0.03);
+    border-radius: 6px;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.1);
+    padding: 12px;
+    margin-bottom: 8px;
+}
+
+.contract-card:hover {
+    background-color: rgba(52, 152, 219, 0.05);
+    border-color: rgba(52, 152, 219, 0.3);
+}
+
+.contract-client {
+    font-size: 14px;
+    -unity-font-style: bold;
+    color: white;
+    margin-bottom: 3px;
+}
+
+.contract-type {
+    font-size: 11px;
+    color: rgb(150, 150, 160);
+    margin-bottom: 8px;
+}
+
+.contract-info {
+    padding-left: 10px;
+    border-left-width: 2px;
+    border-left-color: rgba(52, 152, 219, 0.3);
+}
+
+.contract-info Label {
+    font-size: 12px;
+    color: rgb(180, 180, 190);
+    margin-bottom: 2px;
+}
+
+.accept-btn {
+    margin-top: 10px;
+    height: 30px;
+    background-color: rgba(52, 152, 219, 0.2);
+    border-width: 1px;
+    border-color: rgb(52, 152, 219);
+    border-radius: 4px;
+    color: rgb(52, 152, 219);
+    -unity-font-style: bold;
+}
+
+.accept-btn:hover {
+    background-color: rgba(52, 152, 219, 0.3);
+}
+
+.status-success {
+    color: rgb(46, 204, 113);
+}
+
+.status-failed {
+    color: rgb(231, 76, 60);
+}
+
+.contract-info-box {
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 0;
+    max-height: 600px;
+    overflow: auto;
+}
+
+.contract-info-box Label {
+    font-size: 14px;
+    color: rgb(220, 220, 230);
+    margin-bottom: 6px;
+    white-space: normal;
+}

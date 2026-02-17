@@ -1,0 +1,34 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="/Assets/UI/UIToolkit/Styles/PauseMenu.uss" />
+    
+    <!-- Pause Menu -->
+    <ui:VisualElement name="pause-menu" class="pause-menu-overlay">
+        <ui:VisualElement class="pause-menu-container">
+            <ui:Label text="PAUSED" class="pause-menu-title" />
+            
+            <ui:VisualElement class="pause-menu-buttons">
+                <ui:Button name="resume-btn" text="Resume Game" class="pause-menu-button" />
+                <ui:Button name="save-game-btn" text="Save Game" class="pause-menu-button" />
+                <ui:Button name="load-game-btn" text="Load Game" class="pause-menu-button" />
+                <ui:Button name="new-game-btn" text="New Game" class="pause-menu-button pause-menu-button--danger" />
+            </ui:VisualElement>
+            
+            <ui:Label text="Press ESC to resume" class="pause-menu-hint" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+    
+    <!-- Confirm Dialog -->
+    <ui:VisualElement name="confirm-dialog" class="confirm-dialog-overlay">
+        <ui:VisualElement class="confirm-dialog-container">
+            <ui:Label text="Unsaved Changes" class="confirm-dialog-title" />
+            
+            <ui:Label name="confirm-message" text="You have unsaved progress. Do you want to save before continuing?" class="confirm-dialog-message" />
+            
+            <ui:VisualElement class="confirm-dialog-buttons">
+                <ui:Button name="confirm-save-btn" text="Save &amp; Continue" class="confirm-dialog-button confirm-dialog-button--primary" />
+                <ui:Button name="confirm-dont-save-btn" text="Don&apos;t Save" class="confirm-dialog-button confirm-dialog-button--danger" />
+                <ui:Button name="confirm-cancel-btn" text="Cancel" class="confirm-dialog-button" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

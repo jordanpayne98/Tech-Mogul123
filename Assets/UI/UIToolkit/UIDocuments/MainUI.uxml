@@ -1,0 +1,132 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/UIToolkit/Styles/Common.uss?fileID=7433441132597879392&amp;guid=40a1dfd300fcc414a98e5675e153ad71&amp;type=3#Common"/>
+    <Style src="/Assets/UI/UIToolkit/Styles/Notifications.uss"/>
+    <Style src="/Assets/UI/UIToolkit/Styles/NotificationPanel.uss"/>
+    <Style src="/Assets/UI/UIToolkit/Styles/ProductsContracts.uss"/>
+    <ui:Template name="EmployeePanel" src="project://database/Assets/UI/UIToolkit/UIDocuments/EmployeePanel.uxml?fileID=9197481963319205126"/>
+    <ui:Template name="ProductPanel" src="project://database/Assets/UI/UIToolkit/UIDocuments/ProductPanel.uxml?fileID=9197481963319205126"/>
+    <ui:Template name="ContractPanel" src="project://database/Assets/UI/UIToolkit/UIDocuments/ContractPanel.uxml?fileID=9197481963319205126"/>
+    <ui:VisualElement name="root" class="root">
+        <ui:VisualElement name="header" class="header">
+            <ui:VisualElement class="company-info">
+                <ui:Label text="TECH MOGUL" class="game-title"/>
+                <ui:Label name="reputation-value" text="☆☆☆☆☆ (0/100)" class="reputation-display"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="spacer"/>
+            <ui:VisualElement class="stat-group">
+                <ui:Label text="💰" class="stat-icon"/>
+                <ui:Label name="cash-value" text="$50,000" class="stat-value cash"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="stat-group">
+                <ui:Label text="📅" class="stat-icon"/>
+                <ui:Label name="date-value" text="Jan 1, 2024" class="stat-value"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="time-controls">
+                <ui:Label name="speed-value" text="PAUSED" class="speed-label"/>
+                <ui:Button name="play-pause-btn" text="▶" class="time-btn time-btn-toggle" style="font-size: 10px;"/>
+                <ui:Button name="fast-btn" text="▶▶" class="time-btn" style="font-size: 10px;"/>
+                <ui:Button name="faster-btn" text="▶▶▶" class="time-btn" style="font-size: 10px;"/>
+                <ui:Button name="fastest-btn" text="▶▶▶▶" class="time-btn" style="font-size: 10px;"/>
+            </ui:VisualElement>
+            
+            <!-- Notification Panel Button -->
+            <ui:Button name="notification-panel-btn" class="notification-panel-button">
+                <ui:Label name="notification-badge" text="3" class="notification-badge" />
+                <ui:VisualElement class="notification-summary">
+                    <ui:Label name="notification-summary-title" text="Employee Hired!" class="notification-summary-title" />
+                    <ui:Label name="notification-summary-text" text="Click for more info" class="notification-summary-text" />
+                </ui:VisualElement>
+                <ui:Label text="▼" class="notification-dropdown-icon" />
+            </ui:Button>
+        </ui:VisualElement>
+        <ui:VisualElement name="main-content" class="main-content">
+            <ui:VisualElement name="sidebar" class="sidebar">
+                <ui:Label text="MENU" class="sidebar-header"/>
+                <ui:Button name="employees-btn" class="sidebar-btn">
+                    <ui:Label text="👥" class="sidebar-icon"/>
+                    <ui:Label text="Employees" class="sidebar-text"/>
+                </ui:Button>
+                <ui:Button name="products-btn" class="sidebar-btn">
+                    <ui:Label text="📱" class="sidebar-icon"/>
+                    <ui:Label text="Products" class="sidebar-text"/>
+                </ui:Button>
+                <ui:Button name="contracts-btn" class="sidebar-btn">
+                    <ui:Label text="📋" class="sidebar-icon"/>
+                    <ui:Label text="Contracts" class="sidebar-text"/>
+                </ui:Button>
+                <ui:Button name="market-btn" class="sidebar-btn">
+                    <ui:Label text="📊" class="sidebar-icon"/>
+                    <ui:Label text="Market" class="sidebar-text"/>
+                </ui:Button>
+                <ui:VisualElement class="spacer"/>
+                <ui:Label text="STATS" class="sidebar-header"/>
+                <ui:VisualElement class="sidebar-stat">
+                    <ui:VisualElement style="flex-direction: row; align-items: center;">
+                        <ui:Label text="👥" style="font-size: 14px; margin-right: 6px; opacity: 0.6;"/>
+                        <ui:Label text="Employees:" class="sidebar-stat-label"/>
+                    </ui:VisualElement>
+                    <ui:Label name="employee-count" text="0" class="sidebar-stat-value"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="sidebar-stat">
+                    <ui:VisualElement style="flex-direction: row; align-items: center;">
+                        <ui:Label text="📱" style="font-size: 14px; margin-right: 6px; opacity: 0.6;"/>
+                        <ui:Label text="Products:" class="sidebar-stat-label"/>
+                    </ui:VisualElement>
+                    <ui:Label name="product-count" text="0" class="sidebar-stat-value"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="center-area" class="center-area">
+                <ui:Instance template="EmployeePanel"/>
+                <ui:Instance template="ProductPanel"/>
+                <ui:Instance template="ContractPanel"/>
+                <ui:VisualElement name="market-panel" class="content-panel hidden">
+                    <ui:VisualElement class="panel-header">
+                        <ui:Label text="MARKET OVERVIEW" class="panel-title"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="market-content" class="panel-content">
+                        <ui:VisualElement class="section">
+                            <ui:Label text="Market Share Distribution" class="section-title"/>
+                            <ui:VisualElement name="market-share-summary" class="info-box">
+                                <ui:VisualElement class="info-row">
+                                    <ui:Label text="Your Company:" class="info-label"/>
+                                    <ui:Label name="player-market-share" text="0.0%" class="info-value"/>
+                                </ui:VisualElement>
+                                <ui:VisualElement class="info-row">
+                                    <ui:Label text="Competitors:" class="info-label"/>
+                                    <ui:Label name="rival-market-share" text="78.0%" class="info-value"/>
+                                </ui:VisualElement>
+                                <ui:VisualElement class="info-row">
+                                    <ui:Label text="Unclaimed Market:" class="info-label"/>
+                                    <ui:Label name="unclaimed-market-share" text="22.0%" class="info-value"/>
+                                </ui:VisualElement>
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="section">
+                            <ui:Label text="Competitor Companies" class="section-title"/>
+                            <ui:ScrollView name="rival-list" class="rival-list"/>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <!-- detail-panel removed, using dialogs instead -->
+        </ui:VisualElement>
+        
+        <!-- Notification Dropdown -->
+        <ui:VisualElement name="notification-dropdown" class="notification-dropdown">
+            <ui:VisualElement class="notification-dropdown-header">
+                <ui:Label text="NOTIFICATIONS" class="notification-dropdown-title" />
+                <ui:Button name="notification-clear-btn" text="Clear All" class="notification-clear-btn" />
+            </ui:VisualElement>
+            
+            <ui:ScrollView name="notification-list" class="notification-list-container" />
+            
+            <ui:VisualElement name="notification-empty-state" class="notification-empty-state hidden">
+                <ui:Label text="🔔" class="notification-empty-icon" />
+                <ui:Label text="No notifications" class="notification-empty-text" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        
+        <!-- Old notification container (can be removed if not needed) -->
+        <ui:VisualElement name="notification-container" class="notification-container"/>
+    </ui:VisualElement>
+</ui:UXML>

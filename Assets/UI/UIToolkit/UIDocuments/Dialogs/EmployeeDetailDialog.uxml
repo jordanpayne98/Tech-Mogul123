@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ui="UnityEngine.UIElements"
+    xsi:noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd"
+>
+    <Style src="/Assets/UI/UIToolkit/Styles/Common.uss" />
+    <Style src="/Assets/UI/UIToolkit/Styles/HireDialog.uss" />
+    
+    <!-- Overlay Background -->
+    <ui:VisualElement name="overlay" class="dialog-overlay">
+        
+        <!-- Dialog Window -->
+        <ui:VisualElement name="dialog" class="dialog" style="max-width: 550px; min-width: 450px;">
+            
+            <!-- Header -->
+            <ui:VisualElement class="dialog-header">
+                <ui:Label text="EMPLOYEE DETAILS" class="dialog-title" />
+                <ui:Button name="close-employee-detail-btn" text="✕" class="close-btn" />
+            </ui:VisualElement>
+            
+            <!-- Content -->
+            <ui:VisualElement name="employee-detail-content" class="dialog-content" style="max-height: 750px; overflow: scroll; padding: 20px;" />
+            
+            <!-- Footer -->
+            <ui:VisualElement class="dialog-footer">
+                <ui:Button name="fire-employee-btn" text="🗑 Fire Employee" class="action-btn" style="background-color: rgb(148, 36, 36);" />
+            </ui:VisualElement>
+            
+        </ui:VisualElement>
+        
+    </ui:VisualElement>
+</ui:UXML>

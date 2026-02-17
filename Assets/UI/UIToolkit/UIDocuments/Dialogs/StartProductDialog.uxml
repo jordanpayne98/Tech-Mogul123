@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ui="UnityEngine.UIElements"
+    xsi:noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd"
+>
+    <Style src="/Assets/UI/UIToolkit/Styles/Common.uss" />
+    <Style src="/Assets/UI/UIToolkit/Styles/ProductsContracts.uss" />
+    
+    <!-- Overlay Background -->
+    <ui:VisualElement name="overlay" class="dialog-overlay">
+        
+        <!-- Dialog Window -->
+        <ui:VisualElement name="dialog" class="dialog-box">
+            
+            <!-- Header -->
+            <ui:VisualElement class="dialog-header">
+                <ui:Label text="START NEW PRODUCT" class="dialog-title" />
+                <ui:Button name="close-dialog-btn" text="✕" class="close-btn" />
+            </ui:VisualElement>
+            
+            <!-- Content -->
+            <ui:VisualElement class="dialog-content">
+                
+                <ui:Label text="Product Name:" class="field-label" />
+                <ui:TextField name="product-name-field" class="text-input" placeholder-text="Enter product name..." />
+                
+                <ui:Label text="Category:" class="field-label" />
+                <ui:DropdownField name="category-dropdown" class="dropdown" />
+                
+                <ui:Label text="Assign Employees:" class="field-label" />
+                <ui:ScrollView name="employee-selector" class="employee-selector-scroll" />
+                
+                <ui:Label name="completion-estimate" text="Select employees to see estimate" class="estimate-text" />
+                
+            </ui:VisualElement>
+            
+            <!-- Footer -->
+            <ui:VisualElement class="dialog-footer">
+                <ui:Button name="confirm-start-btn" text="Start Development" class="action-btn primary" />
+            </ui:VisualElement>
+            
+        </ui:VisualElement>
+        
+    </ui:VisualElement>
+</ui:UXML>

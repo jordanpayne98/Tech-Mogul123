@@ -1,0 +1,90 @@
+/* ===== NOTIFICATION TOAST ===== */
+.notification-toast {
+    min-width: 320px;
+    max-width: 400px;
+    margin-bottom: 10px;
+    padding: 15px 20px;
+    border-radius: 6px;
+    border-width: 1px;
+    flex-direction: row;
+    align-items: center;
+    background-color: rgb(40, 40, 45);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    transition-duration: 0.3s;
+}
+
+.notification-toast:hover {
+    scale: 1.02 1.02;
+}
+
+/* ===== NOTIFICATION TYPES ===== */
+.notification-info {
+    background-color: rgba(52, 152, 219, 0.15);
+    border-color: rgb(52, 152, 219);
+}
+
+.notification-success {
+    background-color: rgba(46, 204, 113, 0.15);
+    border-color: rgb(46, 204, 113);
+}
+
+.notification-warning {
+    background-color: rgba(243, 156, 18, 0.15);
+    border-color: rgb(243, 156, 18);
+}
+
+.notification-error {
+    background-color: rgba(231, 76, 60, 0.15);
+    border-color: rgb(231, 76, 60);
+}
+
+/* ===== NOTIFICATION ICON ===== */
+.notification-icon {
+    font-size: 24px;
+    margin-right: 12px;
+    min-width: 24px;
+}
+
+.notification-icon.info {
+    color: rgb(52, 152, 219);
+}
+
+.notification-icon.success {
+    color: rgb(46, 204, 113);
+}
+
+.notification-icon.warning {
+    color: rgb(243, 156, 18);
+}
+
+.notification-icon.error {
+    color: rgb(231, 76, 60);
+}
+
+/* ===== NOTIFICATION TEXT ===== */
+.notification-text {
+    font-size: 14px;
+    color: rgb(255, 255, 255);
+    -unity-font-style: normal;
+    white-space: normal;
+    flex-grow: 1;
+}
+
+/* ===== ANIMATION CLASSES ===== */
+.notification-slide-in {
+    translate: 100px 0;
+    opacity: 0;
+}
+
+.notification-visible {
+    translate: 0 0;
+    opacity: 1;
+    transition-duration: 0.3s;
+}
+
+.notification-slide-out {
+    translate: 100px 0;
+    opacity: 0;
+    transition-duration: 0.3s;
+}

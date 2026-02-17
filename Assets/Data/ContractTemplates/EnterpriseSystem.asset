@@ -1,0 +1,70 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 483c94476dbf4374c926c898434fcac1, type: 3}
+  m_Name: EnterpriseSystem
+  m_EditorClassIdentifier: Assembly-CSharp::TechMogul.Data.ContractTemplateSO
+  templateName: Enterprise System
+  description: Build complex enterprise software with strict requirements
+  easyWeight: 40
+  mediumWeight: 40
+  hardWeight: 20
+  possibleGoals:
+  - description: Multi-tenant architecture
+    type: 0
+    targetValue: 90
+    penaltyPercentMin: 5
+    penaltyPercentMax: 15
+  - description: Advanced security features
+    type: 1
+    targetValue: 5
+    penaltyPercentMin: 5
+    penaltyPercentMax: 15
+  - description: Real-time data processing
+    type: 0
+    targetValue: 85
+    penaltyPercentMin: 5
+    penaltyPercentMax: 15
+  - description: Custom reporting dashboard
+    type: 1
+    targetValue: 8
+    penaltyPercentMin: 5
+    penaltyPercentMax: 15
+  - description: API rate limiting
+    type: 1
+    targetValue: 3
+    penaltyPercentMin: 5
+    penaltyPercentMax: 15
+  - description: Automated testing suite
+    type: 0
+    targetValue: 95
+    penaltyPercentMin: 5
+    penaltyPercentMax: 15
+  - description: High availability setup
+    type: 0
+    targetValue: 88
+    penaltyPercentMin: 5
+    penaltyPercentMax: 15
+  minGoals: 1
+  maxGoals: 5
+  baseDeadlineDays: 35
+  deadlineVariance: 8
+  applyDifficultyDeadlineModifier: 1
+  basePayoutMin: 15000
+  basePayoutMax: 25000
+  devSkillMin: 110
+  devSkillMax: 170
+  designSkillMin: 75
+  designSkillMax: 130
+  marketingSkillMin: 50
+  marketingSkillMax: 100
+  baseBurnoutImpact: 25
+  baseXPReward: 7

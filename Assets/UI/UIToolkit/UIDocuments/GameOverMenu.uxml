@@ -1,0 +1,34 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="/Assets/UI/UIToolkit/Styles/GameOverMenu.uss" />
+    <ui:VisualElement name="game-over-menu" class="game-over-overlay">
+        <ui:VisualElement name="game-over-container" class="game-over-container">
+            <ui:Label text="GAME OVER" name="game-over-title" class="game-over-title" />
+            <ui:Label text="Your company has gone bankrupt!" name="game-over-message" class="game-over-message" />
+            
+            <ui:VisualElement name="stats-container" class="stats-container">
+                <ui:Label text="Final Statistics" name="stats-title" class="stats-subtitle" />
+                <ui:VisualElement class="stat-row">
+                    <ui:Label text="Days Survived:" class="stat-label" />
+                    <ui:Label text="0" name="days-survived" class="stat-value" />
+                </ui:VisualElement>
+                <ui:VisualElement class="stat-row">
+                    <ui:Label text="Products Released:" class="stat-label" />
+                    <ui:Label text="0" name="products-released" class="stat-value" />
+                </ui:VisualElement>
+                <ui:VisualElement class="stat-row">
+                    <ui:Label text="Contracts Completed:" class="stat-label" />
+                    <ui:Label text="0" name="contracts-completed" class="stat-value" />
+                </ui:VisualElement>
+                <ui:VisualElement class="stat-row">
+                    <ui:Label text="Employees Hired:" class="stat-label" />
+                    <ui:Label text="0" name="employees-hired" class="stat-value" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            
+            <ui:VisualElement name="button-container" class="button-container">
+                <ui:Button text="Try Again" name="restart-btn" class="game-over-button button--primary" />
+                <ui:Button text="Main Menu" name="main-menu-btn" class="game-over-button button--secondary" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

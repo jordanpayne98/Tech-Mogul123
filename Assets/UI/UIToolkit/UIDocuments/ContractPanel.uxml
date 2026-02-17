@@ -1,0 +1,27 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xsi:noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd">
+    <Style src="project://database/Assets/UI/UIToolkit/Styles/Common.uss?fileID=7433441132597879392&amp;guid=40a1dfd300fcc414a98e5675e153ad71&amp;type=3#Common"/>
+    <Style src="/Assets/UI/UIToolkit/Styles/ProductsContracts.uss"/>
+    
+    <ui:VisualElement name="contract-panel" class="content-panel hidden">
+        <ui:VisualElement class="panel-header">
+            <ui:Label text="CONTRACTS" class="panel-title"/>
+        </ui:VisualElement>
+        
+        <ui:VisualElement class="contract-sections">
+            <ui:VisualElement class="contract-section">
+                <ui:Label text="Available Contracts" class="section-title"/>
+                <ui:ScrollView name="available-contracts" class="contract-list-scroll"/>
+            </ui:VisualElement>
+            
+            <ui:VisualElement class="contract-section">
+                <ui:Label text="Active Contracts" class="section-title"/>
+                <ui:ScrollView name="active-contracts" class="contract-list-scroll"/>
+            </ui:VisualElement>
+            
+            <ui:VisualElement class="contract-section">
+                <ui:Label text="Recently Completed" class="section-title"/>
+                <ui:ScrollView name="completed-contracts" class="contract-list-scroll"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

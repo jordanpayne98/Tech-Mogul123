@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ui="UnityEngine.UIElements"
+    xsi:noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd"
+>
+    <Style src="/Assets/UI/UIToolkit/Styles/Common.uss" />
+    <Style src="/Assets/UI/UIToolkit/Styles/HireDialog.uss" />
+    
+    <!-- Overlay Background -->
+    <ui:VisualElement name="overlay" class="dialog-overlay">
+        
+        <!-- Dialog Window -->
+        <ui:VisualElement name="dialog" class="dialog">
+            
+            <!-- Header -->
+            <ui:VisualElement class="dialog-header">
+                <ui:Label text="HIRE EMPLOYEE" class="dialog-title" />
+                <ui:Button name="close-btn" text="✕" class="close-btn" />
+            </ui:VisualElement>
+            
+            <!-- Content -->
+            <ui:VisualElement class="dialog-content">
+                
+                <!-- Role Selection -->
+                <ui:Label text="Select Role" class="section-label" />
+                <ui:VisualElement class="role-buttons">
+                    <ui:Button name="developer-btn" class="role-btn">
+                        <ui:Label text="💻" class="role-icon" />
+                        <ui:Label text="Developer" class="role-name" />
+                    </ui:Button>
+                    <ui:Button name="designer-btn" class="role-btn">
+                        <ui:Label text="🎨" class="role-icon" />
+                        <ui:Label text="Designer" class="role-name" />
+                    </ui:Button>
+                    <ui:Button name="marketer-btn" class="role-btn">
+                        <ui:Label text="📢" class="role-icon" />
+                        <ui:Label text="Marketer" class="role-name" />
+                    </ui:Button>
+                </ui:VisualElement>
+                
+                <!-- Candidate Info -->
+                <ui:VisualElement name="candidate-panel" class="candidate-panel hidden">
+                    
+                    <ui:Label name="candidate-name" text="Alex Johnson" class="candidate-name" />
+                    <ui:Label name="candidate-role" text="Developer" class="candidate-role" />
+                    
+                    <!-- Skills -->
+                    <ui:Label text="Skills" class="section-label" />
+                    <ui:VisualElement class="skill-row">
+                        <ui:Label text="Development:" class="skill-label" />
+                        <ui:VisualElement class="skill-bar-container">
+                            <ui:VisualElement name="dev-skill-bar" class="skill-bar" />
+                        </ui:VisualElement>
+                        <ui:Label name="dev-skill-value" text="75" class="skill-value" />
+                    </ui:VisualElement>
+                    
+                    <ui:VisualElement class="skill-row">
+                        <ui:Label text="Design:" class="skill-label" />
+                        <ui:VisualElement class="skill-bar-container">
+                            <ui:VisualElement name="design-skill-bar" class="skill-bar" />
+                        </ui:VisualElement>
+                        <ui:Label name="design-skill-value" text="25" class="skill-value" />
+                    </ui:VisualElement>
+                    
+                    <ui:VisualElement class="skill-row">
+                        <ui:Label text="Marketing:" class="skill-label" />
+                        <ui:VisualElement class="skill-bar-container">
+                            <ui:VisualElement name="marketing-skill-bar" class="skill-bar" />
+                        </ui:VisualElement>
+                        <ui:Label name="marketing-skill-value" text="15" class="skill-value" />
+                    </ui:VisualElement>
+                    
+                    <!-- Salary -->
+                    <ui:VisualElement class="salary-section">
+                        <ui:VisualElement class="salary-row">
+                            <ui:Label text="Monthly Salary:" class="salary-label" />
+                            <ui:Label name="salary-value" text="$5,000" class="salary-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="salary-row">
+                            <ui:Label text="Signing Bonus:" class="salary-label" />
+                            <ui:Label name="signing-bonus-value" text="$2,500" class="signing-bonus-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="salary-info">
+                            <ui:Label text="(One-time upfront payment of 2 weeks salary)" class="salary-info-text" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    
+                    <!-- Actions -->
+                    <ui:VisualElement class="dialog-actions">
+                        <ui:Button name="generate-btn" text="⟳ Generate New Candidate" class="action-btn secondary" />
+                        <ui:Button name="hire-confirm-btn" text="Hire for $5,000/mo" class="action-btn primary" />
+                    </ui:VisualElement>
+                    
+                </ui:VisualElement>
+                
+                <!-- Placeholder when no role selected -->
+                <ui:VisualElement name="placeholder" class="placeholder-panel">
+                    <ui:Label text="👤" class="placeholder-icon" />
+                    <ui:Label text="Select a role to generate a candidate" class="placeholder-text" />
+                </ui:VisualElement>
+                
+            </ui:VisualElement>
+            
+        </ui:VisualElement>
+        
+    </ui:VisualElement>
+</ui:UXML>

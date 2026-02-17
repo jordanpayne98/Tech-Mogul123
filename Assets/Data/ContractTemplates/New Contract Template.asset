@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 483c94476dbf4374c926c898434fcac1, type: 3}
+  m_Name: New Contract Template
+  m_EditorClassIdentifier: Assembly-CSharp::TechMogul.Data.ContractTemplateSO
+  templateName: 
+  description: 
+  easyWeight: 40
+  mediumWeight: 40
+  hardWeight: 20
+  possibleGoals: []
+  minGoals: 1
+  maxGoals: 3
+  baseDeadlineDays: 20
+  deadlineVariance: 5
+  applyDifficultyDeadlineModifier: 1
+  basePayoutMin: 5000
+  basePayoutMax: 15000
+  devSkillMin: 30
+  devSkillMax: 70
+  designSkillMin: 20
+  designSkillMax: 60
+  marketingSkillMin: 10
+  marketingSkillMax: 50
+  baseBurnoutImpact: 15
+  baseXPReward: 8

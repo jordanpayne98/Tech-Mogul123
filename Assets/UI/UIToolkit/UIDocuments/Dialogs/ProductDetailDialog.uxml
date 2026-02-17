@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ui="UnityEngine.UIElements"
+    xsi:noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd"
+>
+    <Style src="/Assets/UI/UIToolkit/Styles/Common.uss" />
+    <Style src="/Assets/UI/UIToolkit/Styles/ProductsContracts.uss" />
+    
+    <!-- Overlay Background -->
+    <ui:VisualElement name="overlay" class="dialog-overlay">
+        
+        <!-- Dialog Window -->
+        <ui:VisualElement name="dialog" class="dialog-box">
+            
+            <!-- Header -->
+            <ui:VisualElement class="dialog-header">
+                <ui:Label text="PRODUCT DETAILS" class="dialog-title" />
+                <ui:Button name="close-detail-btn" text="✕" class="close-btn" />
+            </ui:VisualElement>
+            
+            <!-- Content -->
+            <ui:VisualElement name="detail-content" class="dialog-content" />
+            
+        </ui:VisualElement>
+        
+    </ui:VisualElement>
+</ui:UXML>

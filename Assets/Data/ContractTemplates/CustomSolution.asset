@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 483c94476dbf4374c926c898434fcac1, type: 3}
+  m_Name: CustomSolution
+  m_EditorClassIdentifier: Assembly-CSharp::TechMogul.Data.ContractTemplateSO
+  templateName: Custom Solution
+  description: Build a unique custom solution tailored to client needs
+  easyWeight: 40
+  mediumWeight: 40
+  hardWeight: 20
+  possibleGoals:
+  - description: 'Quality '
+    type: 0
+    targetValue: 75
+    penaltyPercentMin: 5
+    penaltyPercentMax: 15
+  - description: Meet Tight Deadline
+    type: 2
+    targetValue: 20
+    penaltyPercentMin: 5
+    penaltyPercentMax: 15
+  - description: Complete 8 Features
+    type: 1
+    targetValue: 8
+    penaltyPercentMin: 5
+    penaltyPercentMax: 15
+  minGoals: 3
+  maxGoals: 4
+  baseDeadlineDays: 30
+  deadlineVariance: 5
+  applyDifficultyDeadlineModifier: 1
+  basePayoutMin: 18000
+  basePayoutMax: 30000
+  devSkillMin: 120
+  devSkillMax: 180
+  designSkillMin: 80
+  designSkillMax: 140
+  marketingSkillMin: 50
+  marketingSkillMax: 110
+  baseBurnoutImpact: 20
+  baseXPReward: 6

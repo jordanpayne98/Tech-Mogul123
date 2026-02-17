@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69e4034d4bcd1f74aa5def2157638005, type: 3}
+  m_Name: DesignerRole
+  m_EditorClassIdentifier: Assembly-CSharp::TechMogul.Data.RoleSO
+  roleName: Designer
+  description: Specializes in UI/UX design and visual aesthetics. High design skills,
+    medium marketing, low dev.
+  devSkillMin: 0
+  devSkillMax: 45
+  designSkillMin: 20
+  designSkillMax: 100
+  marketingSkillMin: 0
+  marketingSkillMax: 45
+  skillRarityCurve: 3
+  baseSalaryMin: 2000
+  baseSalaryMax: 11500
+  devGrowthRate: 1
+  designGrowthRate: 2
+  marketingGrowthRate: 1.2
+  icon: {fileID: 0}
+  themeColor: {r: 1, g: 0.4, b: 0.8, a: 1}

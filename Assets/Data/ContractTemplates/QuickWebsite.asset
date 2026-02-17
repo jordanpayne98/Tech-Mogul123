@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 483c94476dbf4374c926c898434fcac1, type: 3}
+  m_Name: QuickWebsite
+  m_EditorClassIdentifier: Assembly-CSharp::TechMogul.Data.ContractTemplateSO
+  templateName: Quick Website
+  description: Build a simple website for a small business client
+  easyWeight: 40
+  mediumWeight: 40
+  hardWeight: 20
+  possibleGoals:
+  - description: Create responsive layout
+    type: 1
+    targetValue: 3
+    penaltyPercentMin: 5
+    penaltyPercentMax: 15
+  - description: Add contact form
+    type: 1
+    targetValue: 1
+    penaltyPercentMin: 5
+    penaltyPercentMax: 15
+  - description: Setup basic SEO
+    type: 0
+    targetValue: 60
+    penaltyPercentMin: 5
+    penaltyPercentMax: 15
+  - description: Mobile optimization
+    type: 0
+    targetValue: 70
+    penaltyPercentMin: 5
+    penaltyPercentMax: 15
+  - description: Fast load times
+    type: 2
+    targetValue: 2
+    penaltyPercentMin: 5
+    penaltyPercentMax: 15
+  minGoals: 2
+  maxGoals: 4
+  baseDeadlineDays: 15
+  deadlineVariance: 5
+  applyDifficultyDeadlineModifier: 1
+  basePayoutMin: 4000
+  basePayoutMax: 8000
+  devSkillMin: 75
+  devSkillMax: 120
+  designSkillMin: 50
+  designSkillMax: 100
+  marketingSkillMin: 30
+  marketingSkillMax: 80
+  baseBurnoutImpact: 10
+  baseXPReward: 3

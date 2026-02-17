@@ -1,0 +1,13 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xsi:noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd">
+    <Style src="project://database/Assets/UI/UIToolkit/Styles/Common.uss?fileID=7433441132597879392&amp;guid=40a1dfd300fcc414a98e5675e153ad71&amp;type=3#Common"/>
+    <Style src="/Assets/UI/UIToolkit/Styles/ProductsContracts.uss"/>
+    
+    <ui:VisualElement name="product-panel" class="content-panel hidden">
+        <ui:VisualElement class="panel-header">
+            <ui:Label text="PRODUCTS" class="panel-title"/>
+            <ui:VisualElement class="spacer"/>
+            <ui:Button name="start-product-btn" text="+ Start Product" class="action-btn primary"/>
+        </ui:VisualElement>
+        <ui:ScrollView name="product-list" class="product-list-scroll"/>
+    </ui:VisualElement>
+</ui:UXML>

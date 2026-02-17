@@ -1,0 +1,32 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/UIToolkit/Styles/Common.uss?fileID=7433441132597879392&amp;guid=40a1dfd300fcc414a98e5675e153ad71&amp;type=3#Common"/>
+    <Style src="project://database/Assets/UI/UIToolkit/Styles/ProductsContracts.uss?fileID=7433441132597879392&amp;guid=dc980d430a45ff04a8f38ca628b0a96e&amp;type=3#ProductsContracts"/>
+    <ui:VisualElement name="overlay" class="dialog-overlay">
+        <ui:VisualElement name="dialog" class="dialog-box dialog-box-wide">
+            <ui:VisualElement class="dialog-header">
+                <ui:Label text="ACCEPT CONTRACT" class="dialog-title"/>
+                <ui:Button name="close-dialog-btn" text="✕" class="close-btn"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="dialog-content">
+                <ui:VisualElement class="two-column-layout">
+                    <ui:VisualElement class="left-column">
+                        <ui:VisualElement name="contract-info" class="contract-info-box"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="right-column">
+                        <ui:VisualElement style="flex-direction: row; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <ui:Label text="Assign Employees:" class="field-label"/>
+                            <ui:Toggle name="auto-assign-toggle" label="Auto-assign Best Team" style="font-size: 12px; color: rgb(180, 180, 190);"/>
+                        </ui:VisualElement>
+                        <ui:ScrollView name="employee-selector" class="employee-selector-scroll"/>
+                        <ui:Label text="Team Skill Coverage:" class="field-label" style="margin-top: 15px;"/>
+                        <ui:VisualElement name="skill-coverage-bars" class="skill-coverage-container"/>
+                        <ui:Label name="completion-estimate" text="Select employees to see estimate" class="estimate-text"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement class="dialog-footer">
+                <ui:Button name="confirm-accept-btn" text="Accept Contract" class="action-btn primary"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
