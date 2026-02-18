@@ -29,6 +29,49 @@ namespace TechMogul.Products
         public string employeeId;
     }
 
+    public class RequestAddFeatureToProductEvent
+    {
+        public string productId;
+        public FeatureNodeSO feature;
+    }
+
+    public class OnFeatureAddedToProductEvent
+    {
+        public string productId;
+        public string featureId;
+        public string featureName;
+    }
+
+    public class OnFeatureAddFailedEvent
+    {
+        public string productId;
+        public string featureId;
+        public string errorMessage;
+    }
+
+    public class RequestSetProductQATierEvent
+    {
+        public string productId;
+        public QATierSO qaTier;
+    }
+
+    public class OnProductQATierChangedEvent
+    {
+        public string productId;
+        public string qaTierId;
+    }
+
+    public class RequestAdvanceProductPhaseEvent
+    {
+        public string productId;
+    }
+
+    public class OnProductPhaseAdvancedEvent
+    {
+        public string productId;
+        public ProjectPhase newPhase;
+    }
+
     public class OnProductProgressUpdatedEvent
     {
         public string productId;
@@ -56,3 +99,4 @@ namespace TechMogul.Products
         public int productCount;
     }
 }
+

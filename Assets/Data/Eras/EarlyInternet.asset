@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 877f12b4344511d42be38ffadcd1f4fa, type: 3}
+  m_Name: EarlyInternet
+  m_EditorClassIdentifier: Assembly-CSharp::TechMogul.Systems.EraSO
+  id: era.early_internet
+  eraName: Early Internet
+  startYear: 1995
+  endYear: 1999
+  baseMarketSizeMultiplier: 0.8
+  description: The dawn of the internet age. Dial-up connections, basic websites,
+    and the first e-commerce ventures emerge. Markets are small but growing rapidly.

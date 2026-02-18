@@ -3,11 +3,12 @@ using UnityEngine.UIElements;
 using TechMogul.Core;
 using TechMogul.Data;
 using TechMogul.Systems;
+using TechMogul.Contracts;
 
 namespace TechMogul.UI
 {
     [RequireComponent(typeof(UIDocument))]
-    public class HireDialogController : MonoBehaviour
+    public class HireDialogController : UIController
     {
         [Header("Role Templates")]
         [SerializeField] private RoleSO developerRole;
@@ -47,17 +48,27 @@ namespace TechMogul.UI
         
         private RoleSO selectedRole;
         private Employee currentCandidate;
+        private ReputationSystem reputationSystem;
+        private IRng _rng;
         
-        void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             uiDocument = GetComponent<UIDocument>();
+            reputationSystem = ServiceLocator.Instance?.Get<ReputationSystem>();
+            _rng = new UnityRng();
         }
         
-        void OnEnable()
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+        }
+        
+        void Start()
         {
             if (uiDocument == null || uiDocument.rootVisualElement == null)
             {
-                Debug.LogError("UIDocument or root visual element is null");
+                Debug.LogError("UIDocument or root visual element is null in Start");
                 return;
             }
             
@@ -66,8 +77,11 @@ namespace TechMogul.UI
             CacheReferences();
             BindButtons();
             
-            // Start hidden
             Hide();
+        }
+        
+        protected override void SubscribeToEvents()
+        {
         }
         
         void CacheReferences()
@@ -126,6 +140,20 @@ namespace TechMogul.UI
         
         public void Show()
         {
+            // Ensure _rng is initialized
+            if (_rng == null)
+            {
+                _rng = new UnityRng();
+            }
+            
+            // Ensure references are initialized
+            if (overlay == null && uiDocument != null && uiDocument.rootVisualElement != null)
+            {
+                root = uiDocument.rootVisualElement;
+                CacheReferences();
+                BindButtons();
+            }
+            
             Debug.Log($"HireDialog.Show() - overlay is {(overlay != null ? "NOT NULL" : "NULL")}");
             if (overlay != null)
             {
@@ -195,8 +223,18 @@ namespace TechMogul.UI
             // Generate random name
             string randomName = GenerateRandomName();
             
-            // Create candidate employee (constructor now handles reputation internally)
-            currentCandidate = new Employee(selectedRole, randomName);
+            // Get skill caps from reputation system
+            float maxSkill = 20f;
+            float minSkill = 0f;
+            
+            if (reputationSystem != null)
+            {
+                maxSkill = reputationSystem.GetEmployeeQualityMultiplier();
+                minSkill = reputationSystem.GetEmployeeMinSkill();
+            }
+            
+            // Create candidate employee
+            currentCandidate = new Employee(selectedRole, randomName, minSkill, maxSkill);
             
             // Update UI
             DisplayCandidate();
@@ -247,18 +285,11 @@ namespace TechMogul.UI
             EventBus.Publish(new RequestHireEmployeeEvent 
             { 
                 RoleTemplate = selectedRole,
-                EmployeeName = currentCandidate.employeeName,
-                DevSkill = currentCandidate.devSkill,
-                DesignSkill = currentCandidate.designSkill,
-                MarketingSkill = currentCandidate.marketingSkill,
-                Morale = currentCandidate.morale,
-                Burnout = currentCandidate.burnout,
-                MonthlySalary = currentCandidate.monthlySalary
+                EmployeeName = currentCandidate.employeeName
             });
             
-            Debug.Log($"Hiring {currentCandidate.employeeName} as {selectedRole.roleName} for ${currentCandidate.monthlySalary:N0}/month");
+            Debug.Log($"Hiring {currentCandidate.employeeName} as {selectedRole.roleName}");
             
-            // Generate a new candidate automatically instead of closing
             GenerateNewCandidate();
         }
         
@@ -266,17 +297,34 @@ namespace TechMogul.UI
         {
             string[] firstNames = { 
                 "Alex", "Jordan", "Taylor", "Morgan", "Casey", "Riley", "Avery", "Quinn",
-                "Blake", "Drew", "Sage", "River", "Skyler", "Phoenix", "Rowan", "Dakota"
+                "Blake", "Drew", "Sage", "River", "Skyler", "Phoenix", "Rowan", "Dakota",
+                "Sam", "Cameron", "Charlie", "Jamie", "Kai", "Jesse", "Finley", "Hayden",
+                "Parker", "Reese", "Peyton", "Logan", "Sawyer", "Bailey", "Harper", "Emery",
+                "Adrian", "Alexis", "Angel", "Ari", "Ash", "Aspen", "August", "Aubrey",
+                "Blake", "Blue", "Brook", "Cairo", "Carson", "Casey", "Cleo", "Denver",
+                "Dylan", "Eden", "Ellis", "Evan", "Ezra", "Gray", "Harley", "Hunter",
+                "Indie", "Jaden", "Jules", "Justice", "Kendall", "Lane", "London", "Lynn",
+                "Marley", "Max", "Milan", "Nico", "Nova", "Ocean", "Onyx", "Orion",
+                "Rain", "Raven", "Remy", "Robin", "Rory", "Royal", "Ryan", "Salem"
             };
             string[] lastNames = { 
                 "Smith", "Johnson", "Chen", "Patel", "Garcia", "Kim", "Martinez", "Lee",
-                "Brown", "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson", "White"
+                "Brown", "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson", "White",
+                "Harris", "Martin", "Thompson", "Davis", "Rodriguez", "Lewis", "Walker", "Hall",
+                "Allen", "Young", "King", "Wright", "Lopez", "Hill", "Scott", "Green",
+                "Adams", "Baker", "Nelson", "Carter", "Mitchell", "Perez", "Roberts", "Turner",
+                "Phillips", "Campbell", "Parker", "Evans", "Edwards", "Collins", "Stewart", "Morris",
+                "Nguyen", "Murphy", "Rivera", "Cook", "Rogers", "Morgan", "Peterson", "Cooper",
+                "Reed", "Bailey", "Bell", "Gomez", "Kelly", "Howard", "Ward", "Cox",
+                "Diaz", "Richardson", "Wood", "Watson", "Brooks", "Bennett", "Gray", "James",
+                "Reyes", "Cruz", "Hughes", "Price", "Myers", "Long", "Foster", "Sanders"
             };
             
-            string firstName = firstNames[Random.Range(0, firstNames.Length)];
-            string lastName = lastNames[Random.Range(0, lastNames.Length)];
+            string firstName = firstNames[_rng.Range(0, firstNames.Length)];
+            string lastName = lastNames[_rng.Range(0, lastNames.Length)];
             return $"{firstName} {lastName}";
         }
+        
         void PauseTime()
         {
             var timeSystem = FindFirstObjectByType<TimeSystem>();

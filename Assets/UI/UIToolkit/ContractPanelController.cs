@@ -8,7 +8,7 @@ using TechMogul.Systems;
 
 namespace TechMogul.UI
 {
-    public class ContractPanelController : MonoBehaviour
+    public class ContractPanelController : UIController
     {
         [Header("Standalone Dialogs")]
         [SerializeField] private GameObject acceptContractDialogGO;
@@ -37,24 +37,14 @@ namespace TechMogul.UI
         
         private ContractData selectedContract;
 
-        void OnEnable()
+        protected override void SubscribeToEvents()
         {
-            EventBus.Subscribe<OnContractAcceptedEvent>(HandleContractAccepted);
-            EventBus.Subscribe<OnContractProgressUpdatedEvent>(HandleContractProgress);
-            EventBus.Subscribe<OnContractCompletedEvent>(HandleContractCompleted);
-            EventBus.Subscribe<OnContractFailedEvent>(HandleContractFailed);
-            EventBus.Subscribe<OnContractExpiredEvent>(HandleContractExpired);
-            EventBus.Subscribe<OnDayTickEvent>(evt => RefreshContractLists());
-        }
-
-        void OnDisable()
-        {
-            EventBus.Unsubscribe<OnContractAcceptedEvent>(HandleContractAccepted);
-            EventBus.Unsubscribe<OnContractProgressUpdatedEvent>(HandleContractProgress);
-            EventBus.Unsubscribe<OnContractCompletedEvent>(HandleContractCompleted);
-            EventBus.Unsubscribe<OnContractFailedEvent>(HandleContractFailed);
-            EventBus.Unsubscribe<OnContractExpiredEvent>(HandleContractExpired);
-            EventBus.Unsubscribe<OnDayTickEvent>(evt => RefreshContractLists());
+            Subscribe<OnContractsChangedEvent>(HandleContractsChanged);
+            Subscribe<OnContractAcceptedEvent>(HandleContractAccepted);
+            Subscribe<OnContractProgressUpdatedEvent>(HandleContractProgress);
+            Subscribe<OnContractCompletedEvent>(HandleContractCompleted);
+            Subscribe<OnContractFailedEvent>(HandleContractFailed);
+            Subscribe<OnContractExpiredEvent>(HandleContractExpired);
         }
 
         public void Initialize(VisualElement panel)
@@ -307,7 +297,7 @@ namespace TechMogul.UI
             
             employeeSelector.Clear();
             
-            var availableEmployees = employeeSystem.Employees.Where(e => e.isAvailable && !e.isFired).ToList();
+            var availableEmployees = employeeSystem.Employees.Where(e => e.isAvailable).ToList();
             
             if (availableEmployees.Count == 0)
             {
@@ -444,8 +434,19 @@ namespace TechMogul.UI
             float teamBonus = 1f + (Mathf.Min(employees.Count - 1, 4) * 0.12f); // Max +48% with 5 employees
             finalProductivity *= teamBonus;
             
+            // Coordination overhead: penalty for large teams
+            if (employees.Count > 3)
+            {
+                float coordinationPenalty = 1f - ((employees.Count - 3) * 0.08f); // -8% per employee over 3
+                coordinationPenalty = Mathf.Max(coordinationPenalty, 0.7f); // Cap penalty at -30%
+                finalProductivity *= coordinationPenalty;
+            }
+            
             // Apply 5% completion speed boost to make contracts slightly easier
             finalProductivity *= 1.05f;
+            
+            // Cap productivity to prevent trivializing deadlines
+            finalProductivity = Mathf.Min(finalProductivity, 150f);
             
             // Calculate estimated days based on productivity
             // 100% productivity = complete in totalDays
@@ -579,7 +580,7 @@ namespace TechMogul.UI
             selectedEmployeeIds.Clear();
             
             var availableEmployees = employeeSystem.Employees
-                .Where(e => e.isAvailable && !e.isFired)
+                .Where(e => e.isAvailable)
                 .ToList();
             
             if (availableEmployees.Count == 0)
@@ -718,8 +719,19 @@ namespace TechMogul.UI
             float teamBonus = 1f + (Mathf.Min(empCount - 1, 4) * 0.12f);
             finalProductivity *= teamBonus;
             
+            // Coordination overhead: penalty for large teams
+            if (empCount > 3)
+            {
+                float coordinationPenalty = 1f - ((empCount - 3) * 0.08f); // -8% per employee over 3
+                coordinationPenalty = Mathf.Max(coordinationPenalty, 0.7f); // Cap penalty at -30%
+                finalProductivity *= coordinationPenalty;
+            }
+            
             // Apply 5% completion speed boost to make contracts slightly easier
             finalProductivity *= 1.05f;
+            
+            // Cap productivity to prevent trivializing deadlines
+            finalProductivity = Mathf.Min(finalProductivity, 150f);
             
             return selectedContract.totalDays / (finalProductivity / 100f);
         }
@@ -778,6 +790,11 @@ namespace TechMogul.UI
             {
                 skillBarsContainer.Clear();
             }
+        }
+
+        void HandleContractsChanged(OnContractsChangedEvent evt)
+        {
+            RefreshContractLists();
         }
 
         void HandleContractAccepted(OnContractAcceptedEvent evt)

@@ -6,4 +6,9 @@ namespace TechMogul.Core
         public float change;
         public int starRating;
     }
+    
+    public class RequestChangeReputationEvent
+    {
+        public float Amount;
+    }
 }

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba13eeec599a43a47b31afdc142c3ee0, type: 3}
+  m_Name: WebDevelopment
+  m_EditorClassIdentifier: Assembly-CSharp::TechMogul.Systems.TechnologySO
+  id: tech.web_dev
+  techName: Web Development
+  category: Web
+  researchYear: 1995
+  inflectionYear: 1998
+  adoptionSpeedConstant: 0.45
+  innovationBonus: 0
+  bugRiskMultiplier: 1
+  marketRelevanceMultiplier: 1
+  prerequisites: []
+  replaces: []
+  description: HTML, CSS, JavaScript - the foundation of web development

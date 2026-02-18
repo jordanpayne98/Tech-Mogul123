@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99092231ba6e72441bba01035c3dcba1, type: 3}
   m_Name: HardwareProduct
   m_EditorClassIdentifier: Assembly-CSharp::TechMogul.Data.ProductCategorySO
+  id: productcat.hardware
   categoryName: Hardware Product
   description: 'Physical device or electronic product.
 

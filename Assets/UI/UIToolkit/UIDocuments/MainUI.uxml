@@ -21,6 +21,10 @@
                 <ui:Label text="📅" class="stat-icon"/>
                 <ui:Label name="date-value" text="Jan 1, 2024" class="stat-value"/>
             </ui:VisualElement>
+            <ui:VisualElement class="stat-group">
+                <ui:Label text="🌐" class="stat-icon"/>
+                <ui:Label name="era-value" text="Digital Age" class="stat-value era"/>
+            </ui:VisualElement>
             <ui:VisualElement class="time-controls">
                 <ui:Label name="speed-value" text="PAUSED" class="speed-label"/>
                 <ui:Button name="play-pause-btn" text="▶" class="time-btn time-btn-toggle" style="font-size: 10px;"/>
@@ -58,6 +62,10 @@
                     <ui:Label text="📊" class="sidebar-icon"/>
                     <ui:Label text="Market" class="sidebar-text"/>
                 </ui:Button>
+                <ui:Button name="technology-btn" class="sidebar-btn">
+                    <ui:Label text="⚡" class="sidebar-icon"/>
+                    <ui:Label text="Technology" class="sidebar-text"/>
+                </ui:Button>
                 <ui:VisualElement class="spacer"/>
                 <ui:Label text="STATS" class="sidebar-header"/>
                 <ui:VisualElement class="sidebar-stat">
@@ -84,27 +92,30 @@
                         <ui:Label text="MARKET OVERVIEW" class="panel-title"/>
                     </ui:VisualElement>
                     <ui:VisualElement name="market-content" class="panel-content">
-                        <ui:VisualElement class="section">
-                            <ui:Label text="Market Share Distribution" class="section-title"/>
-                            <ui:VisualElement name="market-share-summary" class="info-box">
-                                <ui:VisualElement class="info-row">
-                                    <ui:Label text="Your Company:" class="info-label"/>
-                                    <ui:Label name="player-market-share" text="0.0%" class="info-value"/>
-                                </ui:VisualElement>
-                                <ui:VisualElement class="info-row">
-                                    <ui:Label text="Competitors:" class="info-label"/>
-                                    <ui:Label name="rival-market-share" text="78.0%" class="info-value"/>
-                                </ui:VisualElement>
-                                <ui:VisualElement class="info-row">
-                                    <ui:Label text="Unclaimed Market:" class="info-label"/>
-                                    <ui:Label name="unclaimed-market-share" text="22.0%" class="info-value"/>
-                                </ui:VisualElement>
+                        <!-- Industry Overview Content -->
+                        <ui:VisualElement name="industry-overview-content" style="flex-grow: 1; flex-direction: row;">
+                            <!-- Left Panel: Category Breakdown -->
+                            <ui:VisualElement name="categories-panel" style="flex-grow: 1; margin-right: 15px; background-color: rgba(20, 20, 24, 0.9); border-top-left-radius: 8px; border-bottom-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; padding-left: 15px; padding-right: 15px; padding-top: 15px; padding-bottom: 15px;">
+                                <ui:Label text="Market Categories" display-tooltip-when-elided="true" style="font-size: 20px; -unity-font-style: bold; color: rgb(230, 230, 245); margin-bottom: 12px;" />
+                                <ui:ScrollView name="category-list" style="flex-grow: 1;" />
+                            </ui:VisualElement>
+                            
+                            <!-- Right Panel: Company Rankings -->
+                            <ui:VisualElement name="rankings-panel" style="flex-grow: 1; margin-left: 15px; background-color: rgba(20, 20, 24, 0.9); border-top-left-radius: 8px; border-bottom-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; padding-left: 15px; padding-right: 15px; padding-top: 15px; padding-bottom: 15px;">
+                                <ui:Label text="Top Companies by Revenue" display-tooltip-when-elided="true" style="font-size: 20px; -unity-font-style: bold; color: rgb(230, 230, 245); margin-bottom: 12px;" />
+                                <ui:ScrollView name="company-rankings" style="flex-grow: 1;" />
                             </ui:VisualElement>
                         </ui:VisualElement>
-                        <ui:VisualElement class="section">
-                            <ui:Label text="Competitor Companies" class="section-title"/>
-                            <ui:ScrollView name="rival-list" class="rival-list"/>
-                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement name="technology-panel" class="content-panel hidden">
+                    <ui:VisualElement class="panel-header">
+                        <ui:Label text="TECHNOLOGY OVERVIEW" class="panel-title"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="technology-content" class="panel-content">
+                        <ui:ScrollView name="technology-list" style="flex-grow: 1;">
+                            <!-- Technology items will be populated dynamically -->
+                        </ui:ScrollView>
                     </ui:VisualElement>
                 </ui:VisualElement>
             </ui:VisualElement>

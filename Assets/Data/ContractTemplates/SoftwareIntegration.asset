@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 483c94476dbf4374c926c898434fcac1, type: 3}
   m_Name: SoftwareIntegration
   m_EditorClassIdentifier: Assembly-CSharp::TechMogul.Data.ContractTemplateSO
+  id: contracttemplate.software_integration
   templateName: Software Integration
   description: Integrate third-party APIs and systems
   easyWeight: 40

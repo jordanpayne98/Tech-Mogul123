@@ -2,11 +2,14 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using TechMogul.Core;
+using TechMogul.Core.Save;
 using TechMogul.Data;
+using TechMogul.Contracts;
+using TechMogul.Traits;
 
 namespace TechMogul.Systems
 {
-    public class EmployeeSystem : MonoBehaviour
+    public class EmployeeSystem : GameSystem
     {
         public static EmployeeSystem Instance { get; private set; }
         
@@ -19,20 +22,43 @@ namespace TechMogul.Systems
         [Header("Name Generation")]
         [SerializeField] private string[] firstNames = { 
             "Alex", "Jordan", "Taylor", "Morgan", "Casey", "Riley", "Avery", "Quinn",
-            "Blake", "Drew", "Sage", "River", "Skyler", "Phoenix", "Rowan", "Dakota"
+            "Blake", "Drew", "Sage", "River", "Skyler", "Phoenix", "Rowan", "Dakota",
+            "Sam", "Cameron", "Charlie", "Jamie", "Kai", "Jesse", "Finley", "Hayden",
+            "Parker", "Reese", "Peyton", "Logan", "Sawyer", "Bailey", "Harper", "Emery",
+            "Adrian", "Alexis", "Angel", "Ari", "Ash", "Aspen", "August", "Aubrey",
+            "Blake", "Blue", "Brook", "Cairo", "Carson", "Casey", "Cleo", "Denver",
+            "Dylan", "Eden", "Ellis", "Evan", "Ezra", "Gray", "Harley", "Hunter",
+            "Indie", "Jaden", "Jules", "Justice", "Kendall", "Lane", "London", "Lynn",
+            "Marley", "Max", "Milan", "Nico", "Nova", "Ocean", "Onyx", "Orion",
+            "Rain", "Raven", "Remy", "Robin", "Rory", "Royal", "Ryan", "Salem"
         };
         [SerializeField] private string[] lastNames = { 
             "Smith", "Johnson", "Chen", "Patel", "Garcia", "Kim", "Martinez", "Lee",
-            "Brown", "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson", "White"
+            "Brown", "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson", "White",
+            "Harris", "Martin", "Thompson", "Davis", "Rodriguez", "Lewis", "Walker", "Hall",
+            "Allen", "Young", "King", "Wright", "Lopez", "Hill", "Scott", "Green",
+            "Adams", "Baker", "Nelson", "Carter", "Mitchell", "Perez", "Roberts", "Turner",
+            "Phillips", "Campbell", "Parker", "Evans", "Edwards", "Collins", "Stewart", "Morris",
+            "Nguyen", "Murphy", "Rivera", "Cook", "Rogers", "Morgan", "Peterson", "Cooper",
+            "Reed", "Bailey", "Bell", "Gomez", "Kelly", "Howard", "Ward", "Cox",
+            "Diaz", "Richardson", "Wood", "Watson", "Brooks", "Bennett", "Gray", "James",
+            "Reyes", "Cruz", "Hughes", "Price", "Myers", "Long", "Foster", "Sanders"
         };
         
         private List<Employee> _employees = new List<Employee>();
+        private List<(string employeeName, float salary)> _pendingSeverancePayments = new List<(string, float)>();
         private int _employeeCounter = 0;
+        private ReputationSystem _reputationSystem;
+        private TraitSystem _traitSystem;
+        private IRng _rng;
         
         public IReadOnlyList<Employee> Employees => _employees.AsReadOnly();
+        public IReadOnlyList<(string employeeName, float salary)> PendingSeverancePayments => _pendingSeverancePayments.AsReadOnly();
         
-        void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+            
             if (Instance != null && Instance != this)
             {
                 Destroy(gameObject);
@@ -40,49 +66,30 @@ namespace TechMogul.Systems
             }
             
             Instance = this;
+            _reputationSystem = ServiceLocator.Instance.Get<ReputationSystem>();
+            _traitSystem = ServiceLocator.Instance.Get<TraitSystem>();
+            _rng = new UnityRng();
         }
         
-        void OnEnable()
+        protected override void SubscribeToEvents()
         {
-            SubscribeToEvents();
-        }
-        
-        void OnDisable()
-        {
-            UnsubscribeFromEvents();
-        }
-        
-        void SubscribeToEvents()
-        {
-            EventBus.Subscribe<OnDayTickEvent>(HandleDayTick);
-            EventBus.Subscribe<OnMonthTickEvent>(HandleMonthTick);
-            EventBus.Subscribe<RequestHireEmployeeEvent>(HandleHireRequest);
-            EventBus.Subscribe<RequestFireEmployeeEvent>(HandleFireRequest);
-            EventBus.Subscribe<RequestAssignEmployeeEvent>(HandleAssignEmployee);
-            EventBus.Subscribe<RequestUnassignEmployeeEvent>(HandleUnassignEmployee);
-            EventBus.Subscribe<RequestAddSkillXPEvent>(HandleAddSkillXP);
-            EventBus.Subscribe<RequestAddBurnoutEvent>(HandleAddBurnout);
-            EventBus.Subscribe<RequestLoadEmployeesEvent>(HandleLoadEmployees);
-            EventBus.Subscribe<OnGameStartedEvent>(HandleGameStarted);
-        }
-        
-        void UnsubscribeFromEvents()
-        {
-            EventBus.Unsubscribe<OnDayTickEvent>(HandleDayTick);
-            EventBus.Unsubscribe<OnMonthTickEvent>(HandleMonthTick);
-            EventBus.Unsubscribe<RequestHireEmployeeEvent>(HandleHireRequest);
-            EventBus.Unsubscribe<RequestFireEmployeeEvent>(HandleFireRequest);
-            EventBus.Unsubscribe<RequestAssignEmployeeEvent>(HandleAssignEmployee);
-            EventBus.Unsubscribe<RequestUnassignEmployeeEvent>(HandleUnassignEmployee);
-            EventBus.Unsubscribe<RequestAddSkillXPEvent>(HandleAddSkillXP);
-            EventBus.Unsubscribe<RequestAddBurnoutEvent>(HandleAddBurnout);
-            EventBus.Unsubscribe<RequestLoadEmployeesEvent>(HandleLoadEmployees);
-            EventBus.Unsubscribe<OnGameStartedEvent>(HandleGameStarted);
+            Subscribe<OnDayTickEvent>(HandleDayTick);
+            Subscribe<OnMonthTickEvent>(HandleMonthTick);
+            Subscribe<RequestHireEmployeeEvent>(HandleHireRequest);
+            Subscribe<RequestFireEmployeeEvent>(HandleFireRequest);
+            Subscribe<RequestAssignEmployeeEvent>(HandleAssignEmployee);
+            Subscribe<RequestUnassignEmployeeEvent>(HandleUnassignEmployee);
+            Subscribe<RequestAddSkillXPEvent>(HandleAddSkillXP);
+            Subscribe<RequestAddBurnoutEvent>(HandleAddBurnout);
+            Subscribe<RequestChangeMoraleEvent>(HandleChangeMorale);
+            Subscribe<RequestLoadEmployeesEvent>(HandleLoadEmployees);
+            Subscribe<OnGameStartedEvent>(HandleGameStarted);
         }
         
         void HandleGameStarted(OnGameStartedEvent evt)
         {
             _employees.Clear();
+            _pendingSeverancePayments.Clear();
             _employeeCounter = 0;
             Debug.Log("EmployeeSystem reset for new game");
         }
@@ -91,15 +98,34 @@ namespace TechMogul.Systems
         {
             _employees.Clear();
             
+            IDefinitionResolver resolver = ServiceLocator.Instance.Get<IDefinitionResolver>();
+            if (resolver == null)
+            {
+                Debug.LogError("IDefinitionResolver not found. Cannot load employees.");
+                return;
+            }
+            
             foreach (var serializedEmployee in evt.Employees)
             {
-                Employee employee = serializedEmployee.ToEmployee();
-                _employees.Add(employee);
+                Employee employee = serializedEmployee.ToEmployee(resolver);
+                if (employee != null)
+                {
+                    _employees.Add(employee);
+                }
             }
             
             _employeeCounter = evt.Employees.Count;
             
-            Debug.Log($"Loaded {_employees.Count} employees");
+            _pendingSeverancePayments.Clear();
+            if (evt.PendingSeverancePayments != null)
+            {
+                foreach (var severance in evt.PendingSeverancePayments)
+                {
+                    _pendingSeverancePayments.Add((severance.employeeName, severance.salary));
+                }
+            }
+            
+            Debug.Log($"Loaded {_employees.Count} employees and {_pendingSeverancePayments.Count} pending severance payments");
         }
         
         void HandleDayTick(OnDayTickEvent evt)
@@ -110,10 +136,12 @@ namespace TechMogul.Systems
                 
                 if (employee.isAvailable)
                 {
+                    WorkSimulation.UpdateEmployeeStress(employee, false, 0);
                     employee.RecoverBurnout(dailyBurnoutRecovery);
                 }
                 
-                UpdateMorale(employee);
+                WorkSimulation.UpdateEmployeeMorale(employee);
+                WorkSimulation.UpdateEmployeeBurnout(employee);
                 
                 if (employee.daysSinceHired % 30 == 0)
                 {
@@ -154,33 +182,22 @@ namespace TechMogul.Systems
         
         void PaySalaries()
         {
-            if (_employees.Count == 0) return;
-            
             float totalSalaries = 0f;
-            var employeesToRemove = new List<Employee>();
             
+            // Pay active employees
             foreach (var employee in _employees)
             {
-                if (employee.isFired)
-                {
-                    if (employee.needsFinalPayment)
-                    {
-                        totalSalaries += employee.monthlySalary;
-                        employeesToRemove.Add(employee);
-                        Debug.Log($"💰 Final payment of ${employee.monthlySalary:N0} to {employee.employeeName}");
-                    }
-                }
-                else
-                {
-                    totalSalaries += employee.monthlySalary;
-                }
+                totalSalaries += employee.monthlySalary;
             }
             
-            foreach (var employee in employeesToRemove)
+            // Pay severance to fired employees
+            foreach (var (employeeName, salary) in _pendingSeverancePayments)
             {
-                _employees.Remove(employee);
-                Debug.Log($"👋 {employee.employeeName} removed from payroll after final payment");
+                totalSalaries += salary;
+                Debug.Log($"💰 Final severance payment of ${salary:N0} to {employeeName}");
             }
+            
+            _pendingSeverancePayments.Clear();
             
             if (totalSalaries > 0)
             {
@@ -203,14 +220,23 @@ namespace TechMogul.Systems
                 employeeName = GenerateRandomName();
             }
             
-            var newEmployee = new Employee(evt.RoleTemplate, employeeName);
+            float maxSkill = 20f;
+            float minSkill = 0f;
             
-            newEmployee.devSkill = evt.DevSkill;
-            newEmployee.designSkill = evt.DesignSkill;
-            newEmployee.marketingSkill = evt.MarketingSkill;
-            newEmployee.morale = evt.Morale;
-            newEmployee.burnout = evt.Burnout;
-            newEmployee.monthlySalary = evt.MonthlySalary;
+            if (_reputationSystem != null)
+            {
+                maxSkill = _reputationSystem.GetEmployeeQualityMultiplier();
+                minSkill = _reputationSystem.GetEmployeeMinSkill();
+            }
+            
+            var generator = new EmployeeGenerator(_rng);
+            if (_traitSystem != null && _traitSystem.Database != null)
+            {
+                generator.SetTraitDatabase(_traitSystem.Database);
+            }
+            
+            var generatedData = generator.GenerateEmployee(evt.RoleTemplate, minSkill, maxSkill);
+            var newEmployee = new Employee(evt.RoleTemplate, employeeName, generatedData);
             
             float signingBonus = newEmployee.GetSigningBonus();
             
@@ -230,6 +256,10 @@ namespace TechMogul.Systems
             Debug.Log($"   Monthly Salary: ${newEmployee.monthlySalary:N0}/month");
             Debug.Log($"   Signing Bonus: ${signingBonus:N0} (2 weeks)");
             Debug.Log($"   Skills: Dev {newEmployee.devSkill:F0}, Design {newEmployee.designSkill:F0}, Marketing {newEmployee.marketingSkill:F0}");
+            if (!string.IsNullOrEmpty(newEmployee.majorTraitId))
+            {
+                Debug.Log($"   Traits: {newEmployee.majorTraitId} + {newEmployee.minorTraitIds.Count} minors");
+            }
             Debug.Log($"   Total Employees: {_employees.Count}");
         }
         
@@ -245,23 +275,25 @@ namespace TechMogul.Systems
             
             if (!employee.isAvailable)
             {
-                Debug.LogWarning($"Cannot fire {employee.employeeName}: Currently assigned to {employee.currentAssignment}");
+                Debug.LogWarning($"Cannot fire {employee.employeeName}: Currently assigned to {employee.currentAssignment.displayName}");
                 return;
             }
             
-            employee.isFired = true;
-            employee.needsFinalPayment = true;
-            employee.isAvailable = false;
+            string employeeName = employee.employeeName;
+            float finalSalary = employee.monthlySalary;
+            
+            _pendingSeverancePayments.Add((employeeName, finalSalary));
+            _employees.Remove(employee);
             
             EventBus.Publish(new OnEmployeeFiredEvent 
             { 
                 EmployeeId = employee.employeeId,
-                Name = employee.employeeName 
+                Name = employeeName 
             });
             
-            Debug.Log($"🔥 Fired {employee.employeeName}");
-            Debug.Log($"   Final salary of ${employee.monthlySalary:N0} will be paid at end of month");
-            Debug.Log($"   They will be removed from roster after payment");
+            Debug.Log($"🔥 Fired {employeeName}");
+            Debug.Log($"   Final salary of ${finalSalary:N0} will be paid at end of month");
+            Debug.Log($"   Removed from roster immediately");
         }
         
         void HandleAssignEmployee(RequestAssignEmployeeEvent evt)
@@ -276,13 +308,13 @@ namespace TechMogul.Systems
             
             if (!employee.isAvailable)
             {
-                Debug.LogWarning($"Cannot assign {employee.employeeName}: Already assigned to {employee.currentAssignment}");
+                Debug.LogWarning($"Cannot assign {employee.employeeName}: Already assigned to {employee.currentAssignment.displayName}");
                 return;
             }
             
-            employee.AssignToWork(evt.AssignmentName);
+            employee.AssignToWork(evt.Assignment);
             
-            Debug.Log($"📋 Assigned {employee.employeeName} to {evt.AssignmentName}");
+            Debug.Log($"📋 Assigned {employee.employeeName} to {evt.Assignment.displayName}");
         }
         
         void HandleUnassignEmployee(RequestUnassignEmployeeEvent evt)
@@ -295,7 +327,7 @@ namespace TechMogul.Systems
                 return;
             }
             
-            string previousAssignment = employee.currentAssignment;
+            string previousAssignment = employee.currentAssignment.displayName;
             employee.CompleteAssignment();
             
             Debug.Log($"✅ Unassigned {employee.employeeName} from {previousAssignment}");
@@ -307,7 +339,6 @@ namespace TechMogul.Systems
             
             if (employee == null)
             {
-                Debug.LogWarning($"Cannot add skill XP: Employee with ID {evt.EmployeeId} not found");
                 return;
             }
             
@@ -335,11 +366,22 @@ namespace TechMogul.Systems
             
             if (employee == null)
             {
-                Debug.LogWarning($"Cannot add burnout: Employee with ID {evt.EmployeeId} not found");
                 return;
             }
             
             employee.AddBurnout(evt.Amount);
+        }
+        
+        void HandleChangeMorale(RequestChangeMoraleEvent evt)
+        {
+            var employee = _employees.FirstOrDefault(e => e.employeeId == evt.EmployeeId);
+            
+            if (employee == null)
+            {
+                return;
+            }
+            
+            employee.morale = Mathf.Clamp(employee.morale + evt.Amount, 0, 100);
         }
         
         public Employee GetEmployee(string employeeId)
@@ -364,8 +406,8 @@ namespace TechMogul.Systems
         
         string GenerateRandomName()
         {
-            string firstName = firstNames[Random.Range(0, firstNames.Length)];
-            string lastName = lastNames[Random.Range(0, lastNames.Length)];
+            string firstName = firstNames[_rng.Range(0, firstNames.Length)];
+            string lastName = lastNames[_rng.Range(0, lastNames.Length)];
             return $"{firstName} {lastName}";
         }
         
@@ -494,12 +536,6 @@ namespace TechMogul.Systems
     {
         public RoleSO RoleTemplate;
         public string EmployeeName;
-        public float DevSkill;
-        public float DesignSkill;
-        public float MarketingSkill;
-        public float Morale;
-        public float Burnout;
-        public float MonthlySalary;
     }
     
     public class RequestFireEmployeeEvent
@@ -528,7 +564,7 @@ namespace TechMogul.Systems
     public class RequestAssignEmployeeEvent
     {
         public string EmployeeId;
-        public string AssignmentName;
+        public EmployeeAssignment Assignment;
     }
     
     public class RequestUnassignEmployeeEvent
@@ -545,6 +581,12 @@ namespace TechMogul.Systems
     }
     
     public class RequestAddBurnoutEvent
+    {
+        public string EmployeeId;
+        public float Amount;
+    }
+    
+    public class RequestChangeMoraleEvent
     {
         public string EmployeeId;
         public float Amount;

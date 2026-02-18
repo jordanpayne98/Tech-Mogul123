@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99092231ba6e72441bba01035c3dcba1, type: 3}
+  m_Name: EnterpriseSolutions
+  m_EditorClassIdentifier: Assembly-CSharp::TechMogul.Data.ProductCategorySO
+  id: productcat.enterprise
+  categoryName: Enterprise Solutions
+  description: Business software and enterprise platforms
+  baseDevelopmentDays: 60
+  qualityImportance: 0.7
+  baseRevenueMin: 5000
+  baseRevenueMax: 20000
+  marketSizeMultiplier: 1
+  autoNormalizeSkillWeights: 1
+  devSkillWeight: 0.5
+  designSkillWeight: 0.3
+  marketingSkillWeight: 0.2
+  currentStage: 2
+  baseMarketSize: 60000000
+  baseGrowthRate: 0.06
+  elasticity: 0.5
+  entryCost: 5000000
+  baseVolatility: 0.02
+  minYear: 1950
+  maxYear: 9999
+  popularity: 1
+  icon: {fileID: 0}
+  categoryColor: {r: 1, g: 1, b: 1, a: 1}

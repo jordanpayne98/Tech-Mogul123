@@ -58,4 +58,8 @@ namespace TechMogul.Contracts
     public class RequestClearCompletedContractsEvent
     {
     }
+
+    public class OnContractsChangedEvent
+    {
+    }
 }

@@ -1,10 +1,11 @@
 using UnityEngine;
 using TechMogul.Core;
+using TechMogul.Core.Save;
 using TechMogul.Contracts;
 
 namespace TechMogul.Systems
 {
-    public class ReputationSystem : MonoBehaviour
+    public class ReputationSystem : GameSystem
     {
         [Header("Reputation Settings")]
         [SerializeField] private float startingReputation = 0f;
@@ -21,7 +22,7 @@ namespace TechMogul.Systems
         [Header("Goal Failure Penalties")]
         [Tooltip("Percentage of reputation gain lost per failed goal")]
         [Range(0f, 1f)]
-        [SerializeField] private float goalFailurePenaltyPercent = 0.2f; // 20% per failed goal
+        [SerializeField] private float goalFailurePenaltyPercent = 0.2f;
         
         [Header("Contract Failure Penalties")]
         [Tooltip("Flat reputation loss for missing deadline")]
@@ -36,25 +37,19 @@ namespace TechMogul.Systems
         public float MaxReputation => maxReputation;
         public int StarRating => GetStarRating();
         
-        void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+            ServiceLocator.Instance.TryRegister<ReputationSystem>(this);
             currentReputation = startingReputation;
         }
         
-        void OnEnable()
+        protected override void SubscribeToEvents()
         {
-            EventBus.Subscribe<OnContractCompletedEvent>(HandleContractCompleted);
-            EventBus.Subscribe<OnContractFailedEvent>(HandleContractFailed);
-            EventBus.Subscribe<RequestSetReputationEvent>(HandleSetReputation);
-            EventBus.Subscribe<OnGameStartedEvent>(HandleGameStarted);
-        }
-        
-        void OnDisable()
-        {
-            EventBus.Unsubscribe<OnContractCompletedEvent>(HandleContractCompleted);
-            EventBus.Unsubscribe<OnContractFailedEvent>(HandleContractFailed);
-            EventBus.Unsubscribe<RequestSetReputationEvent>(HandleSetReputation);
-            EventBus.Unsubscribe<OnGameStartedEvent>(HandleGameStarted);
+            Subscribe<OnContractCompletedEvent>(HandleContractCompleted);
+            Subscribe<OnContractFailedEvent>(HandleContractFailed);
+            Subscribe<RequestSetReputationEvent>(HandleSetReputation);
+            Subscribe<OnGameStartedEvent>(HandleGameStarted);
         }
         
         void HandleGameStarted(OnGameStartedEvent evt)

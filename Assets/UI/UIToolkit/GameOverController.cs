@@ -8,7 +8,7 @@ using TechMogul.Contracts;
 namespace TechMogul.UI
 {
     [RequireComponent(typeof(UIDocument))]
-    public class GameOverController : MonoBehaviour
+    public class GameOverController : UIController
     {
         private UIDocument uiDocument;
         private VisualElement root;
@@ -27,13 +27,16 @@ namespace TechMogul.UI
         private int contractsCompleted;
         private int employeesHired;
         
-        void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             uiDocument = GetComponent<UIDocument>();
         }
         
-        void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+            
             if (uiDocument == null || uiDocument.rootVisualElement == null)
             {
                 Debug.LogError("GameOverController: UIDocument or root visual element is null");
@@ -43,17 +46,16 @@ namespace TechMogul.UI
             root = uiDocument.rootVisualElement;
             CacheReferences();
             BindButtons();
-            SubscribeToEvents();
             
             HideGameOverMenu();
             
             Debug.Log("GameOverController initialized");
         }
         
-        void OnDisable()
+        protected override void OnDisable()
         {
             UnbindButtons();
-            UnsubscribeFromEvents();
+            base.OnDisable();
         }
         
         void CacheReferences()
@@ -103,24 +105,14 @@ namespace TechMogul.UI
             }
         }
         
-        void SubscribeToEvents()
+        protected override void SubscribeToEvents()
         {
-            EventBus.Subscribe<OnBankruptcyEvent>(HandleBankruptcy);
-            EventBus.Subscribe<OnDayTickEvent>(HandleDayTick);
-            EventBus.Subscribe<OnProductReleasedEvent>(HandleProductReleased);
-            EventBus.Subscribe<OnContractCompletedEvent>(HandleContractCompleted);
-            EventBus.Subscribe<OnEmployeeHiredEvent>(HandleEmployeeHired);
-            EventBus.Subscribe<OnGameStartedEvent>(HandleGameStarted);
-        }
-        
-        void UnsubscribeFromEvents()
-        {
-            EventBus.Unsubscribe<OnBankruptcyEvent>(HandleBankruptcy);
-            EventBus.Unsubscribe<OnDayTickEvent>(HandleDayTick);
-            EventBus.Unsubscribe<OnProductReleasedEvent>(HandleProductReleased);
-            EventBus.Unsubscribe<OnContractCompletedEvent>(HandleContractCompleted);
-            EventBus.Unsubscribe<OnEmployeeHiredEvent>(HandleEmployeeHired);
-            EventBus.Unsubscribe<OnGameStartedEvent>(HandleGameStarted);
+            Subscribe<OnBankruptcyEvent>(HandleBankruptcy);
+            Subscribe<OnDayTickEvent>(HandleDayTick);
+            Subscribe<OnProductReleasedEvent>(HandleProductReleased);
+            Subscribe<OnContractCompletedEvent>(HandleContractCompleted);
+            Subscribe<OnEmployeeHiredEvent>(HandleEmployeeHired);
+            Subscribe<OnGameStartedEvent>(HandleGameStarted);
         }
         
         void HandleBankruptcy(OnBankruptcyEvent evt)

@@ -6,7 +6,7 @@ using TechMogul.Systems;
 
 namespace TechMogul.UI
 {
-    public class NotificationManager : MonoBehaviour
+    public class NotificationManager : UIController
     {
         [Header("References")]
         [SerializeField] private GameObject notificationPrefab;
@@ -16,59 +16,24 @@ namespace TechMogul.UI
         [SerializeField] private float displayDuration = 3f;
         [SerializeField] private int maxNotifications = 5;
         
-        void OnEnable()
+        protected override void SubscribeToEvents()
         {
-            SubscribeToEvents();
-        }
-        
-        void OnDisable()
-        {
-            UnsubscribeFromEvents();
-        }
-        
-        void SubscribeToEvents()
-        {
-            // Game events
-            EventBus.Subscribe<OnGameStartedEvent>(evt => 
+            Subscribe<OnGameStartedEvent>(evt => 
                 ShowNotification("Game Started! Good luck building your tech empire."));
             
-            EventBus.Subscribe<OnBankruptcyEvent>(evt => 
+            Subscribe<OnBankruptcyEvent>(evt => 
                 ShowNotification("Bankruptcy! Your company has run out of cash.", NotificationType.Error));
             
-            // Cash events
-            EventBus.Subscribe<OnInsufficientCashEvent>(evt => 
+            Subscribe<OnInsufficientCashEvent>(evt => 
                 ShowNotification($"Insufficient cash! Need ${evt.Required:N0}, have ${evt.Available:N0}", NotificationType.Warning));
             
-            // Time events (month change notification)
-            EventBus.Subscribe<OnMonthTickEvent>(evt => 
+            Subscribe<OnMonthTickEvent>(evt => 
                 ShowNotification($"Month {evt.Month}, {evt.Year} - New month started", NotificationType.Info));
             
-            // Employee events
-            EventBus.Subscribe<TechMogul.Systems.OnEmployeeHiredEvent>(evt => 
+            Subscribe<TechMogul.Systems.OnEmployeeHiredEvent>(evt => 
                 ShowNotification($"Hired {evt.Name} as {evt.Role.roleName}", NotificationType.Success));
             
-            EventBus.Subscribe<TechMogul.Systems.OnEmployeeFiredEvent>(evt => 
-                ShowNotification($"Fired {evt.Name}", NotificationType.Warning));
-        }
-        
-        void UnsubscribeFromEvents()
-        {
-            EventBus.Unsubscribe<OnGameStartedEvent>(evt => 
-                ShowNotification("Game Started! Good luck building your tech empire."));
-            
-            EventBus.Unsubscribe<OnBankruptcyEvent>(evt => 
-                ShowNotification("Bankruptcy! Your company has run out of cash.", NotificationType.Error));
-            
-            EventBus.Unsubscribe<OnInsufficientCashEvent>(evt => 
-                ShowNotification($"Insufficient cash! Need ${evt.Required:N0}, have ${evt.Available:N0}", NotificationType.Warning));
-            
-            EventBus.Unsubscribe<OnMonthTickEvent>(evt => 
-                ShowNotification($"Month {evt.Month}, {evt.Year} - New month started", NotificationType.Info));
-            
-            EventBus.Unsubscribe<TechMogul.Systems.OnEmployeeHiredEvent>(evt => 
-                ShowNotification($"Hired {evt.Name} as {evt.Role.roleName}", NotificationType.Success));
-            
-            EventBus.Unsubscribe<TechMogul.Systems.OnEmployeeFiredEvent>(evt => 
+            Subscribe<TechMogul.Systems.OnEmployeeFiredEvent>(evt => 
                 ShowNotification($"Fired {evt.Name}", NotificationType.Warning));
         }
         
@@ -87,22 +52,16 @@ namespace TechMogul.UI
             }
             
             var notification = Instantiate(notificationPrefab, notificationContainer);
-            var notificationUI = notification.GetComponent<NotificationToast>();
             
-            if (notificationUI != null)
+            // Find text component and set message
+            var text = notification.GetComponentInChildren<TextMeshProUGUI>();
+            if (text != null)
             {
-                notificationUI.Show(message, type, displayDuration);
+                text.text = message;
             }
-            else
-            {
-                // Fallback: just find text and set it
-                var text = notification.GetComponentInChildren<TextMeshProUGUI>();
-                if (text != null)
-                {
-                    text.text = message;
-                }
-                Destroy(notification, displayDuration);
-            }
+            
+            // Auto-destroy after duration
+            Destroy(notification, displayDuration);
         }
         
         #if UNITY_EDITOR

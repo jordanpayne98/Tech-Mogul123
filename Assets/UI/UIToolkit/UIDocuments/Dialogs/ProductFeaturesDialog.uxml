@@ -1,0 +1,69 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="/Assets/UI/UIToolkit/Styles/Common.uss" />
+    <Style src="/Assets/UI/UIToolkit/Styles/ProductFeatures.uss" />
+    <ui:VisualElement name="overlay" class="dialog-overlay" style="display: none;">
+        <ui:VisualElement name="dialog-container" class="dialog-container">
+            <ui:VisualElement name="dialog-header" class="dialog-header">
+                <ui:Label text="Product Features" class="dialog-title" />
+                <ui:Button name="close-dialog-btn" text="✕" class="dialog-close-btn" />
+            </ui:VisualElement>
+            
+            <ui:VisualElement name="dialog-body" class="dialog-body">
+                <ui:VisualElement name="product-info" class="section">
+                    <ui:Label name="product-name" text="Product Name" class="section-title" />
+                    <ui:Label name="product-category" text="Category" class="text-muted" />
+                </ui:VisualElement>
+                
+                <ui:VisualElement name="current-stats" class="section">
+                    <ui:Label text="Current Stats" class="section-subtitle" />
+                    <ui:VisualElement class="stats-grid">
+                        <ui:VisualElement class="stat-row">
+                            <ui:Label text="Quality:" class="stat-label" />
+                            <ui:Label name="quality-value" text="0" class="stat-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="stat-row">
+                            <ui:Label text="Stability:" class="stat-label" />
+                            <ui:Label name="stability-value" text="50" class="stat-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="stat-row">
+                            <ui:Label text="Usability:" class="stat-label" />
+                            <ui:Label name="usability-value" text="50" class="stat-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="stat-row">
+                            <ui:Label text="Innovation:" class="stat-label" />
+                            <ui:Label name="innovation-value" text="0" class="stat-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="stat-row">
+                            <ui:Label text="Est. Bugs:" class="stat-label" />
+                            <ui:Label name="bugs-value" text="0" class="stat-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="stat-row">
+                            <ui:Label text="Dev Time:" class="stat-label" />
+                            <ui:Label name="devtime-value" text="0 days" class="stat-value" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                
+                <ui:VisualElement name="qa-tier-section" class="section">
+                    <ui:Label text="QA Tier" class="section-subtitle" />
+                    <ui:DropdownField name="qa-tier-dropdown" />
+                </ui:VisualElement>
+                
+                <ui:VisualElement name="features-section" class="section">
+                    <ui:Label text="Features" class="section-subtitle" />
+                    <ui:ScrollView name="available-features-list" class="feature-list" />
+                </ui:VisualElement>
+                
+                <ui:VisualElement name="selected-features-section" class="section">
+                    <ui:Label text="Selected Features" class="section-subtitle" />
+                    <ui:ScrollView name="selected-features-list" class="feature-list" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            
+            <ui:VisualElement name="dialog-footer" class="dialog-footer">
+                <ui:Button name="cancel-btn" text="Cancel" class="button button--secondary" />
+                <ui:Button name="apply-btn" text="Apply Changes" class="button button--primary" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

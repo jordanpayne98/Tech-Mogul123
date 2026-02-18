@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using TechMogul.Data;
+using TechMogul.Traits;
 
 namespace TechMogul.Systems
 {
@@ -11,6 +12,10 @@ namespace TechMogul.Systems
         public string employeeId;
         public string employeeName;
         public RoleSO role;
+        
+        [Header("Traits")]
+        public string majorTraitId;
+        public List<string> minorTraitIds = new List<string>();
         
         [Header("Skills")]
         public float devSkill;
@@ -23,103 +28,58 @@ namespace TechMogul.Systems
         [Header("Well-being")]
         public float morale;
         public float burnout;
+        public float stress;
+        public float fatigue;
+        
+        [Header("Work Performance")]
+        public float productivity;
+        public float qualityContribution;
         
         [Header("Work")]
         public float monthlySalary;
-        public string currentAssignment;
+        public EmployeeAssignment currentAssignment;
         public bool isAvailable;
-        public bool isFired;
-        public bool needsFinalPayment;
         
         [Header("Experience")]
         public int daysSinceHired;
         public int totalProjectsCompleted;
         public int totalContractsCompleted;
         
-        public Employee(RoleSO roleTemplate, string name)
+        public Employee(RoleSO roleTemplate, string name, float minSkill, float maxSkill)
+        {
+            var generator = new EmployeeGenerator();
+            var generatedData = generator.GenerateEmployee(roleTemplate, minSkill, maxSkill);
+            
+            InitializeFromGenerated(roleTemplate, name, generatedData);
+        }
+        
+        public Employee(RoleSO roleTemplate, string name, GeneratedEmployeeData generatedData)
+        {
+            InitializeFromGenerated(roleTemplate, name, generatedData);
+        }
+        
+        void InitializeFromGenerated(RoleSO roleTemplate, string name, GeneratedEmployeeData generatedData)
         {
             employeeId = Guid.NewGuid().ToString();
             employeeName = name;
             role = roleTemplate;
             
-            // Get reputation system to determine skill caps
-            var reputationSystem = UnityEngine.Object.FindFirstObjectByType<ReputationSystem>();
-            float maxSkill = 20f; // Default to very low if no reputation system
-            float minSkill = 0f;
+            devSkill = generatedData.devSkill;
+            designSkill = generatedData.designSkill;
+            marketingSkill = generatedData.marketingSkill;
+            morale = generatedData.morale;
+            burnout = generatedData.burnout;
+            stress = generatedData.stress;
+            fatigue = generatedData.fatigue;
+            productivity = generatedData.productivity;
+            qualityContribution = generatedData.qualityContribution;
+            monthlySalary = generatedData.monthlySalary;
             
-            if (reputationSystem != null)
-            {
-                maxSkill = reputationSystem.GetEmployeeQualityMultiplier();
-                minSkill = reputationSystem.GetEmployeeMinSkill();
-                UnityEngine.Debug.Log($"[Employee Gen] Reputation: {reputationSystem.CurrentReputation:F0}, Min: {minSkill:F0}, Max: {maxSkill:F0}");
-            }
-            else
-            {
-                UnityEngine.Debug.LogWarning("[Employee Gen] ReputationSystem not found! Using default low caps (0-20)");
-            }
+            majorTraitId = generatedData.majorTraitId;
+            minorTraitIds = generatedData.minorTraitIds != null ? generatedData.minorTraitIds : new List<string>();
             
-            // Generate skills based on role specialization
-            // Primary skill: Use full reputation range
-            // Secondary skills: 40-70% of primary skill
-            
-            float primarySkillValue = UnityEngine.Random.Range(minSkill, maxSkill);
-            float secondarySkillMultiplier = UnityEngine.Random.Range(0.4f, 0.7f); // Secondary skills are 40-70% of primary
-            float tertiarySkillMultiplier = UnityEngine.Random.Range(0.3f, 0.6f); // Tertiary even lower
-            
-            // Assign skills based on role
-            switch (roleTemplate.roleName)
-            {
-                case "Developer":
-                    devSkill = primarySkillValue * 1.3f; // Boost primary skill
-                    designSkill = primarySkillValue * secondarySkillMultiplier;
-                    marketingSkill = primarySkillValue * tertiarySkillMultiplier;
-                    break;
-                    
-                case "Designer":
-                    devSkill = primarySkillValue * tertiarySkillMultiplier;
-                    designSkill = primarySkillValue * 1.3f; // Boost primary skill
-                    marketingSkill = primarySkillValue * secondarySkillMultiplier;
-                    break;
-                    
-                case "Marketer":
-                    devSkill = primarySkillValue * tertiarySkillMultiplier;
-                    designSkill = primarySkillValue * secondarySkillMultiplier;
-                    marketingSkill = primarySkillValue * 1.3f; // Boost primary skill
-                    break;
-                    
-                default:
-                    // Fallback: balanced skills
-                    devSkill = primarySkillValue;
-                    designSkill = primarySkillValue * secondarySkillMultiplier;
-                    marketingSkill = primarySkillValue * tertiarySkillMultiplier;
-                    break;
-            }
-            
-            // Clamp primary skill to max (with 1.3× boost allowance)
-            float boostedMax = maxSkill * 1.3f;
-            
-            // Round and clamp all skills
-            devSkill = Mathf.Round(Mathf.Clamp(devSkill, 1f, boostedMax));
-            designSkill = Mathf.Round(Mathf.Clamp(designSkill, 1f, maxSkill));
-            marketingSkill = Mathf.Round(Mathf.Clamp(marketingSkill, 1f, maxSkill));
-            
-            // Ensure all skills are at least 1
-            devSkill = Mathf.Max(devSkill, 1f);
-            designSkill = Mathf.Max(designSkill, 1f);
-            marketingSkill = Mathf.Max(marketingSkill, 1f);
-            
-            UnityEngine.Debug.Log($"[Employee Gen] {roleTemplate.roleName} created: Dev {devSkill}, Design {designSkill}, Marketing {marketingSkill}");
-            
-            morale = UnityEngine.Random.Range(70f, 90f);
-            burnout = UnityEngine.Random.Range(0f, 20f);
-            
-            // Calculate salary based on skills (higher skills = higher salary)
-            monthlySalary = CalculateSalaryFromSkills(roleTemplate);
-            
-            currentAssignment = "None";
+            currentAssignment = EmployeeAssignment.Idle();
             isAvailable = true;
-            isFired = false;
-            needsFinalPayment = false;
             daysSinceHired = 0;
             totalProjectsCompleted = 0;
             totalContractsCompleted = 0;
@@ -129,7 +89,6 @@ namespace TechMogul.Systems
         
         public float GetSigningBonus()
         {
-            // Signing bonus is 2 weeks salary (half a month)
             return monthlySalary * 0.5f;
         }
         
@@ -149,71 +108,15 @@ namespace TechMogul.Systems
             }
         }
         
-        float GenerateWeightedSkill(float min, float max, float rarityCurve)
+        public void AssignToWork(EmployeeAssignment assignment)
         {
-            // Use power curve to make higher values rarer
-            // rarityCurve of 2.5 means: 50% chance gives 18% of range, 90% gives 66% of range
-            float random = UnityEngine.Random.value; // 0-1
-            float weighted = Mathf.Pow(random, rarityCurve); // Apply power curve
-            
-            // Map to skill range
-            float skill = min + (weighted * (max - min));
-            
-            // Clamp and return
-            return Mathf.Clamp(skill, min, max);
-        }
-        
-        float CalculateSalaryFromSkills(RoleSO roleTemplate)
-        {
-            // Calculate average skill level
-            float averageSkill = (devSkill + designSkill + marketingSkill) / 3f;
-            
-            // Salary scales with skill but flattens at high levels
-            // Low skills (0-20) = $500-$1,200/month
-            // Mid skills (40-60) = $1,800-$3,200/month
-            // High skills (80-100) = $3,200-$5,500/month
-            
-            // Use logarithmic scaling to prevent exponential growth at high skills
-            // This keeps elite employees affordable
-            float baseSalaryPerSkill = 50f;
-            
-            // Apply diminishing returns at high skill levels
-            // Linear up to 60, then logarithmic curve flattens growth
-            float adjustedSkill = averageSkill;
-            if (averageSkill > 60f)
-            {
-                float excess = averageSkill - 60f;
-                // Logarithmic scaling: each 10 points above 60 is worth progressively less
-                adjustedSkill = 60f + (excess * 0.65f); // 35% diminishing returns above 60
-            }
-            
-            float calculatedSalary = adjustedSkill * baseSalaryPerSkill;
-            
-            // Add role specialization bonus (smaller bonus for balance)
-            float primarySkill = Mathf.Max(devSkill, Mathf.Max(designSkill, marketingSkill));
-            float specializationBonus = (primarySkill / 100f) * calculatedSalary * 0.12f;
-            calculatedSalary += specializationBonus;
-            
-            // Add small random variance (±8%) for variety
-            float variance = calculatedSalary * 0.08f;
-            float finalSalary = calculatedSalary + UnityEngine.Random.Range(-variance, variance);
-            
-            // Ensure minimum viable salary
-            finalSalary = Mathf.Max(finalSalary, 500f);
-            
-            // Round to nearest 50 for cleaner numbers
-            return Mathf.Round(finalSalary / 50f) * 50f;
-        }
-        
-        public void AssignToWork(string assignmentName)
-        {
-            currentAssignment = assignmentName;
+            currentAssignment = assignment;
             isAvailable = false;
         }
         
         public void CompleteAssignment()
         {
-            currentAssignment = "None";
+            currentAssignment = EmployeeAssignment.Idle();
             isAvailable = true;
         }
         
@@ -290,6 +193,21 @@ namespace TechMogul.Systems
             
             float effectiveSkill = baseSkill * (1f + moraleModifier + burnoutModifier);
             return Mathf.Clamp(effectiveSkill, 0, 100);
+        }
+        
+        public string GetTraitSummary()
+        {
+            if (string.IsNullOrEmpty(majorTraitId))
+            {
+                return "No traits";
+            }
+            
+            string summary = majorTraitId;
+            if (minorTraitIds != null && minorTraitIds.Count > 0)
+            {
+                summary += $" + {minorTraitIds.Count} minors";
+            }
+            return summary;
         }
     }
     

@@ -6,21 +6,128 @@
 >
     <Style src="/Assets/UI/UIToolkit/Styles/Common.uss" />
     <Style src="/Assets/UI/UIToolkit/Styles/ProductsContracts.uss" />
+    <Style src="/Assets/UI/UIToolkit/Styles/ProductFeatures.uss" />
     
     <!-- Overlay Background -->
-    <ui:VisualElement name="overlay" class="dialog-overlay">
+    <ui:VisualElement name="overlay" class="dialog-overlay" style="display: none;">
         
         <!-- Dialog Window -->
         <ui:VisualElement name="dialog" class="dialog-box">
             
             <!-- Header -->
             <ui:VisualElement class="dialog-header">
-                <ui:Label text="PRODUCT DETAILS" class="dialog-title" />
+                <ui:Label name="product-name" text="PRODUCT DETAILS" class="dialog-title" />
                 <ui:Button name="close-detail-btn" text="✕" class="close-btn" />
             </ui:VisualElement>
             
             <!-- Content -->
-            <ui:VisualElement name="detail-content" class="dialog-content" />
+            <ui:ScrollView name="detail-content" class="dialog-content">
+                
+                <!-- Basic Info Section -->
+                <ui:VisualElement class="detail-section">
+                    <ui:Label text="Basic Information" class="section-title" />
+                    <ui:VisualElement class="info-grid">
+                        <ui:VisualElement class="info-row">
+                            <ui:Label text="Category:" class="info-label" />
+                            <ui:Label name="category-value" text="-" class="info-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="info-row">
+                            <ui:Label text="Status:" class="info-label" />
+                            <ui:Label name="status-value" text="-" class="info-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="info-row">
+                            <ui:Label text="Phase:" class="info-label" />
+                            <ui:Label name="phase-value" text="-" class="info-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="info-row">
+                            <ui:Label text="Progress:" class="info-label" />
+                            <ui:Label name="progress-value" text="-" class="info-value" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                
+                <!-- Quality Stats Section -->
+                <ui:VisualElement class="detail-section">
+                    <ui:Label text="Product Stats" class="section-title" />
+                    <ui:VisualElement class="stats-grid">
+                        <ui:VisualElement class="stat-card">
+                            <ui:Label text="Quality Score" class="stat-label" />
+                            <ui:Label name="quality-score" text="0" class="stat-value stat-value--large" />
+                            <ui:ProgressBar name="quality-bar" class="stat-bar" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="stat-card">
+                            <ui:Label text="Stability" class="stat-label" />
+                            <ui:Label name="stability-score" text="0" class="stat-value stat-value--large" />
+                            <ui:ProgressBar name="stability-bar" class="stat-bar" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="stat-card">
+                            <ui:Label text="Usability" class="stat-label" />
+                            <ui:Label name="usability-score" text="0" class="stat-value stat-value--large" />
+                            <ui:ProgressBar name="usability-bar" class="stat-bar" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="stat-card">
+                            <ui:Label text="Innovation" class="stat-label" />
+                            <ui:Label name="innovation-score" text="0" class="stat-value stat-value--large" />
+                            <ui:ProgressBar name="innovation-bar" class="stat-bar" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="info-row">
+                        <ui:Label text="Estimated Bugs:" class="info-label" />
+                        <ui:Label name="bug-count" text="0" class="info-value info-value--warning" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                
+                <!-- Features Section -->
+                <ui:VisualElement class="detail-section">
+                    <ui:VisualElement class="section-header-row">
+                        <ui:Label text="Features" class="section-title" />
+                        <ui:Button name="edit-features-btn" text="Edit Features" class="button button--small" />
+                    </ui:VisualElement>
+                    <ui:ScrollView name="features-list" class="feature-tags-container" />
+                    <ui:Label name="no-features-label" text="No features selected" class="text-muted" />
+                </ui:VisualElement>
+                
+                <!-- QA Tier Section -->
+                <ui:VisualElement class="detail-section">
+                    <ui:Label text="Quality Assurance" class="section-title" />
+                    <ui:VisualElement class="info-row">
+                        <ui:Label text="QA Tier:" class="info-label" />
+                        <ui:Label name="qa-tier-value" text="None" class="info-value" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                
+                <!-- Team Section -->
+                <ui:VisualElement class="detail-section">
+                    <ui:Label text="Assigned Team" class="section-title" />
+                    <ui:ScrollView name="team-list" class="team-list" />
+                    <ui:Label name="no-team-label" text="No employees assigned" class="text-muted" />
+                </ui:VisualElement>
+                
+                <!-- Revenue Section (Released Products) -->
+                <ui:VisualElement name="revenue-section" class="detail-section">
+                    <ui:Label text="Revenue Performance" class="section-title" />
+                    <ui:VisualElement class="info-grid">
+                        <ui:VisualElement class="info-row">
+                            <ui:Label text="Monthly Revenue:" class="info-label" />
+                            <ui:Label name="monthly-revenue" text="$0" class="info-value info-value--success" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="info-row">
+                            <ui:Label text="Total Revenue:" class="info-label" />
+                            <ui:Label name="total-revenue" text="$0" class="info-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="info-row">
+                            <ui:Label text="Months Active:" class="info-label" />
+                            <ui:Label name="months-active" text="0" class="info-value" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                
+            </ui:ScrollView>
+            
+            <!-- Footer Actions -->
+            <ui:VisualElement class="dialog-footer">
+                <ui:Button name="advance-phase-btn" text="Advance to Next Phase" class="button button--primary" />
+            </ui:VisualElement>
             
         </ui:VisualElement>
         

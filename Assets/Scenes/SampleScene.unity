@@ -119,6 +119,74 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &63555286
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 63555289}
+  - component: {fileID: 63555288}
+  - component: {fileID: 63555287}
+  m_Layer: 0
+  m_Name: IndustryOverviewUI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &63555287
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 63555286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 099a025f2570db44594d6d7a5ec87767, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TechMogul.UI.IndustryOverviewController
+--- !u!114 &63555288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 63555286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+  m_PanelSettings: {fileID: 11400000, guid: 1d5f6d76a4824164fbefc4eac2434241, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: ff96daed2c87bcb41b2795ac1de7a029, type: 3}
+  m_SortingOrder: 0
+  m_Position: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_WorldSpaceCollider: {fileID: 0}
+--- !u!4 &63555289
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 63555286}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &148225823
 GameObject:
   m_ObjectHideFlags: 0
@@ -303,7 +371,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d37f3d6b8090665448348cf1f6e4a971, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TechMogul.Systems.MonthlyReportSystem
---- !u!1 &415493380
+--- !u!1 &177395190
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -311,53 +379,55 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 415493382}
-  - component: {fileID: 415493381}
+  - component: {fileID: 177395191}
+  - component: {fileID: 177395192}
   m_Layer: 0
-  m_Name: StartProductDialog
+  m_Name: TechnologySystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &415493381
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 415493380}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
-  m_PanelSettings: {fileID: 11400000, guid: 1d5f6d76a4824164fbefc4eac2434241, type: 2}
-  m_ParentUI: {fileID: 0}
-  sourceAsset: {fileID: 9197481963319205126, guid: 4b85ef52b30eef44b8ac2a936136ed2e, type: 3}
-  m_SortingOrder: 1
-  m_Position: 0
-  m_WorldSpaceSizeMode: 1
-  m_WorldSpaceWidth: 1920
-  m_WorldSpaceHeight: 1080
-  m_PivotReferenceSize: 0
-  m_Pivot: 0
-  m_WorldSpaceCollider: {fileID: 0}
---- !u!4 &415493382
+--- !u!4 &177395191
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 415493380}
+  m_GameObject: {fileID: 177395190}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1992544748}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &177395192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 177395190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2114278aec0a00c4ab48261571450cc2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TechMogul.Systems.TechnologySystem
+  technologies:
+  - {fileID: 11400000, guid: 06d34ebd88c26ea42ba1f2631054291b, type: 2}
+  - {fileID: 11400000, guid: 31e693a1085a7a5498c70d50e49beada, type: 2}
+  - {fileID: 11400000, guid: ae19a9b9ffe2a694589ad1d89d8ace70, type: 2}
+  - {fileID: 11400000, guid: 4c67e024349aa3e4f859e25bd157d794, type: 2}
+  - {fileID: 11400000, guid: ccff27ef8b273b54aa02e55243b029a5, type: 2}
+  - {fileID: 11400000, guid: e126e1d58a8296748b3542ddec19c18f, type: 2}
+  - {fileID: 11400000, guid: 980ff1ca36103194ebca978c2128d1e3, type: 2}
+  driftMaxAdvanceYears: 6
+  driftMaxDelayYears: -5
+  driftMaxAnnualDelta: 0.5
+  driftDecayMultiplier: 0.94
+  forwardOnlyDrift: 1
 --- !u!1 &441867828
 GameObject:
   m_ObjectHideFlags: 0
@@ -744,6 +814,58 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &632206503
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 632206504}
+  - component: {fileID: 632206505}
+  m_Layer: 0
+  m_Name: ReputationSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &632206504
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 632206503}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1992544748}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &632206505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 632206503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f04e523110fdfdd44821e333b3f5af4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TechMogul.Systems.ReputationSystem
+  startingReputation: 0
+  maxReputation: 100
+  easyContractReputation: 3
+  mediumContractReputation: 6
+  hardContractReputation: 10
+  goalFailurePenaltyPercent: 0.2
+  missedDeadlinePenalty: 5
+  showDebugLogs: 1
 --- !u!1 &746421006
 GameObject:
   m_ObjectHideFlags: 0
@@ -795,6 +917,7 @@ MonoBehaviour:
   hireDialog: {fileID: 148225824}
   productPanelController: {fileID: 746421012}
   contractPanelController: {fileID: 746421011}
+  industryOverviewController: {fileID: 63555287}
   employeeDetailDialogGO: {fileID: 612233150}
 --- !u!114 &746421009
 MonoBehaviour:
@@ -863,7 +986,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a7a5ee0d35f0cb548914dfed4cfedfd9, type: 2}
   - {fileID: 11400000, guid: 9cfeadaa436edb442b6a7a5a7b2346ed, type: 2}
   - {fileID: 11400000, guid: 1ff6bd42de6eb5344a2680cfd8aef090, type: 2}
-  startProductDialogGO: {fileID: 415493380}
+  startProductDialogGO: {fileID: 1817184956}
   productDetailDialogGO: {fileID: 1393096900}
 --- !u!1 &778074894
 GameObject:
@@ -1012,6 +1135,71 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1263830772
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1263830773}
+  - component: {fileID: 1263830775}
+  - component: {fileID: 1263830774}
+  m_Layer: 0
+  m_Name: ContractSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1263830773
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1263830772}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1992544748}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1263830774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1263830772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee92f513aad495846a5a568e5ea923ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TechMogul.Contracts.ContractSystem
+  maxAvailableContracts: 5
+  contractGenerationIntervalDays: 7
+  contractsPerGeneration: 2
+  balanceConfig: {fileID: 11400000, guid: 1482169887f729b4fb4276b4b9a20395, type: 2}
+  namingSystem: {fileID: 11400000, guid: ce8e7b799240924429fe48c964fc70d6, type: 2}
+  worldEffectsManager: {fileID: 1263830775}
+  contractTemplates: []
+  showDebugLogs: 1
+--- !u!114 &1263830775
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1263830772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d58866f95245194397315d0aea35aaa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TechMogul.Contracts.ContractWorldEffectsManager
 --- !u!1 &1393096900
 GameObject:
   m_ObjectHideFlags: 0
@@ -1022,6 +1210,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1393096902}
   - component: {fileID: 1393096901}
+  - component: {fileID: 1393096903}
   m_Layer: 0
   m_Name: ProductDetailDialog
   m_TagString: Untagged
@@ -1044,7 +1233,7 @@ MonoBehaviour:
   m_PanelSettings: {fileID: 11400000, guid: 1d5f6d76a4824164fbefc4eac2434241, type: 2}
   m_ParentUI: {fileID: 0}
   sourceAsset: {fileID: 9197481963319205126, guid: 63bef7c248ca3c8448e825f1e849f60c, type: 3}
-  m_SortingOrder: 1
+  m_SortingOrder: 100
   m_Position: 0
   m_WorldSpaceSizeMode: 1
   m_WorldSpaceWidth: 1920
@@ -1059,6 +1248,87 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1393096900}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1393096903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1393096900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76da03354bcd223479be3011fdbe76eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TechMogul.UI.ProductDetailDialogController
+  productFeaturesDialogGO: {fileID: 0}
+--- !u!1 &1817184956
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1817184959}
+  - component: {fileID: 1817184958}
+  - component: {fileID: 1817184957}
+  m_Layer: 0
+  m_Name: StartProductDialog
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1817184957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1817184956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05c4506e6122e444382820de4dfb9b31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TechMogul.UI.StartProductDialogController
+--- !u!114 &1817184958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1817184956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+  m_PanelSettings: {fileID: 11400000, guid: 1d5f6d76a4824164fbefc4eac2434241, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: 4b85ef52b30eef44b8ac2a936136ed2e, type: 3}
+  m_SortingOrder: 100
+  m_Position: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_WorldSpaceCollider: {fileID: 0}
+--- !u!4 &1817184959
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1817184956}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -1153,6 +1423,10 @@ GameObject:
   - component: {fileID: 1992544751}
   - component: {fileID: 1992544753}
   - component: {fileID: 1992544754}
+  - component: {fileID: 1992544757}
+  - component: {fileID: 1992544758}
+  - component: {fileID: 1992544760}
+  - component: {fileID: 1992544759}
   m_Layer: 0
   m_Name: _GameSystems
   m_TagString: Untagged
@@ -1174,6 +1448,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TechMogul.Core.SaveManager
   maxSaveSlots: 10
   prettyPrintJson: 1
+  definitionRegistry: {fileID: 11400000, guid: 11ebed3d41a8f844b8d0bae50aeab7b7, type: 2}
 --- !u!114 &1992544747
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1201,6 +1476,9 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 176580372}
+  - {fileID: 1263830773}
+  - {fileID: 632206504}
+  - {fileID: 177395191}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1992544749
@@ -1282,12 +1560,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TechMogul.Contracts.ContractSystem
   maxAvailableContracts: 5
-  newContractsPerWeek: 2
+  contractGenerationIntervalDays: 3
+  contractsPerGeneration: 2
+  balanceConfig: {fileID: 0}
+  namingSystem: {fileID: 0}
+  worldEffectsManager: {fileID: 0}
   contractTemplates:
   - {fileID: 11400000, guid: 106c7aabdf9bd714fbefb3d7fe1a5b71, type: 2}
   - {fileID: 11400000, guid: 775e81386e0e71a47857a5d5d5ff7948, type: 2}
-  - {fileID: 11400000, guid: 0b3e43be39099d848b08f51f1fef3d3a, type: 2}
+  - {fileID: 11400000, guid: 62b37f79d13e6634aab978dc30cf7993, type: 2}
   - {fileID: 11400000, guid: 4f47259bea97c7b4e9e07bd2638e1ea0, type: 2}
+  - {fileID: 11400000, guid: 0b3e43be39099d848b08f51f1fef3d3a, type: 2}
   showDebugLogs: 1
 --- !u!114 &1992544752
 MonoBehaviour:
@@ -1334,6 +1617,91 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3634221ea4b8b5945816c4e9817a6ca4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TechMogul.Systems.RivalSystem
+  productCategories:
+  - {fileID: 11400000, guid: 89057dfbd00c9594d9ae6a4975bd7a3b, type: 2}
+  - {fileID: 11400000, guid: 2098de5dacd1fd546b62a4fd118eefdb, type: 2}
+  - {fileID: 11400000, guid: 4a3e328cbfc172845aff8b89eeccc883, type: 2}
+  - {fileID: 11400000, guid: 23fe38ea243ed9b4491002dab8ca13ed, type: 2}
+  initialMajorRivalsMin: 4
+  initialMajorRivalsMax: 6
+--- !u!114 &1992544757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1992544745}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23bfda22e1838ce43bf478eb0f2770ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TechMogul.Traits.TraitSystem
+  traitDatabase: {fileID: 11400000, guid: 45d6c8ca3fb20074dbf1bd6c822b5c52, type: 2}
+  synergyRules: {fileID: 11400000, guid: 8307d7f93d2019e449af32d3fc0615e0, type: 2}
+--- !u!114 &1992544758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1992544745}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c8a07224f1f7b14498607b486ddce19, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TechMogul.Systems.EraSystem
+  eras:
+  - {fileID: 11400000, guid: a901d3472f08fd14e89bab9b61156a44, type: 2}
+  - {fileID: 11400000, guid: 998b315d37bfed241a3d51f7eaf50ac5, type: 2}
+  - {fileID: 11400000, guid: 5e0b471c625452844a6ba7c029863239, type: 2}
+  - {fileID: 11400000, guid: 0248697497883a346890b2c5f76ab072, type: 2}
+  - {fileID: 11400000, guid: 7fb8d68c6999de44cb9e9f4f70a08841, type: 2}
+--- !u!114 &1992544759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1992544745}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57d6252fd69901943bec85142de631cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TechMogul.Systems.MarketSystem
+  demandConfig: {fileID: 11400000, guid: fd6a63c19d0b92d4eaa0b67943e6b391, type: 2}
+  expectationConfig: {fileID: 11400000, guid: 1abeadfe8b7f99f408974dc1b48f53d3, type: 2}
+  riskRewardConfig: {fileID: 11400000, guid: 4231eb815cf0f0b4f8146655d789e5cf, type: 2}
+  marketCategories:
+  - {fileID: 11400000, guid: 12fc331b48d9a754b8055c8ca93325fb, type: 2}
+  - {fileID: 11400000, guid: 6954a4fb5fe70404192c2ceceb8b5fd8, type: 2}
+  - {fileID: 11400000, guid: 599af2eedfc87014e9c988df8efe93eb, type: 2}
+  - {fileID: 11400000, guid: 013b36fbe52edac439fcd0744d01817c, type: 2}
+  - {fileID: 11400000, guid: a3c4c372892f62943b841a9dcd969782, type: 2}
+--- !u!114 &1992544760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1992544745}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2114278aec0a00c4ab48261571450cc2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TechMogul.Systems.TechnologySystem
+  technologies:
+  - {fileID: 11400000, guid: 06d34ebd88c26ea42ba1f2631054291b, type: 2}
+  - {fileID: 11400000, guid: 31e693a1085a7a5498c70d50e49beada, type: 2}
+  - {fileID: 11400000, guid: ae19a9b9ffe2a694589ad1d89d8ace70, type: 2}
+  - {fileID: 11400000, guid: 4c67e024349aa3e4f859e25bd157d794, type: 2}
+  - {fileID: 11400000, guid: ccff27ef8b273b54aa02e55243b029a5, type: 2}
+  - {fileID: 11400000, guid: e126e1d58a8296748b3542ddec19c18f, type: 2}
+  - {fileID: 11400000, guid: 980ff1ca36103194ebca978c2128d1e3, type: 2}
+  driftMaxAdvanceYears: 6
+  driftMaxDelayYears: -5
+  driftMaxAnnualDelta: 0.5
+  driftDecayMultiplier: 0.94
+  forwardOnlyDrift: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1344,7 +1712,6 @@ SceneRoots:
   - {fileID: 778074897}
   - {fileID: 746421007}
   - {fileID: 148225826}
-  - {fileID: 415493382}
   - {fileID: 1393096902}
   - {fileID: 441867830}
   - {fileID: 528176948}
@@ -1352,3 +1719,5 @@ SceneRoots:
   - {fileID: 1817871709}
   - {fileID: 862399842}
   - {fileID: 168428868}
+  - {fileID: 63555289}
+  - {fileID: 1817184959}

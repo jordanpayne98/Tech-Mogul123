@@ -4,7 +4,7 @@ using TechMogul.Core;
 
 namespace TechMogul.UI
 {
-    public class CashDisplay : MonoBehaviour
+    public class CashDisplay : UIController
     {
         [SerializeField] private TextMeshProUGUI cashText;
         [SerializeField] private bool useAnimation = true;
@@ -14,11 +14,10 @@ namespace TechMogul.UI
         private float _targetCash;
         private float _animationTimer;
         
-        void OnEnable()
+        protected override void OnEnable()
         {
-            EventBus.Subscribe<OnCashChangedEvent>(HandleCashChanged);
+            base.OnEnable();
             
-            // Request initial cash value
             if (GameManager.Instance != null)
             {
                 _currentDisplayCash = GameManager.Instance.CurrentCash;
@@ -27,9 +26,9 @@ namespace TechMogul.UI
             }
         }
         
-        void OnDisable()
+        protected override void SubscribeToEvents()
         {
-            EventBus.Unsubscribe<OnCashChangedEvent>(HandleCashChanged);
+            Subscribe<OnCashChangedEvent>(HandleCashChanged);
         }
         
         void Update()

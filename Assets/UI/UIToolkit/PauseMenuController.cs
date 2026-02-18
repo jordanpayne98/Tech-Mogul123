@@ -2,12 +2,13 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.InputSystem;
 using TechMogul.Core;
+using TechMogul.Core.Save;
 using TechMogul.Systems;
 
 namespace TechMogul.UI
 {
     [RequireComponent(typeof(UIDocument))]
-    public class PauseMenuController : MonoBehaviour
+    public class PauseMenuController : UIController
     {
         [Header("Settings")]
         [SerializeField] private float unsavedWarningThreshold = 300f;
@@ -32,13 +33,16 @@ namespace TechMogul.UI
         private float lastSaveTime = 0f;
         private string pendingAction = "";
         
-        void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             uiDocument = GetComponent<UIDocument>();
         }
         
-        void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+            
             if (uiDocument == null || uiDocument.rootVisualElement == null)
             {
                 Debug.LogError("PauseMenuController: UIDocument or root visual element is null");
@@ -48,15 +52,14 @@ namespace TechMogul.UI
             root = uiDocument.rootVisualElement;
             CacheReferences();
             BindButtons();
-            SubscribeToEvents();
             
             HidePauseMenu();
         }
         
-        void OnDisable()
+        protected override void OnDisable()
         {
             UnbindButtons();
-            UnsubscribeFromEvents();
+            base.OnDisable();
         }
         
         void Update()
@@ -121,16 +124,10 @@ namespace TechMogul.UI
             if (confirmCancelBtn != null) confirmCancelBtn.clicked -= OnConfirmCancelClicked;
         }
         
-        void SubscribeToEvents()
+        protected override void SubscribeToEvents()
         {
-            EventBus.Subscribe<OnGameSavedEvent>(HandleGameSaved);
-            EventBus.Subscribe<OnGameStartedEvent>(HandleGameStarted);
-        }
-        
-        void UnsubscribeFromEvents()
-        {
-            EventBus.Unsubscribe<OnGameSavedEvent>(HandleGameSaved);
-            EventBus.Unsubscribe<OnGameStartedEvent>(HandleGameStarted);
+            Subscribe<OnGameSavedEvent>(HandleGameSaved);
+            Subscribe<OnGameStartedEvent>(HandleGameStarted);
         }
         
         void HandleGameSaved(OnGameSavedEvent evt)

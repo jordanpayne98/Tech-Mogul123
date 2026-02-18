@@ -5,7 +5,7 @@ using TechMogul.Systems;
 
 namespace TechMogul.UI
 {
-    public class DateDisplay : MonoBehaviour
+    public class DateDisplay : UIController
     {
         [SerializeField] private TextMeshProUGUI dateText;
         [SerializeField] private bool showYear = true;
@@ -13,11 +13,10 @@ namespace TechMogul.UI
         private string[] _monthNames = { "Jan", "Feb", "Mar", "Apr", "May", "Jun",
                                          "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
         
-        void OnEnable()
+        protected override void OnEnable()
         {
-            EventBus.Subscribe<OnDayTickEvent>(HandleDayTick);
+            base.OnEnable();
             
-            // Try to get initial date from TimeSystem
             var timeSystem = FindFirstObjectByType<TimeSystem>();
             if (timeSystem != null && timeSystem.CurrentDate != null)
             {
@@ -25,9 +24,9 @@ namespace TechMogul.UI
             }
         }
         
-        void OnDisable()
+        protected override void SubscribeToEvents()
         {
-            EventBus.Unsubscribe<OnDayTickEvent>(HandleDayTick);
+            Subscribe<OnDayTickEvent>(HandleDayTick);
         }
         
         void HandleDayTick(OnDayTickEvent evt)

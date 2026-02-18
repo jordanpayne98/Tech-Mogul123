@@ -5,7 +5,7 @@ using TechMogul.Core;
 
 namespace TechMogul.UI
 {
-    public class MainMenuController : MonoBehaviour
+    public class MainMenuController : UIController
     {
         [Header("Settings")]
         [SerializeField] private string gameSceneName = "SampleScene";
@@ -18,13 +18,16 @@ namespace TechMogul.UI
         private Button _settingsButton;
         private Button _quitButton;
         
-        void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             _uiDocument = GetComponent<UIDocument>();
         }
         
-        void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+            
             _root = _uiDocument.rootVisualElement;
             
             _newGameButton = _root.Q<Button>("new-game-button");
@@ -38,7 +41,7 @@ namespace TechMogul.UI
             _quitButton.RegisterCallback<ClickEvent>(OnQuitClicked);
         }
         
-        void OnDisable()
+        protected override void OnDisable()
         {
             if (_newGameButton != null)
                 _newGameButton.UnregisterCallback<ClickEvent>(OnNewGameClicked);
@@ -48,6 +51,12 @@ namespace TechMogul.UI
                 _settingsButton.UnregisterCallback<ClickEvent>(OnSettingsClicked);
             if (_quitButton != null)
                 _quitButton.UnregisterCallback<ClickEvent>(OnQuitClicked);
+            
+            base.OnDisable();
+        }
+        
+        protected override void SubscribeToEvents()
+        {
         }
         
         void OnNewGameClicked(ClickEvent evt)

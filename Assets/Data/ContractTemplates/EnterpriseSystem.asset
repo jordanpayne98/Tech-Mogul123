@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 483c94476dbf4374c926c898434fcac1, type: 3}
   m_Name: EnterpriseSystem
   m_EditorClassIdentifier: Assembly-CSharp::TechMogul.Data.ContractTemplateSO
+  id: contracttemplate.enterprise_system
   templateName: Enterprise System
   description: Build complex enterprise software with strict requirements
   easyWeight: 40

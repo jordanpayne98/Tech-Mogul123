@@ -3,12 +3,13 @@ using UnityEngine.UIElements;
 using System.Collections.Generic;
 using System.Linq;
 using TechMogul.Core;
+using TechMogul.Core.Save;
 using TechMogul.Systems;
 
 namespace TechMogul.UI
 {
     [RequireComponent(typeof(UIDocument))]
-    public class SaveLoadDialogController : MonoBehaviour
+    public class SaveLoadDialogController : UIController
     {
         [Header("Settings")]
         [SerializeField] private int maxSaveSlots = 3;
@@ -30,13 +31,16 @@ namespace TechMogul.UI
         private List<SaveSlotInfo> currentSlots = new List<SaveSlotInfo>();
         private bool isInSaveMode = false;
         
-        void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             uiDocument = GetComponent<UIDocument>();
         }
         
-        void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+            
             if (uiDocument == null || uiDocument.rootVisualElement == null)
             {
                 Debug.LogError("SaveLoadDialogController: UIDocument or root visual element is null");
@@ -46,15 +50,14 @@ namespace TechMogul.UI
             root = uiDocument.rootVisualElement;
             CacheReferences();
             BindButtons();
-            SubscribeToEvents();
             
             HideDialogs();
         }
         
-        void OnDisable()
+        protected override void OnDisable()
         {
             UnbindButtons();
-            UnsubscribeFromEvents();
+            base.OnDisable();
         }
         
         void CacheReferences()
@@ -86,22 +89,13 @@ namespace TechMogul.UI
             if (closeLoadBtn != null) closeLoadBtn.clicked -= HideDialogs;
         }
         
-        void SubscribeToEvents()
+        protected override void SubscribeToEvents()
         {
-            EventBus.Subscribe<RequestOpenSaveDialogEvent>(HandleOpenSaveDialog);
-            EventBus.Subscribe<RequestOpenLoadDialogEvent>(HandleOpenLoadDialog);
-            EventBus.Subscribe<OnSaveSlotsReceivedEvent>(HandleSaveSlotsReceived);
-            EventBus.Subscribe<OnGameSavedEvent>(HandleGameSaved);
-            EventBus.Subscribe<OnGameLoadedEvent>(HandleGameLoaded);
-        }
-        
-        void UnsubscribeFromEvents()
-        {
-            EventBus.Unsubscribe<RequestOpenSaveDialogEvent>(HandleOpenSaveDialog);
-            EventBus.Unsubscribe<RequestOpenLoadDialogEvent>(HandleOpenLoadDialog);
-            EventBus.Unsubscribe<OnSaveSlotsReceivedEvent>(HandleSaveSlotsReceived);
-            EventBus.Unsubscribe<OnGameSavedEvent>(HandleGameSaved);
-            EventBus.Unsubscribe<OnGameLoadedEvent>(HandleGameLoaded);
+            Subscribe<RequestOpenSaveDialogEvent>(HandleOpenSaveDialog);
+            Subscribe<RequestOpenLoadDialogEvent>(HandleOpenLoadDialog);
+            Subscribe<OnSaveSlotsReceivedEvent>(HandleSaveSlotsReceived);
+            Subscribe<OnGameSavedEvent>(HandleGameSaved);
+            Subscribe<OnGameLoadedEvent>(HandleGameLoaded);
         }
         
         void HandleOpenSaveDialog(RequestOpenSaveDialogEvent evt)

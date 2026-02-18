@@ -2,11 +2,12 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using TechMogul.Core;
+using TechMogul.Core.Save;
 using TechMogul.Systems;
 
 namespace TechMogul.Products
 {
-    public class ProductSystem : MonoBehaviour
+    public class ProductSystem : GameSystem
     {
         [Header("Debug")]
         [SerializeField] private bool showDebugLogs = true;
@@ -16,36 +17,24 @@ namespace TechMogul.Products
 
         public IReadOnlyList<ProductData> Products => _products;
 
-        void OnEnable()
+        protected override void Awake()
         {
-            SubscribeToEvents();
+            base.Awake();
+            ServiceLocator.Instance.TryRegister<ProductSystem>(this);
         }
 
-        void OnDisable()
+        protected override void SubscribeToEvents()
         {
-            UnsubscribeFromEvents();
-        }
-
-        void SubscribeToEvents()
-        {
-            EventBus.Subscribe<OnDayTickEvent>(HandleDayTick);
-            EventBus.Subscribe<OnMonthTickEvent>(HandleMonthTick);
-            EventBus.Subscribe<RequestStartProductEvent>(HandleStartProductRequest);
-            EventBus.Subscribe<RequestAssignEmployeeToProductEvent>(HandleAssignEmployeeRequest);
-            EventBus.Subscribe<RequestUnassignEmployeeFromProductEvent>(HandleUnassignEmployeeRequest);
-            EventBus.Subscribe<RequestLoadProductsEvent>(HandleLoadProducts);
-            EventBus.Subscribe<OnGameStartedEvent>(HandleGameStarted);
-        }
-
-        void UnsubscribeFromEvents()
-        {
-            EventBus.Unsubscribe<OnDayTickEvent>(HandleDayTick);
-            EventBus.Unsubscribe<OnMonthTickEvent>(HandleMonthTick);
-            EventBus.Unsubscribe<RequestStartProductEvent>(HandleStartProductRequest);
-            EventBus.Unsubscribe<RequestAssignEmployeeToProductEvent>(HandleAssignEmployeeRequest);
-            EventBus.Unsubscribe<RequestUnassignEmployeeFromProductEvent>(HandleUnassignEmployeeRequest);
-            EventBus.Unsubscribe<RequestLoadProductsEvent>(HandleLoadProducts);
-            EventBus.Unsubscribe<OnGameStartedEvent>(HandleGameStarted);
+            Subscribe<OnDayTickEvent>(HandleDayTick);
+            Subscribe<OnMonthTickEvent>(HandleMonthTick);
+            Subscribe<RequestStartProductEvent>(HandleStartProductRequest);
+            Subscribe<RequestAssignEmployeeToProductEvent>(HandleAssignEmployeeRequest);
+            Subscribe<RequestUnassignEmployeeFromProductEvent>(HandleUnassignEmployeeRequest);
+            Subscribe<RequestAddFeatureToProductEvent>(HandleAddFeatureRequest);
+            Subscribe<RequestSetProductQATierEvent>(HandleSetQATierRequest);
+            Subscribe<RequestAdvanceProductPhaseEvent>(HandleAdvancePhaseRequest);
+            Subscribe<RequestLoadProductsEvent>(HandleLoadProducts);
+            Subscribe<OnGameStartedEvent>(HandleGameStarted);
         }
         
         void HandleGameStarted(OnGameStartedEvent evt)
@@ -59,10 +48,20 @@ namespace TechMogul.Products
         {
             _products.Clear();
             
+            IDefinitionResolver resolver = ServiceLocator.Instance.Get<IDefinitionResolver>();
+            if (resolver == null)
+            {
+                Debug.LogError("IDefinitionResolver not found. Cannot load products.");
+                return;
+            }
+            
             foreach (var serializedProduct in evt.Products)
             {
-                ProductData product = serializedProduct.ToProduct(_currentDay);
-                _products.Add(product);
+                ProductData product = serializedProduct.ToProduct(_currentDay, resolver);
+                if (product != null)
+                {
+                    _products.Add(product);
+                }
             }
             
             Debug.Log($"Loaded {_products.Count} products");
@@ -70,12 +69,11 @@ namespace TechMogul.Products
 
         void HandleDayTick(OnDayTickEvent evt)
         {
-            _currentDay = ConvertGameDateToDays(evt.CurrentDate);
+            _currentDay = evt.DayIndex;
 
             foreach (var product in _products.Where(p => p.state == ProductState.InDevelopment).ToList())
             {
-                float dailyProgress = CalculateDailyProgress(product);
-                product.developmentProgress += dailyProgress;
+                ProcessDailyWork(product);
 
                 if (product.developmentProgress >= 100f)
                 {
@@ -93,6 +91,39 @@ namespace TechMogul.Products
             }
 
             ApplyDailyBurnout();
+        }
+        
+        void ProcessDailyWork(ProductData product)
+        {
+            if (product.assignedEmployeeIds.Count == 0)
+            {
+                return;
+            }
+            
+            float totalProgress = 0f;
+            float totalBugs = 0f;
+            float totalQuality = 0f;
+            
+            foreach (var employeeId in product.assignedEmployeeIds)
+            {
+                var employee = GetEmployeeData(employeeId);
+                if (employee == null) continue;
+                
+                var workResult = WorkSimulation.ProcessDailyWork(employee, product);
+                
+                totalProgress += workResult.progressAdded;
+                totalBugs += workResult.bugsAdded;
+                totalQuality += workResult.qualityAdded;
+                
+                WorkSimulation.UpdateEmployeeStress(employee, true, 1);
+                WorkSimulation.UpdateEmployeeMorale(employee);
+                WorkSimulation.UpdateEmployeeBurnout(employee);
+            }
+            
+            product.developmentProgress += totalProgress;
+            product.estimatedBugs += totalBugs;
+            
+            RecalculateProductStats(product);
         }
 
         void HandleMonthTick(OnMonthTickEvent evt)
@@ -160,7 +191,7 @@ namespace TechMogul.Products
                     EventBus.Publish(new RequestAssignEmployeeEvent
                     {
                         EmployeeId = employeeId,
-                        AssignmentName = $"Product: {evt.productName}"
+                        Assignment = EmployeeAssignment.Product(product.productId, evt.productName)
                     });
                 }
             }
@@ -201,7 +232,7 @@ namespace TechMogul.Products
             EventBus.Publish(new RequestAssignEmployeeEvent
             {
                 EmployeeId = evt.employeeId,
-                AssignmentName = $"Product: {product.name}"
+                Assignment = EmployeeAssignment.Product(product.productId, product.name)
             });
 
             if (showDebugLogs)
@@ -236,6 +267,132 @@ namespace TechMogul.Products
             }
         }
 
+        void HandleAddFeatureRequest(RequestAddFeatureToProductEvent evt)
+        {
+            var product = _products.FirstOrDefault(p => p.productId == evt.productId);
+            if (product == null)
+            {
+                Debug.LogWarning($"Product {evt.productId} not found");
+                return;
+            }
+
+            if (product.state != ProductState.InDevelopment)
+            {
+                Debug.LogWarning($"Cannot add features to released product");
+                return;
+            }
+
+            var selectedFeatures = ResolveFeatureList(product);
+            
+            if (!FeatureGraphValidator.ValidateFeatureSelection(selectedFeatures, evt.feature, out string errorMessage))
+            {
+                Debug.LogWarning($"Cannot add feature '{evt.feature.featureName}': {errorMessage}");
+                EventBus.Publish(new OnFeatureAddFailedEvent
+                {
+                    productId = product.productId,
+                    featureId = evt.feature.id,
+                    errorMessage = errorMessage
+                });
+                return;
+            }
+
+            selectedFeatures = FeatureGraphValidator.RemoveReplacedFeatures(selectedFeatures, evt.feature);
+            
+            if (!product.selectedFeatureIds.Contains(evt.feature.id))
+            {
+                product.selectedFeatureIds.Add(evt.feature.id);
+            }
+
+            RecalculateProductStats(product);
+
+            EventBus.Publish(new OnFeatureAddedToProductEvent
+            {
+                productId = product.productId,
+                featureId = evt.feature.id,
+                featureName = evt.feature.featureName
+            });
+
+            if (showDebugLogs)
+            {
+                Debug.Log($"Added feature '{evt.feature.featureName}' to product '{product.name}'");
+            }
+        }
+
+        void HandleSetQATierRequest(RequestSetProductQATierEvent evt)
+        {
+            var product = _products.FirstOrDefault(p => p.productId == evt.productId);
+            if (product == null)
+            {
+                Debug.LogWarning($"Product {evt.productId} not found");
+                return;
+            }
+
+            if (product.state != ProductState.InDevelopment)
+            {
+                Debug.LogWarning($"Cannot change QA tier of released product");
+                return;
+            }
+
+            product.selectedQATierId = evt.qaTier?.id;
+            RecalculateProductStats(product);
+
+            EventBus.Publish(new OnProductQATierChangedEvent
+            {
+                productId = product.productId,
+                qaTierId = evt.qaTier?.id
+            });
+
+            if (showDebugLogs)
+            {
+                string tierName = evt.qaTier != null ? evt.qaTier.tierName : "None";
+                Debug.Log($"Set QA tier '{tierName}' for product '{product.name}'");
+            }
+        }
+
+        void HandleAdvancePhaseRequest(RequestAdvanceProductPhaseEvent evt)
+        {
+            var product = _products.FirstOrDefault(p => p.productId == evt.productId);
+            if (product == null)
+            {
+                Debug.LogWarning($"Product {evt.productId} not found");
+                return;
+            }
+
+            if (product.state != ProductState.InDevelopment)
+            {
+                Debug.LogWarning($"Cannot advance phase of released product");
+                return;
+            }
+
+            ProjectPhase nextPhase = product.currentPhase switch
+            {
+                ProjectPhase.Implementation => ProjectPhase.BugFix,
+                ProjectPhase.BugFix => ProjectPhase.Polish,
+                ProjectPhase.Polish => ProjectPhase.Polish,
+                _ => ProjectPhase.Implementation
+            };
+
+            if (nextPhase == product.currentPhase)
+            {
+                Debug.LogWarning($"Product '{product.name}' is already in final phase");
+                return;
+            }
+
+            product.currentPhase = nextPhase;
+            product.developmentProgress = 0f;
+
+            EventBus.Publish(new OnProductPhaseAdvancedEvent
+            {
+                productId = product.productId,
+                newPhase = nextPhase
+            });
+
+            if (showDebugLogs)
+            {
+                Debug.Log($"Advanced product '{product.name}' to {nextPhase} phase");
+            }
+        }
+
         float CalculateDailyProgress(ProductData product)
         {
             if (product.assignedEmployeeIds.Count == 0)
@@ -247,7 +404,20 @@ namespace TechMogul.Products
             float teamProductivity = CalculateTeamProductivity(product);
             float productivityMultiplier = teamProductivity / 50f;
 
-            return baseRate * productivityMultiplier;
+            float phaseMultiplier = product.currentPhase switch
+            {
+                ProjectPhase.Implementation => 1.0f,
+                ProjectPhase.BugFix => 0.8f,
+                ProjectPhase.Polish => 0.6f,
+                _ => 1.0f
+            };
+
+            var features = ResolveFeatureList(product);
+            var qaTier = ResolveQATier(product);
+            int totalDevTime = FeatureGraphValidator.CalculateTotalDevTime(features, qaTier);
+            float timeAdjustment = totalDevTime > 0 ? (product.category.baseDevelopmentDays / (float)totalDevTime) : 1.0f;
+
+            return baseRate * productivityMultiplier * phaseMultiplier * timeAdjustment;
         }
 
         float CalculateTeamProductivity(ProductData product)
@@ -331,7 +501,9 @@ namespace TechMogul.Products
             product.state = ProductState.Released;
             product.releaseDay = _currentDay;
             product.developmentProgress = 100f;
-            product.actualQuality = CalculateFinalQuality(product);
+            
+            RecalculateProductStats(product);
+            product.actualQuality = product.qualityScore;
             product.monthlyRevenue = CalculateMonthlyRevenue(product);
 
             ApplyProductCompletionEffects(product);
@@ -354,8 +526,62 @@ namespace TechMogul.Products
 
             if (showDebugLogs)
             {
-                Debug.Log($"Released product '{product.name}' with quality {product.actualQuality:F1} and revenue ${product.monthlyRevenue:F0}/month");
+                Debug.Log($"Released product '{product.name}' | Quality: {product.actualQuality:F1} | Stability: {product.stabilityScore:F1} | Innovation: {product.innovationScore:F1} | Revenue: ${product.monthlyRevenue:F0}/month");
             }
+        }
+
+        void RecalculateProductStats(ProductData product)
+        {
+            var features = ResolveFeatureList(product);
+            var qaTier = ResolveQATier(product);
+
+            product.stabilityScore = FeatureGraphValidator.CalculateStabilityScore(features, qaTier);
+            product.usabilityScore = FeatureGraphValidator.CalculateUsabilityScore(features, qaTier);
+            product.innovationScore = FeatureGraphValidator.CalculateInnovationScore(features, qaTier);
+
+            float employeeQuality = CalculateFinalQuality(product);
+            float featureValue = FeatureGraphValidator.CalculateFeatureValue(features);
+            float marketValue = FeatureGraphValidator.CalculateMarketValue(features);
+
+            product.qualityScore = (employeeQuality * 0.5f) + (featureValue * 0.3f) + (marketValue * 0.2f);
+            product.qualityScore = Mathf.Clamp(product.qualityScore, 0f, 100f);
+
+            float bugRate = (100f - product.stabilityScore) / 100f;
+            product.bugCount = Mathf.RoundToInt(features.Count * bugRate * 5f);
+
+            product.marketingSpend = 0f;
+            product.reputationContribution = product.qualityScore / 100f;
+            product.priceCompetitiveness = 0.5f;
+            product.standardAlignmentBonus = 0f;
+            product.ecosystemBonus = 0f;
+        }
+
+        List<FeatureNodeSO> ResolveFeatureList(ProductData product)
+        {
+            var features = new List<FeatureNodeSO>();
+            var resolver = ServiceLocator.Instance.Get<IDefinitionResolver>();
+            if (resolver == null) return features;
+
+            foreach (var featureId in product.selectedFeatureIds)
+            {
+                var feature = resolver.Resolve<FeatureNodeSO>(featureId);
+                if (feature != null)
+                {
+                    features.Add(feature);
+                }
+            }
+
+            return features;
+        }
+
+        QATierSO ResolveQATier(ProductData product)
+        {
+            if (string.IsNullOrEmpty(product.selectedQATierId)) return null;
+            
+            var resolver = ServiceLocator.Instance.Get<IDefinitionResolver>();
+            if (resolver == null) return null;
+
+            return resolver.Resolve<QATierSO>(product.selectedQATierId);
         }
 
         float CalculateFinalQuality(ProductData product)
@@ -389,9 +615,23 @@ namespace TechMogul.Products
 
             float qualityMultiplier = 0.5f + (product.actualQuality / 100f * 0.5f);
 
-            float marketMultiplier = product.category.marketSizeMultiplier;
+            float marketDemandMultiplier = 1.0f;
+            MarketSystem marketSystem = ServiceLocator.Instance.Get<MarketSystem>();
+            if (marketSystem != null && !string.IsNullOrEmpty(product.category.id))
+            {
+                marketDemandMultiplier = marketSystem.GetCategoryDemandMultiplier(product.category.id);
+            }
 
-            float revenue = baseRevenue * qualityMultiplier * marketMultiplier;
+            ReputationSystem reputationSystem = ServiceLocator.Instance.Get<ReputationSystem>();
+            float reputationMultiplier = 1.0f;
+            if (reputationSystem != null)
+            {
+                float reputation = reputationSystem.CurrentReputation;
+                float maxReputation = reputationSystem.MaxReputation;
+                reputationMultiplier = 0.8f + (reputation / maxReputation * 0.4f);
+            }
+
+            float revenue = baseRevenue * qualityMultiplier * marketDemandMultiplier * reputationMultiplier;
 
             return Mathf.Round(revenue / 100f) * 100f;
         }
@@ -474,11 +714,6 @@ namespace TechMogul.Products
         public List<ProductData> GetReleasedProducts()
         {
             return _products.Where(p => p.state == ProductState.Released).ToList();
-        }
-        
-        int ConvertGameDateToDays(GameDate date)
-        {
-            return (date.Year * 365) + (date.Month * 30) + date.Day;
         }
     }
 }

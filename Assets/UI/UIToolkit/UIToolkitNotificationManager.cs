@@ -7,7 +7,7 @@ using TechMogul.Systems;
 namespace TechMogul.UI
 {
     [RequireComponent(typeof(UIDocument))]
-    public class UIToolkitNotificationManager : MonoBehaviour
+    public class UIToolkitNotificationManager : UIController
     {
         [Header("Settings")]
         [SerializeField] private int maxNotifications = 50;
@@ -15,7 +15,6 @@ namespace TechMogul.UI
         
         private UIDocument uiDocument;
         
-        // Dropdown elements
         private Button notificationPanelBtn;
         private Label notificationBadge;
         private Label notificationSummaryTitle;
@@ -30,13 +29,16 @@ namespace TechMogul.UI
         private GameDate currentGameDate;
         private string expandedNotificationId = null;
         
-        void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             uiDocument = GetComponent<UIDocument>();
         }
         
-        void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+            
             if (uiDocument == null || uiDocument.rootVisualElement == null)
             {
                 Debug.LogError("UIDocument or root visual element is null");
@@ -45,14 +47,8 @@ namespace TechMogul.UI
             
             CacheReferences();
             BindEvents();
-            SubscribeToGameEvents();
             
             UpdateUI();
-        }
-        
-        void OnDisable()
-        {
-            UnsubscribeFromGameEvents();
         }
         
         void CacheReferences()
@@ -81,12 +77,10 @@ namespace TechMogul.UI
                 clearAllBtn.clicked += ClearAllNotifications;
             }
             
-            // Close dropdown when clicking outside
             uiDocument.rootVisualElement.RegisterCallback<ClickEvent>(evt =>
             {
                 if (isDropdownOpen && notificationDropdown != null)
                 {
-                    // Check if click is outside dropdown and button
                     if (!notificationDropdown.worldBound.Contains(evt.position) &&
                         !notificationPanelBtn.worldBound.Contains(evt.position))
                     {
@@ -96,38 +90,21 @@ namespace TechMogul.UI
             });
         }
         
-        void SubscribeToGameEvents()
+        protected override void SubscribeToEvents()
         {
-            EventBus.Subscribe<OnGameStartedEvent>(HandleGameStarted);
-            EventBus.Subscribe<OnBankruptcyEvent>(HandleBankruptcy);
-            EventBus.Subscribe<OnInsufficientCashEvent>(HandleInsufficientCash);
-            EventBus.Subscribe<OnDayTickEvent>(HandleDayTick);
-            EventBus.Subscribe<OnMonthlyReportEvent>(HandleMonthlyReport);
+            Subscribe<OnGameStartedEvent>(HandleGameStarted);
+            Subscribe<OnBankruptcyEvent>(HandleBankruptcy);
+            Subscribe<OnInsufficientCashEvent>(HandleInsufficientCash);
+            Subscribe<OnDayTickEvent>(HandleDayTick);
+            Subscribe<OnMonthlyReportEvent>(HandleMonthlyReport);
             
             if (showMonthNotifications)
             {
-                EventBus.Subscribe<OnMonthTickEvent>(HandleMonthTick);
+                Subscribe<OnMonthTickEvent>(HandleMonthTick);
             }
             
-            EventBus.Subscribe<OnEmployeeHiredEvent>(HandleEmployeeHired);
-            EventBus.Subscribe<OnEmployeeFiredEvent>(HandleEmployeeFired);
-        }
-        
-        void UnsubscribeFromGameEvents()
-        {
-            EventBus.Unsubscribe<OnGameStartedEvent>(HandleGameStarted);
-            EventBus.Unsubscribe<OnBankruptcyEvent>(HandleBankruptcy);
-            EventBus.Unsubscribe<OnInsufficientCashEvent>(HandleInsufficientCash);
-            EventBus.Unsubscribe<OnDayTickEvent>(HandleDayTick);
-            EventBus.Unsubscribe<OnMonthlyReportEvent>(HandleMonthlyReport);
-            
-            if (showMonthNotifications)
-            {
-                EventBus.Unsubscribe<OnMonthTickEvent>(HandleMonthTick);
-            }
-            
-            EventBus.Unsubscribe<OnEmployeeHiredEvent>(HandleEmployeeHired);
-            EventBus.Unsubscribe<OnEmployeeFiredEvent>(HandleEmployeeFired);
+            Subscribe<OnEmployeeHiredEvent>(HandleEmployeeHired);
+            Subscribe<OnEmployeeFiredEvent>(HandleEmployeeFired);
         }
         
         void HandleDayTick(OnDayTickEvent evt)

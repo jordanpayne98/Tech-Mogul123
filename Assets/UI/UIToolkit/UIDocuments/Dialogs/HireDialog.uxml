@@ -8,7 +8,7 @@
     <Style src="/Assets/UI/UIToolkit/Styles/HireDialog.uss" />
     
     <!-- Overlay Background -->
-    <ui:VisualElement name="overlay" class="dialog-overlay">
+    <ui:VisualElement name="overlay" class="dialog-overlay" style="display: none;">
         
         <!-- Dialog Window -->
         <ui:VisualElement name="dialog" class="dialog">

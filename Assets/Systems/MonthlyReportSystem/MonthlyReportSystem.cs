@@ -6,44 +6,25 @@ using TechMogul.Products;
 
 namespace TechMogul.Systems
 {
-    public class MonthlyReportSystem : MonoBehaviour
+    public class MonthlyReportSystem : GameSystem
     {
         private MonthlyReport currentMonthReport;
         private float monthStartCash;
         
-        void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             currentMonthReport = new MonthlyReport();
         }
         
-        void OnEnable()
+        protected override void SubscribeToEvents()
         {
-            SubscribeToEvents();
-        }
-        
-        void OnDisable()
-        {
-            UnsubscribeFromEvents();
-        }
-        
-        void SubscribeToEvents()
-        {
-            EventBus.Subscribe<OnMonthTickEvent>(HandleMonthTick);
-            EventBus.Subscribe<OnDayTickEvent>(HandleDayTick);
-            EventBus.Subscribe<OnContractCompletedEvent>(HandleContractCompleted);
-            EventBus.Subscribe<OnProductReleasedEvent>(HandleProductReleased);
-            EventBus.Subscribe<OnCashChangedEvent>(HandleCashChanged);
-            EventBus.Subscribe<OnGameStartedEvent>(HandleGameStarted);
-        }
-        
-        void UnsubscribeFromEvents()
-        {
-            EventBus.Unsubscribe<OnMonthTickEvent>(HandleMonthTick);
-            EventBus.Unsubscribe<OnDayTickEvent>(HandleDayTick);
-            EventBus.Unsubscribe<OnContractCompletedEvent>(HandleContractCompleted);
-            EventBus.Unsubscribe<OnProductReleasedEvent>(HandleProductReleased);
-            EventBus.Unsubscribe<OnCashChangedEvent>(HandleCashChanged);
-            EventBus.Unsubscribe<OnGameStartedEvent>(HandleGameStarted);
+            Subscribe<OnMonthTickEvent>(HandleMonthTick);
+            Subscribe<OnDayTickEvent>(HandleDayTick);
+            Subscribe<OnContractCompletedEvent>(HandleContractCompleted);
+            Subscribe<OnProductReleasedEvent>(HandleProductReleased);
+            Subscribe<OnCashChangedEvent>(HandleCashChanged);
+            Subscribe<OnGameStartedEvent>(HandleGameStarted);
         }
         
         void HandleGameStarted(OnGameStartedEvent evt)

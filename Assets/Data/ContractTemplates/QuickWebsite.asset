@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 483c94476dbf4374c926c898434fcac1, type: 3}
   m_Name: QuickWebsite
   m_EditorClassIdentifier: Assembly-CSharp::TechMogul.Data.ContractTemplateSO
+  id: contracttemplate.website_quick
   templateName: Quick Website
   description: Build a simple website for a small business client
   easyWeight: 40

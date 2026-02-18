@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 483c94476dbf4374c926c898434fcac1, type: 3}
   m_Name: MobileApp
   m_EditorClassIdentifier: Assembly-CSharp::TechMogul.Data.ContractTemplateSO
+  id: contracttemplate.mobileapp
   templateName: Mobile App
   description: Develop a mobile application for iOS and Android
   easyWeight: 40
@@ -20,45 +21,105 @@ MonoBehaviour:
   possibleGoals:
   - description: Cross-platform compatibility
     type: 0
+    category: 0
     targetValue: 80
-    penaltyPercentMin: 5
-    penaltyPercentMax: 15
+    thresholdValue: 60
+    percentageTarget: 10
+    integerTarget: 3
+    penalties: []
+    bonuses: []
+    bonusPercent: 10
+    reputationBonus: 5
+    xpMultiplier: 1.2
+    isOptional: 0
+    isHidden: 0
   - description: Push notifications
     type: 1
+    category: 0
     targetValue: 1
-    penaltyPercentMin: 5
-    penaltyPercentMax: 15
+    thresholdValue: 60
+    percentageTarget: 10
+    integerTarget: 3
+    penalties: []
+    bonuses: []
+    bonusPercent: 10
+    reputationBonus: 5
+    xpMultiplier: 1.2
+    isOptional: 0
+    isHidden: 0
   - description: Offline functionality
     type: 1
+    category: 0
     targetValue: 2
-    penaltyPercentMin: 5
-    penaltyPercentMax: 15
+    thresholdValue: 60
+    percentageTarget: 10
+    integerTarget: 3
+    penalties: []
+    bonuses: []
+    bonusPercent: 10
+    reputationBonus: 5
+    xpMultiplier: 1.2
+    isOptional: 0
+    isHidden: 0
   - description: Social media integration
     type: 1
+    category: 0
     targetValue: 3
-    penaltyPercentMin: 5
-    penaltyPercentMax: 15
+    thresholdValue: 60
+    percentageTarget: 10
+    integerTarget: 3
+    penalties: []
+    bonuses: []
+    bonusPercent: 10
+    reputationBonus: 5
+    xpMultiplier: 1.2
+    isOptional: 0
+    isHidden: 0
   - description: In-app purchases
     type: 1
+    category: 0
     targetValue: 1
-    penaltyPercentMin: 5
-    penaltyPercentMax: 15
+    thresholdValue: 60
+    percentageTarget: 10
+    integerTarget: 3
+    penalties: []
+    bonuses: []
+    bonusPercent: 10
+    reputationBonus: 5
+    xpMultiplier: 1.2
+    isOptional: 0
+    isHidden: 0
   - description: User analytics
     type: 0
+    category: 0
     targetValue: 75
-    penaltyPercentMin: 5
-    penaltyPercentMax: 15
+    thresholdValue: 60
+    percentageTarget: 10
+    integerTarget: 3
+    penalties: []
+    bonuses: []
+    bonusPercent: 10
+    reputationBonus: 5
+    xpMultiplier: 1.2
+    isOptional: 0
+    isHidden: 0
   minGoals: 3
   maxGoals: 5
+  skillGoalWeight: 40
+  timeGoalWeight: 30
+  teamGoalWeight: 10
+  wellbeingGoalWeight: 20
+  efficiencyGoalWeight: 30
+  reputationGoalWeight: 10
   baseDeadlineDays: 30
   deadlineVariance: 6
   applyDifficultyDeadlineModifier: 1
   basePayoutMin: 10000
   basePayoutMax: 18000
   devSkillMin: 90
-  devSkillMax: 140
+  devSkillMax: 100
   designSkillMin: 60
-  designSkillMax: 110
+  designSkillMax: 100
   marketingSkillMin: 40
   marketingSkillMax: 90
   baseBurnoutImpact: 16

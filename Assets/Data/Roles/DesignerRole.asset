@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69e4034d4bcd1f74aa5def2157638005, type: 3}
   m_Name: DesignerRole
   m_EditorClassIdentifier: Assembly-CSharp::TechMogul.Data.RoleSO
+  id: role.designer_junior
   roleName: Designer
   description: Specializes in UI/UX design and visual aesthetics. High design skills,
     medium marketing, low dev.

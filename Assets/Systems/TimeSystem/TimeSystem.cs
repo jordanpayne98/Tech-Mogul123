@@ -1,9 +1,10 @@
 using UnityEngine;
 using TechMogul.Core;
+using TechMogul.Core.Save;
 
 namespace TechMogul.Systems
 {
-    public class TimeSystem : MonoBehaviour
+    public class TimeSystem : GameSystem
     {
         [Header("Starting Date")]
         [SerializeField] private int startYear = 2024;
@@ -14,25 +15,19 @@ namespace TechMogul.Systems
         [SerializeField] private float baseTickInterval = 10f;
         
         private GameDate _currentDate;
+        private int _dayIndex;
         private TimeSpeed _currentSpeed = TimeSpeed.Normal;
         private float _tickTimer;
         
         public GameDate CurrentDate => _currentDate;
+        public int DayIndex => _dayIndex;
         public TimeSpeed CurrentSpeed => _currentSpeed;
         
-        void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+            ServiceLocator.Instance.TryRegister<TimeSystem>(this);
             Initialize();
-        }
-        
-        void OnEnable()
-        {
-            SubscribeToEvents();
-        }
-        
-        void OnDisable()
-        {
-            UnsubscribeFromEvents();
         }
         
         void Update()
@@ -58,24 +53,18 @@ namespace TechMogul.Systems
                 Day = startDay
             };
             
+            _dayIndex = 0;
             _tickTimer = 0f;
             _currentSpeed = TimeSpeed.Paused;
             
-            Debug.Log($"TimeSystem initialized: {FormatDate(_currentDate)}");
+            Debug.Log($"TimeSystem initialized: {FormatDate(_currentDate)} (Day {_dayIndex})");
         }
         
-        void SubscribeToEvents()
+        protected override void SubscribeToEvents()
         {
-            EventBus.Subscribe<RequestChangeSpeedEvent>(HandleChangeSpeedRequest);
-            EventBus.Subscribe<RequestSetDateEvent>(HandleSetDateRequest);
-            EventBus.Subscribe<OnGameStartedEvent>(HandleGameStarted);
-        }
-        
-        void UnsubscribeFromEvents()
-        {
-            EventBus.Unsubscribe<RequestChangeSpeedEvent>(HandleChangeSpeedRequest);
-            EventBus.Unsubscribe<RequestSetDateEvent>(HandleSetDateRequest);
-            EventBus.Unsubscribe<OnGameStartedEvent>(HandleGameStarted);
+            Subscribe<RequestChangeSpeedEvent>(HandleChangeSpeedRequest);
+            Subscribe<RequestSetDateEvent>(HandleSetDateRequest);
+            Subscribe<OnGameStartedEvent>(HandleGameStarted);
         }
         
         void HandleChangeSpeedRequest(RequestChangeSpeedEvent evt)
@@ -89,7 +78,12 @@ namespace TechMogul.Systems
             _currentDate.Month = evt.Month;
             _currentDate.Day = evt.Day;
             
-            Debug.Log($"Date set to: {FormatDate(_currentDate)}");
+            if (evt.DayIndex >= 0)
+            {
+                _dayIndex = evt.DayIndex;
+            }
+            
+            Debug.Log($"Date set to: {FormatDate(_currentDate)} (Day {_dayIndex})");
             
             PublishDateUpdate();
         }
@@ -111,13 +105,15 @@ namespace TechMogul.Systems
                     Year = _currentDate.Year,
                     Month = _currentDate.Month,
                     Day = _currentDate.Day
-                }
+                },
+                DayIndex = _dayIndex
             });
         }
         
         void AdvanceDay()
         {
             _currentDate.Day++;
+            _dayIndex++;
             
             if (_currentDate.Day > 30)
             {
@@ -164,6 +160,30 @@ namespace TechMogul.Systems
             });
             
             Debug.Log($"Month advanced: {FormatDate(_currentDate)}");
+            
+            if (_currentDate.Month % 3 == 0)
+            {
+                TriggerQuarterTick();
+            }
+        }
+        
+        void TriggerQuarterTick()
+        {
+            int quarter = (_currentDate.Month - 1) / 3 + 1;
+            
+            EventBus.Publish(new OnQuarterTickEvent
+            {
+                CurrentDate = new GameDate
+                {
+                    Year = _currentDate.Year,
+                    Month = _currentDate.Month,
+                    Day = _currentDate.Day
+                },
+                Quarter = quarter,
+                Year = _currentDate.Year
+            });
+            
+            Debug.Log($"Quarter ended: Q{quarter} {_currentDate.Year}");
         }
         
         public void SetSpeed(TimeSpeed speed)
@@ -255,6 +275,7 @@ namespace TechMogul.Systems
     public class OnDayTickEvent
     {
         public GameDate CurrentDate;
+        public int DayIndex;
     }
     
     public class OnMonthTickEvent
@@ -273,5 +294,12 @@ namespace TechMogul.Systems
     public class RequestChangeSpeedEvent
     {
         public TimeSpeed Speed;
+    }
+    
+    public class OnQuarterTickEvent
+    {
+        public GameDate CurrentDate;
+        public int Quarter;
+        public int Year;
     }
 }

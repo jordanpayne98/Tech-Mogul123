@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba13eeec599a43a47b31afdc142c3ee0, type: 3}
+  m_Name: SocialMedia
+  m_EditorClassIdentifier: Assembly-CSharp::TechMogul.Systems.TechnologySO
+  id: tech.social_media
+  techName: Social Media
+  category: Platform
+  researchYear: 2004
+  inflectionYear: 2010
+  adoptionSpeedConstant: 0.5
+  innovationBonus: 0.05
+  bugRiskMultiplier: 1.08
+  marketRelevanceMultiplier: 1.5
+  prerequisites:
+  - {fileID: 11400000, guid: 06d34ebd88c26ea42ba1f2631054291b, type: 2}
+  replaces: []
+  description: Social networking platforms and user-generated content

@@ -12,39 +12,115 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 483c94476dbf4374c926c898434fcac1, type: 3}
   m_Name: CustomSolution
   m_EditorClassIdentifier: Assembly-CSharp::TechMogul.Data.ContractTemplateSO
+  id: contracttemplate.custom_solution
   templateName: Custom Solution
-  description: Build a unique custom solution tailored to client needs
+  description: Build a tailored software solution for unique client needs
   easyWeight: 40
   mediumWeight: 40
   hardWeight: 20
   possibleGoals:
-  - description: 'Quality '
+  - description: Requirements analysis
     type: 0
-    targetValue: 75
-    penaltyPercentMin: 5
-    penaltyPercentMax: 15
-  - description: Meet Tight Deadline
-    type: 2
-    targetValue: 20
-    penaltyPercentMin: 5
-    penaltyPercentMax: 15
-  - description: Complete 8 Features
+    category: 0
+    targetValue: 65
+    thresholdValue: 60
+    percentageTarget: 10
+    integerTarget: 3
+    penalties: []
+    bonuses: []
+    bonusPercent: 10
+    reputationBonus: 5
+    xpMultiplier: 1.2
+    isOptional: 0
+    isHidden: 0
+  - description: Custom UI/UX design
     type: 1
-    targetValue: 8
-    penaltyPercentMin: 5
-    penaltyPercentMax: 15
-  minGoals: 3
+    category: 0
+    targetValue: 4
+    thresholdValue: 60
+    percentageTarget: 10
+    integerTarget: 3
+    penalties: []
+    bonuses: []
+    bonusPercent: 10
+    reputationBonus: 5
+    xpMultiplier: 1.2
+    isOptional: 0
+    isHidden: 0
+  - description: Backend architecture
+    type: 0
+    category: 0
+    targetValue: 70
+    thresholdValue: 60
+    percentageTarget: 10
+    integerTarget: 3
+    penalties: []
+    bonuses: []
+    bonusPercent: 10
+    reputationBonus: 5
+    xpMultiplier: 1.2
+    isOptional: 0
+    isHidden: 0
+  - description: Client documentation
+    type: 2
+    category: 0
+    targetValue: 3
+    thresholdValue: 60
+    percentageTarget: 10
+    integerTarget: 3
+    penalties: []
+    bonuses: []
+    bonusPercent: 10
+    reputationBonus: 5
+    xpMultiplier: 1.2
+    isOptional: 0
+    isHidden: 0
+  - description: Integration testing
+    type: 0
+    category: 0
+    targetValue: 78
+    thresholdValue: 60
+    percentageTarget: 10
+    integerTarget: 3
+    penalties: []
+    bonuses: []
+    bonusPercent: 10
+    reputationBonus: 5
+    xpMultiplier: 1.2
+    isOptional: 0
+    isHidden: 0
+  - description: Deployment setup
+    type: 1
+    category: 0
+    targetValue: 2
+    thresholdValue: 60
+    percentageTarget: 10
+    integerTarget: 3
+    penalties: []
+    bonuses: []
+    bonusPercent: 10
+    reputationBonus: 5
+    xpMultiplier: 1.2
+    isOptional: 0
+    isHidden: 0
+  minGoals: 2
   maxGoals: 4
-  baseDeadlineDays: 30
+  skillGoalWeight: 40
+  timeGoalWeight: 30
+  teamGoalWeight: 10
+  wellbeingGoalWeight: 20
+  efficiencyGoalWeight: 30
+  reputationGoalWeight: 10
+  baseDeadlineDays: 20
   deadlineVariance: 5
   applyDifficultyDeadlineModifier: 1
-  basePayoutMin: 18000
-  basePayoutMax: 30000
-  devSkillMin: 120
-  devSkillMax: 180
-  designSkillMin: 80
-  designSkillMax: 140
-  marketingSkillMin: 50
-  marketingSkillMax: 110
-  baseBurnoutImpact: 20
-  baseXPReward: 6
+  basePayoutMin: 8000
+  basePayoutMax: 16000
+  devSkillMin: 85
+  devSkillMax: 135
+  designSkillMin: 55
+  designSkillMax: 105
+  marketingSkillMin: 35
+  marketingSkillMax: 85
+  baseBurnoutImpact: 14
+  baseXPReward: 5

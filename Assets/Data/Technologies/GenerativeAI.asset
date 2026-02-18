@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba13eeec599a43a47b31afdc142c3ee0, type: 3}
+  m_Name: GenerativeAI
+  m_EditorClassIdentifier: Assembly-CSharp::TechMogul.Systems.TechnologySO
+  id: tech.gen_ai
+  techName: Generative AI
+  category: AI
+  researchYear: 2022
+  inflectionYear: 2027
+  adoptionSpeedConstant: 0.6
+  innovationBonus: 0.1
+  bugRiskMultiplier: 1.25
+  marketRelevanceMultiplier: 2
+  prerequisites:
+  - {fileID: 11400000, guid: e126e1d58a8296748b3542ddec19c18f, type: 2}
+  replaces: []
+  description: LLMs, image generation, and AI-powered automation

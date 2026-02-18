@@ -1,4 +1,7 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
+using TechMogul.Core.Save;
 
 namespace TechMogul.Core
 {
@@ -9,8 +12,10 @@ namespace TechMogul.Core
         [Header("Game State")]
         [SerializeField] private float startingCash = 50000f;
         
+        private IEventBus _eventBus;
         private float _currentCash;
         private bool _isGameRunning;
+        private readonly List<IDisposable> _subs = new List<IDisposable>();
         
         public float CurrentCash => _currentCash;
         public bool IsGameRunning => _isGameRunning;
@@ -26,7 +31,23 @@ namespace TechMogul.Core
             Instance = this;
             DontDestroyOnLoad(gameObject);
             
+            InitializeServices();
             InitializeSystems();
+        }
+        
+        void InitializeServices()
+        {
+            if (ServiceLocator.Instance.TryGet<IEventBus>(out IEventBus existingEventBus))
+            {
+                _eventBus = existingEventBus;
+            }
+            else
+            {
+                _eventBus = new EventBus(ex => Debug.LogException(ex));
+                ServiceLocator.Instance.Register<IEventBus>(_eventBus);
+            }
+            
+            Debug.Log("Services initialized");
         }
         
         void OnEnable()
@@ -36,7 +57,11 @@ namespace TechMogul.Core
         
         void OnDisable()
         {
-            UnsubscribeFromEvents();
+            for (int i = 0; i < _subs.Count; i++)
+            {
+                _subs[i]?.Dispose();
+            }
+            _subs.Clear();
         }
         
         void InitializeSystems()
@@ -49,23 +74,15 @@ namespace TechMogul.Core
         
         void Start()
         {
-            EventBus.Publish(new OnCashChangedEvent { NewCash = _currentCash, OldCash = 0, Change = _currentCash });
+            PublishCashChanged(0, _currentCash);
         }
         
         void SubscribeToEvents()
         {
-            EventBus.Subscribe<RequestAddCashEvent>(HandleAddCash);
-            EventBus.Subscribe<RequestDeductCashEvent>(HandleDeductCash);
-            EventBus.Subscribe<RequestSetCashEvent>(HandleSetCash);
-            EventBus.Subscribe<RequestStartNewGameEvent>(HandleStartNewGame);
-        }
-        
-        void UnsubscribeFromEvents()
-        {
-            EventBus.Unsubscribe<RequestAddCashEvent>(HandleAddCash);
-            EventBus.Unsubscribe<RequestDeductCashEvent>(HandleDeductCash);
-            EventBus.Unsubscribe<RequestSetCashEvent>(HandleSetCash);
-            EventBus.Unsubscribe<RequestStartNewGameEvent>(HandleStartNewGame);
+            _subs.Add(_eventBus.Subscribe<RequestAddCashEvent>(HandleAddCash));
+            _subs.Add(_eventBus.Subscribe<RequestDeductCashEvent>(HandleDeductCash));
+            _subs.Add(_eventBus.Subscribe<RequestSetCashEvent>(HandleSetCash));
+            _subs.Add(_eventBus.Subscribe<RequestStartNewGameEvent>(HandleStartNewGame));
         }
         
         void HandleStartNewGame(RequestStartNewGameEvent evt)
@@ -75,11 +92,12 @@ namespace TechMogul.Core
         
         public void StartNewGame()
         {
+            float oldCash = _currentCash;
             _currentCash = startingCash;
             _isGameRunning = true;
             
-            EventBus.Publish(new OnGameStartedEvent());
-            EventBus.Publish(new OnCashChangedEvent { NewCash = _currentCash, OldCash = 0, Change = _currentCash });
+            _eventBus.Publish(new OnGameStartedEvent());
+            PublishCashChanged(oldCash, _currentCash);
             
             Debug.Log($"New game started with ${_currentCash:N0}");
         }
@@ -88,14 +106,8 @@ namespace TechMogul.Core
         {
             float oldCash = _currentCash;
             _currentCash = evt.Amount;
-            _isGameRunning = true;
             
-            EventBus.Publish(new OnCashChangedEvent
-            {
-                NewCash = _currentCash,
-                OldCash = oldCash,
-                Change = _currentCash - oldCash
-            });
+            PublishCashChanged(oldCash, _currentCash);
         }
         
         void HandleAddCash(RequestAddCashEvent evt)
@@ -109,12 +121,7 @@ namespace TechMogul.Core
             float oldCash = _currentCash;
             _currentCash += evt.Amount;
             
-            EventBus.Publish(new OnCashChangedEvent 
-            { 
-                NewCash = _currentCash,
-                OldCash = oldCash,
-                Change = evt.Amount
-            });
+            PublishCashChanged(oldCash, _currentCash);
             
             Debug.Log($"Cash added: ${evt.Amount:N0}. New balance: ${_currentCash:N0}");
         }
@@ -130,39 +137,18 @@ namespace TechMogul.Core
             if (_currentCash < evt.Amount)
             {
                 Debug.LogWarning($"Insufficient cash. Required: ${evt.Amount:N0}, Available: ${_currentCash:N0}");
-                EventBus.Publish(new OnInsufficientCashEvent 
+                _eventBus.Publish(new OnInsufficientCashEvent 
                 { 
                     Required = evt.Amount,
                     Available = _currentCash 
                 });
-                
-                // Deduct what cash is available and go into debt (negative cash)
-                float oldCash = _currentCash;
-                _currentCash -= evt.Amount;
-                
-                EventBus.Publish(new OnCashChangedEvent 
-                { 
-                    NewCash = _currentCash,
-                    OldCash = oldCash,
-                    Change = -evt.Amount
-                });
-                
-                Debug.Log($"Cash deducted (insufficient funds): ${evt.Amount:N0}. New balance: ${_currentCash:N0}");
-                
-                // Check for bankruptcy after going into debt
-                CheckBankruptcy();
                 return;
             }
             
-            float oldCash2 = _currentCash;
+            float oldCash = _currentCash;
             _currentCash -= evt.Amount;
             
-            EventBus.Publish(new OnCashChangedEvent 
-            { 
-                NewCash = _currentCash,
-                OldCash = oldCash2,
-                Change = -evt.Amount
-            });
+            PublishCashChanged(oldCash, _currentCash);
             
             Debug.Log($"Cash deducted: ${evt.Amount:N0}. New balance: ${_currentCash:N0}");
             
@@ -173,16 +159,25 @@ namespace TechMogul.Core
         {
             if (_currentCash <= 0)
             {
-                // Set game as running if somehow it wasn't started yet
                 if (!_isGameRunning)
                 {
                     _isGameRunning = true;
                     Debug.LogWarning("Game wasn't officially started, but setting _isGameRunning = true for bankruptcy check");
                 }
                 
-                EventBus.Publish(new OnBankruptcyEvent());
+                _eventBus.Publish(new OnBankruptcyEvent());
                 Debug.LogWarning("Bankruptcy! Cash reached $0");
             }
+        }
+        
+        void PublishCashChanged(float oldCash, float newCash)
+        {
+            _eventBus.Publish(new OnCashChangedEvent
+            {
+                OldCash = oldCash,
+                NewCash = newCash,
+                Change = newCash - oldCash
+            });
         }
         
         #if UNITY_EDITOR
@@ -195,7 +190,7 @@ namespace TechMogul.Core
         [ContextMenu("Debug: Add $10,000")]
         void DebugAddCash()
         {
-            EventBus.Publish(new RequestAddCashEvent { Amount = 10000 });
+            _eventBus.Publish(new RequestAddCashEvent { Amount = 10000 });
         }
         
         [ContextMenu("Debug: Trigger Game Over")]

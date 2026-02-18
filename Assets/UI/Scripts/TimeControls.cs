@@ -5,7 +5,7 @@ using TechMogul.Systems;
 
 namespace TechMogul.UI
 {
-    public class TimeControls : MonoBehaviour
+    public class TimeControls : UIController
     {
         [Header("Button References")]
         [SerializeField] private Button pauseButton;
@@ -26,14 +26,9 @@ namespace TechMogul.UI
             SetupButtons();
         }
         
-        void OnEnable()
+        protected override void SubscribeToEvents()
         {
-            EventBus.Subscribe<OnSpeedChangedEvent>(HandleSpeedChanged);
-        }
-        
-        void OnDisable()
-        {
-            EventBus.Unsubscribe<OnSpeedChangedEvent>(HandleSpeedChanged);
+            Subscribe<OnSpeedChangedEvent>(HandleSpeedChanged);
         }
         
         void SetupButtons()

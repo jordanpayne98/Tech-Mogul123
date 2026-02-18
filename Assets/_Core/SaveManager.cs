@@ -6,6 +6,7 @@ using System.Linq;
 using TechMogul.Systems;
 using TechMogul.Products;
 using TechMogul.Contracts;
+using TechMogul.Core.Save;
 
 namespace TechMogul.Core
 {
@@ -17,6 +18,12 @@ namespace TechMogul.Core
         [SerializeField] private int maxSaveSlots = 3;
         [SerializeField] private bool prettyPrintJson = true;
         
+        [Header("Definition Registry")]
+        [SerializeField] private DefinitionRegistrySO definitionRegistry;
+        
+        private IEventBus _eventBus;
+        private IDefinitionResolver _definitionResolver;
+        private readonly List<IDisposable> _subs = new List<IDisposable>();
         private string SaveDirectory => Path.Combine(Application.persistentDataPath, "Saves");
         
         void Awake()
@@ -30,23 +37,55 @@ namespace TechMogul.Core
             Instance = this;
             DontDestroyOnLoad(gameObject);
             
+            InitializeServices();
             EnsureSaveDirectoryExists();
+        }
+        
+        void InitializeServices()
+        {
+            _eventBus = ServiceLocator.Instance.Get<IEventBus>();
+            
+            if (ServiceLocator.Instance.TryGet<IDefinitionResolver>(out IDefinitionResolver existingResolver))
+            {
+                _definitionResolver = existingResolver;
+                Debug.Log("Using existing IDefinitionResolver from ServiceLocator");
+            }
+            else
+            {
+                if (definitionRegistry == null)
+                {
+                    Debug.LogError("DefinitionRegistry is not assigned in SaveManager. Save/Load will fail.");
+                    return;
+                }
+                
+                _definitionResolver = new DefinitionResolver(definitionRegistry);
+                if (ServiceLocator.Instance.TryRegister<IDefinitionResolver>(_definitionResolver))
+                {
+                    Debug.Log("Registered IDefinitionResolver in ServiceLocator");
+                }
+            }
         }
         
         void OnEnable()
         {
-            EventBus.Subscribe<RequestSaveGameToSlotEvent>(HandleSaveToSlotRequest);
-            EventBus.Subscribe<RequestLoadGameFromSlotEvent>(HandleLoadFromSlotRequest);
-            EventBus.Subscribe<RequestDeleteSaveSlotEvent>(HandleDeleteSlotRequest);
-            EventBus.Subscribe<RequestGetSaveSlotsEvent>(HandleGetSaveSlotsRequest);
+            if (_eventBus == null)
+            {
+                _eventBus = ServiceLocator.Instance.Get<IEventBus>();
+            }
+            
+            _subs.Add(_eventBus.Subscribe<RequestSaveGameToSlotEvent>(HandleSaveToSlotRequest));
+            _subs.Add(_eventBus.Subscribe<RequestLoadGameFromSlotEvent>(HandleLoadFromSlotRequest));
+            _subs.Add(_eventBus.Subscribe<RequestDeleteSaveSlotEvent>(HandleDeleteSlotRequest));
+            _subs.Add(_eventBus.Subscribe<RequestGetSaveSlotsEvent>(HandleGetSaveSlotsRequest));
         }
         
         void OnDisable()
         {
-            EventBus.Unsubscribe<RequestSaveGameToSlotEvent>(HandleSaveToSlotRequest);
-            EventBus.Unsubscribe<RequestLoadGameFromSlotEvent>(HandleLoadFromSlotRequest);
-            EventBus.Unsubscribe<RequestDeleteSaveSlotEvent>(HandleDeleteSlotRequest);
-            EventBus.Unsubscribe<RequestGetSaveSlotsEvent>(HandleGetSaveSlotsRequest);
+            for (int i = 0; i < _subs.Count; i++)
+            {
+                _subs[i]?.Dispose();
+            }
+            _subs.Clear();
         }
         
         void EnsureSaveDirectoryExists()
@@ -76,7 +115,7 @@ namespace TechMogul.Core
         void HandleGetSaveSlotsRequest(RequestGetSaveSlotsEvent evt)
         {
             var slots = GetAllSaveSlots();
-            EventBus.Publish(new OnSaveSlotsReceivedEvent { SaveSlots = slots });
+            _eventBus.Publish(new OnSaveSlotsReceivedEvent { SaveSlots = slots });
         }
         
         public void SaveGameToSlot(int slotIndex, string saveName)
@@ -84,13 +123,21 @@ namespace TechMogul.Core
             if (slotIndex < 0 || slotIndex >= maxSaveSlots)
             {
                 Debug.LogError($"Invalid save slot index: {slotIndex}");
-                EventBus.Publish(new OnGameSavedEvent { Success = false });
+                _eventBus.Publish(new OnGameSavedEvent { Success = false });
                 return;
             }
             
             try
             {
                 SaveData saveData = GatherSaveData();
+                
+                if (saveData == null)
+                {
+                    Debug.LogError("Failed to gather save data. Cannot save game.");
+                    _eventBus.Publish(new OnGameSavedEvent { Success = false });
+                    return;
+                }
+                
                 saveData.saveName = saveName;
                 saveData.saveTimestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                 
@@ -99,12 +146,12 @@ namespace TechMogul.Core
                 File.WriteAllText(filePath, json);
                 
                 Debug.Log($"Game saved to slot {slotIndex}: {filePath}");
-                EventBus.Publish(new OnGameSavedEvent { Success = true, SlotIndex = slotIndex });
+                _eventBus.Publish(new OnGameSavedEvent { Success = true, SlotIndex = slotIndex });
             }
             catch (Exception e)
             {
                 Debug.LogError($"Failed to save game to slot {slotIndex}: {e.Message}");
-                EventBus.Publish(new OnGameSavedEvent { Success = false });
+                _eventBus.Publish(new OnGameSavedEvent { Success = false });
             }
         }
         
@@ -113,7 +160,7 @@ namespace TechMogul.Core
             if (slotIndex < 0 || slotIndex >= maxSaveSlots)
             {
                 Debug.LogError($"Invalid save slot index: {slotIndex}");
-                EventBus.Publish(new OnGameLoadedEvent { Success = false });
+                _eventBus.Publish(new OnGameLoadedEvent { Success = false });
                 return;
             }
             
@@ -122,7 +169,7 @@ namespace TechMogul.Core
             if (!File.Exists(filePath))
             {
                 Debug.LogWarning($"No save file found in slot {slotIndex}");
-                EventBus.Publish(new OnGameLoadedEvent { Success = false });
+                _eventBus.Publish(new OnGameLoadedEvent { Success = false });
                 return;
             }
             
@@ -131,15 +178,17 @@ namespace TechMogul.Core
                 string json = File.ReadAllText(filePath);
                 SaveData saveData = JsonUtility.FromJson<SaveData>(json);
                 
+                SaveDataMigration.MigrateSaveData(saveData);
+                
                 ApplySaveData(saveData);
                 
                 Debug.Log($"Game loaded from slot {slotIndex}: {filePath}");
-                EventBus.Publish(new OnGameLoadedEvent { Success = true, SlotIndex = slotIndex });
+                _eventBus.Publish(new OnGameLoadedEvent { Success = true, SlotIndex = slotIndex });
             }
             catch (Exception e)
             {
                 Debug.LogError($"Failed to load game from slot {slotIndex}: {e.Message}");
-                EventBus.Publish(new OnGameLoadedEvent { Success = false });
+                _eventBus.Publish(new OnGameLoadedEvent { Success = false });
             }
         }
         
@@ -159,7 +208,7 @@ namespace TechMogul.Core
                 {
                     File.Delete(filePath);
                     Debug.Log($"Deleted save in slot {slotIndex}");
-                    EventBus.Publish(new OnSaveSlotDeletedEvent { SlotIndex = slotIndex });
+                    _eventBus.Publish(new OnSaveSlotDeletedEvent { SlotIndex = slotIndex });
                 }
                 catch (Exception e)
                 {
@@ -211,6 +260,20 @@ namespace TechMogul.Core
                 {
                     Debug.LogError($"Failed to read save slot {slotIndex}: {e.Message}");
                     slotInfo.IsEmpty = true;
+                    
+                    string corruptPath = filePath + ".corrupt";
+                    try
+                    {
+                        if (!File.Exists(corruptPath))
+                        {
+                            File.Move(filePath, corruptPath);
+                            Debug.LogWarning($"Moved corrupt save file to: {corruptPath}");
+                        }
+                    }
+                    catch (Exception moveEx)
+                    {
+                        Debug.LogError($"Failed to rename corrupt file: {moveEx.Message}");
+                    }
                 }
             }
             
@@ -229,9 +292,15 @@ namespace TechMogul.Core
         
         SaveData GatherSaveData()
         {
+            if (_definitionResolver == null)
+            {
+                Debug.LogError("DefinitionResolver is not initialized. Cannot save game.");
+                return null;
+            }
+            
             SaveData data = new SaveData
             {
-                saveVersion = 1,
+                saveVersion = SaveConstants.CURRENT_VERSION,
                 saveName = "Auto Save",
                 saveTimestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
             };
@@ -245,16 +314,24 @@ namespace TechMogul.Core
                 };
             }
             
-            TimeSystem timeSystem = FindFirstObjectByType<TimeSystem>();
-            if (timeSystem != null)
+            if (ServiceLocator.Instance.TryGet<TimeSystem>(out TimeSystem timeSystem))
             {
                 data.timeSystem = new TimeSystemData
                 {
                     year = timeSystem.CurrentDate.Year,
                     month = timeSystem.CurrentDate.Month,
                     day = timeSystem.CurrentDate.Day,
+                    dayIndex = timeSystem.DayIndex,
                     currentSpeed = timeSystem.CurrentSpeed
                 };
+            }
+            
+            TechnologySystemData techData = null;
+            _eventBus.Subscribe<OnTechnologyDataSavedEvent>(evt => techData = evt.Data).Dispose();
+            _eventBus.Publish(new RequestSaveTechnologyDataEvent());
+            if (techData != null)
+            {
+                data.technologySystem = techData;
             }
             
             if (EmployeeSystem.Instance != null)
@@ -262,17 +339,30 @@ namespace TechMogul.Core
                 data.employeeSystem = new EmployeeSystemData
                 {
                     employees = new List<SerializableEmployee>(),
-                    employeeCounter = EmployeeSystem.Instance.Employees.Count
+                    employeeCounter = EmployeeSystem.Instance.Employees.Count,
+                    pendingSeverancePayments = new List<PendingSeverancePayment>()
                 };
                 
                 foreach (var employee in EmployeeSystem.Instance.Employees)
                 {
-                    data.employeeSystem.employees.Add(SerializableEmployee.FromEmployee(employee));
+                    SerializableEmployee serialized = SerializableEmployee.FromEmployee(employee, _definitionResolver);
+                    if (serialized != null)
+                    {
+                        data.employeeSystem.employees.Add(serialized);
+                    }
+                }
+                
+                foreach (var (employeeName, salary) in EmployeeSystem.Instance.PendingSeverancePayments)
+                {
+                    data.employeeSystem.pendingSeverancePayments.Add(new PendingSeverancePayment
+                    {
+                        employeeName = employeeName,
+                        salary = salary
+                    });
                 }
             }
             
-            ProductSystem productSystem = FindFirstObjectByType<ProductSystem>();
-            if (productSystem != null)
+            if (ServiceLocator.Instance.TryGet<ProductSystem>(out ProductSystem productSystem))
             {
                 data.productSystem = new ProductSystemData
                 {
@@ -281,12 +371,15 @@ namespace TechMogul.Core
                 
                 foreach (var product in productSystem.Products)
                 {
-                    data.productSystem.products.Add(SerializableProduct.FromProduct(product));
+                    SerializableProduct serialized = SerializableProduct.FromProduct(product, _definitionResolver);
+                    if (serialized != null)
+                    {
+                        data.productSystem.products.Add(serialized);
+                    }
                 }
             }
             
-            ContractSystem contractSystem = FindFirstObjectByType<ContractSystem>();
-            if (contractSystem != null)
+            if (ServiceLocator.Instance.TryGet<ContractSystem>(out ContractSystem contractSystem))
             {
                 data.contractSystem = new ContractSystemData
                 {
@@ -296,12 +389,15 @@ namespace TechMogul.Core
                 
                 foreach (var contract in contractSystem.Contracts)
                 {
-                    data.contractSystem.contracts.Add(SerializableContract.FromContract(contract));
+                    SerializableContract serialized = SerializableContract.FromContract(contract, _definitionResolver);
+                    if (serialized != null)
+                    {
+                        data.contractSystem.contracts.Add(serialized);
+                    }
                 }
             }
             
-            ReputationSystem reputationSystem = FindFirstObjectByType<ReputationSystem>();
-            if (reputationSystem != null)
+            if (ServiceLocator.Instance.TryGet<ReputationSystem>(out ReputationSystem reputationSystem))
             {
                 data.reputationSystem = new ReputationSystemData
                 {
@@ -314,36 +410,46 @@ namespace TechMogul.Core
         
         void ApplySaveData(SaveData data)
         {
-            EventBus.Publish(new OnBeforeLoadGameEvent());
+            _eventBus.Publish(new OnBeforeLoadGameEvent());
             
             if (data.gameManager != null && GameManager.Instance != null)
             {
-                EventBus.Publish(new RequestSetCashEvent { Amount = data.gameManager.currentCash });
+                _eventBus.Publish(new RequestSetCashEvent { Amount = data.gameManager.currentCash });
             }
             
             if (data.timeSystem != null)
             {
-                EventBus.Publish(new RequestSetDateEvent
+                _eventBus.Publish(new RequestSetDateEvent
                 {
                     Year = data.timeSystem.year,
                     Month = data.timeSystem.month,
-                    Day = data.timeSystem.day
+                    Day = data.timeSystem.day,
+                    DayIndex = data.timeSystem.dayIndex
                 });
                 
-                EventBus.Publish(new RequestChangeSpeedEvent { Speed = data.timeSystem.currentSpeed });
+                _eventBus.Publish(new RequestChangeSpeedEvent { Speed = data.timeSystem.currentSpeed });
+            }
+            
+            if (data.technologySystem != null)
+            {
+                _eventBus.Publish(new RequestLoadTechnologyDataEvent
+                {
+                    Data = data.technologySystem
+                });
             }
             
             if (data.employeeSystem != null)
             {
-                EventBus.Publish(new RequestLoadEmployeesEvent
+                _eventBus.Publish(new RequestLoadEmployeesEvent
                 {
-                    Employees = data.employeeSystem.employees
+                    Employees = data.employeeSystem.employees,
+                    PendingSeverancePayments = data.employeeSystem.pendingSeverancePayments ?? new List<PendingSeverancePayment>()
                 });
             }
             
             if (data.productSystem != null)
             {
-                EventBus.Publish(new RequestLoadProductsEvent
+                _eventBus.Publish(new RequestLoadProductsEvent
                 {
                     Products = data.productSystem.products
                 });
@@ -351,7 +457,7 @@ namespace TechMogul.Core
             
             if (data.contractSystem != null)
             {
-                EventBus.Publish(new RequestLoadContractsEvent
+                _eventBus.Publish(new RequestLoadContractsEvent
                 {
                     Contracts = data.contractSystem.contracts
                 });
@@ -359,13 +465,13 @@ namespace TechMogul.Core
             
             if (data.reputationSystem != null)
             {
-                EventBus.Publish(new RequestSetReputationEvent
+                _eventBus.Publish(new RequestSetReputationEvent
                 {
                     Reputation = data.reputationSystem.currentReputation
                 });
             }
             
-            EventBus.Publish(new OnAfterLoadGameEvent());
+            _eventBus.Publish(new OnAfterLoadGameEvent());
         }
         
         #if UNITY_EDITOR
@@ -396,100 +502,5 @@ namespace TechMogul.Core
             Debug.Log("All saves deleted");
         }
         #endif
-    }
-    
-    [Serializable]
-    public class SaveSlotInfo
-    {
-        public int SlotIndex;
-        public bool IsEmpty;
-        public string SaveName;
-        public string SaveTimestamp;
-        public float Cash;
-        public int Year;
-        public int Month;
-        public int Day;
-        public int EmployeeCount;
-        public float Reputation;
-    }
-    
-    public class RequestSaveGameToSlotEvent
-    {
-        public int SlotIndex;
-        public string SaveName;
-    }
-    
-    public class RequestLoadGameFromSlotEvent
-    {
-        public int SlotIndex;
-    }
-    
-    public class RequestDeleteSaveSlotEvent
-    {
-        public int SlotIndex;
-    }
-    
-    public class RequestGetSaveSlotsEvent { }
-    
-    public class OnSaveSlotsReceivedEvent
-    {
-        public List<SaveSlotInfo> SaveSlots;
-    }
-    
-    public class OnSaveSlotDeletedEvent
-    {
-        public int SlotIndex;
-    }
-    
-    public class OnGameSavedEvent
-    {
-        public bool Success;
-        public int SlotIndex;
-    }
-    
-    public class OnGameLoadedEvent
-    {
-        public bool Success;
-        public int SlotIndex;
-    }
-    
-    public class RequestSaveGameEvent { }
-    
-    public class RequestLoadGameEvent { }
-    
-    public class OnBeforeLoadGameEvent { }
-    
-    public class OnAfterLoadGameEvent { }
-    
-    public class RequestSetCashEvent
-    {
-        public float Amount;
-    }
-    
-    public class RequestSetDateEvent
-    {
-        public int Year;
-        public int Month;
-        public int Day;
-    }
-    
-    public class RequestLoadEmployeesEvent
-    {
-        public List<SerializableEmployee> Employees;
-    }
-    
-    public class RequestLoadProductsEvent
-    {
-        public List<SerializableProduct> Products;
-    }
-    
-    public class RequestLoadContractsEvent
-    {
-        public List<SerializableContract> Contracts;
-    }
-    
-    public class RequestSetReputationEvent
-    {
-        public float Reputation;
     }
 }

@@ -9,7 +9,7 @@ using TechMogul.UI.Components;
 namespace TechMogul.UI
 {
     [RequireComponent(typeof(UIDocument))]
-    public class MainUIController : MonoBehaviour
+    public class MainUIController : UIController
     {
         [Header("Hire Dialog")]
         [SerializeField] private HireDialogController hireDialog;
@@ -17,6 +17,7 @@ namespace TechMogul.UI
         [Header("Panel Controllers")]
         [SerializeField] private ProductPanelController productPanelController;
         [SerializeField] private ContractPanelController contractPanelController;
+        [SerializeField] private IndustryOverviewController industryOverviewController;
         
         [Header("Standalone Dialogs")]
         [SerializeField] private GameObject employeeDetailDialogGO;
@@ -29,6 +30,7 @@ namespace TechMogul.UI
         private Label dateValue;
         private Label speedValue;
         private Label reputationValue;
+        private Label eraValue;
         
         // Employee detail dialog
         private VisualElement employeeDetailDialog;
@@ -54,12 +56,14 @@ namespace TechMogul.UI
         private VisualElement productPanel;
         private VisualElement contractPanel;
         private VisualElement marketPanel;
+        private VisualElement technologyPanel;
         
         // Sidebar buttons
         private Button employeesBtn;
         private Button productsBtn;
         private Button contractsBtn;
         private Button marketBtn;
+        private Button technologyBtn;
         
         // Sidebar stats
         private Label employeeCount;
@@ -90,13 +94,15 @@ namespace TechMogul.UI
         private Label unclaimedMarketShare;
         private ScrollView rivalList;
         
-        void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             uiDocument = GetComponent<UIDocument>();
         }
         
-        void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
             if (uiDocument == null || uiDocument.rootVisualElement == null)
             {
                 Debug.LogError("UIDocument or root visual element is null");
@@ -127,8 +133,7 @@ namespace TechMogul.UI
             // Initialize reputation display
             InitializeReputation();
             
-            // Initialize market panel if RivalSystem is already ready
-            if (RivalSystem.Instance != null && RivalSystem.Instance.Rivals.Count > 0)
+            if (RivalSystem.Instance != null && RivalSystem.Instance.AllCompanies.Count > 0)
             {
                 PopulateMarketPanel();
             }
@@ -136,14 +141,14 @@ namespace TechMogul.UI
             Debug.Log("MainUIController initialized with new layout");
         }
         
-        void OnDisable()
+        protected override void OnDisable()
         {
-            UnsubscribeFromEvents();
-            
             if (employeeTable != null)
             {
                 employeeTable.SaveColumnState("EmployeeTable");
             }
+            
+            base.OnDisable();
         }
         
         void CacheReferences()
@@ -153,6 +158,7 @@ namespace TechMogul.UI
             dateValue = root.Q<Label>("date-value");
             speedValue = root.Q<Label>("speed-value");
             reputationValue = root.Q<Label>("reputation-value");
+            eraValue = root.Q<Label>("era-value");
             
             // Time control buttons
             playPauseBtn = root.Q<Button>("play-pause-btn");
@@ -170,12 +176,20 @@ namespace TechMogul.UI
             productPanel = root.Q<VisualElement>("product-panel");
             contractPanel = root.Q<VisualElement>("contract-panel");
             marketPanel = root.Q<VisualElement>("market-panel");
+            technologyPanel = root.Q<VisualElement>("technology-panel");
+            
+            Debug.Log($"Technology panel found: {technologyPanel != null}");
+            if (technologyPanel != null)
+            {
+                Debug.Log($"Technology panel classes: {string.Join(", ", technologyPanel.GetClasses())}");
+            }
             
             // Sidebar buttons
             employeesBtn = root.Q<Button>("employees-btn");
             productsBtn = root.Q<Button>("products-btn");
             contractsBtn = root.Q<Button>("contracts-btn");
             marketBtn = root.Q<Button>("market-btn");
+            technologyBtn = root.Q<Button>("technology-btn");
             
             // Sidebar stats
             employeeCount = root.Q<Label>("employee-count");
@@ -185,6 +199,17 @@ namespace TechMogul.UI
             employeeTableContainer = root.Q<VisualElement>("employee-table-container");
             employeeEmptyState = root.Q<VisualElement>("empty-state");
             hireBtn = root.Q<Button>("hire-btn");
+            
+            if (hireBtn == null)
+            {
+                Debug.LogWarning("hire-btn not found, trying employeePanel query...");
+                if (employeePanel != null)
+                {
+                    hireBtn = employeePanel.Q<Button>("hire-btn");
+                }
+            }
+            
+            Debug.Log($"hireBtn found: {hireBtn != null}");
             
             filterAllRoles = root.Q<Button>("filter-all-roles");
             filterDeveloper = root.Q<Button>("filter-developer");
@@ -260,8 +285,10 @@ namespace TechMogul.UI
             if (productsBtn != null) productsBtn.clicked += () => ShowPanel(productPanel, productsBtn);
             if (contractsBtn != null) contractsBtn.clicked += () => ShowPanel(contractPanel, contractsBtn);
             if (marketBtn != null) marketBtn.clicked += () => ShowPanel(marketPanel, marketBtn);
+            if (technologyBtn != null) technologyBtn.clicked += () => ShowPanel(technologyPanel, technologyBtn);
             
             if (hireBtn != null) hireBtn.clicked += OpenHireDialog;
+            else Debug.LogError("hireBtn is NULL - button not found in UXML!");
             
             if (filterAllRoles != null) filterAllRoles.clicked += () => SetRoleFilter("All");
             if (filterDeveloper != null) filterDeveloper.clicked += () => SetRoleFilter("Developer");
@@ -343,12 +370,12 @@ namespace TechMogul.UI
                 .SetFormatter(emp => 
                 {
                     var e = (Employee)emp;
-                    return e.isFired ? "Fired" : (e.isAvailable ? "Available" : "Busy");
+                    return e.isAvailable ? "Available" : "Busy";
                 })
                 .SetSortValueGetter(emp => 
                 {
                     var e = (Employee)emp;
-                    return e.isFired ? 2 : (e.isAvailable ? 0 : 1);
+                    return e.isAvailable ? 0 : 1;
                 }));
             
             // Set row click callback to show employee details
@@ -443,51 +470,57 @@ namespace TechMogul.UI
         
         void ShowPanel(VisualElement panel, Button activeBtn)
         {
-            if (panel == null || activeBtn == null) return;
+            if (panel == null || activeBtn == null)
+            {
+                Debug.LogWarning($"ShowPanel: panel is null: {panel == null}, activeBtn is null: {activeBtn == null}");
+                return;
+            }
+            
+            Debug.Log($"ShowPanel called for: {panel.name}");
             
             // Hide all panels
             employeePanel?.AddToClassList("hidden");
             productPanel?.AddToClassList("hidden");
             contractPanel?.AddToClassList("hidden");
             marketPanel?.AddToClassList("hidden");
+            technologyPanel?.AddToClassList("hidden");
             
             // Remove active class from all buttons
             employeesBtn?.RemoveFromClassList("sidebar-btn-active");
             productsBtn?.RemoveFromClassList("sidebar-btn-active");
             contractsBtn?.RemoveFromClassList("sidebar-btn-active");
             marketBtn?.RemoveFromClassList("sidebar-btn-active");
+            technologyBtn?.RemoveFromClassList("sidebar-btn-active");
             
             // Show selected panel and highlight button
             panel.RemoveFromClassList("hidden");
             activeBtn.AddToClassList("sidebar-btn-active");
+            
+            Debug.Log($"Panel {panel.name} classes after showing: {string.Join(", ", panel.GetClasses())}");
+            Debug.Log($"Panel display style: {panel.style.display}");
+            
+            // Refresh IndustryOverview when market panel shown
+            if (panel == marketPanel && industryOverviewController != null)
+            {
+                industryOverviewController.ForceRefresh();
+            }
         }
         
-        void SubscribeToEvents()
+        protected override void SubscribeToEvents()
         {
-            EventBus.Subscribe<OnCashChangedEvent>(UpdateCash);
-            EventBus.Subscribe<OnDayTickEvent>(UpdateDate);
-            EventBus.Subscribe<OnDayTickEvent>(evt => RefreshEmployeeListIfVisible());
-            EventBus.Subscribe<OnSpeedChangedEvent>(UpdateSpeed);
-            EventBus.Subscribe<OnReputationChangedEvent>(UpdateReputation);
-            EventBus.Subscribe<OnEmployeeHiredEvent>(HandleEmployeeHired);
-            EventBus.Subscribe<OnEmployeeFiredEvent>(HandleEmployeeFired);
-            EventBus.Subscribe<TechMogul.Products.OnProductStartedEvent>(evt => UpdateSidebarStats());
-            EventBus.Subscribe<TechMogul.Products.OnProductReleasedEvent>(evt => UpdateSidebarStats());
-            EventBus.Subscribe<OnRivalsInitializedEvent>(evt => PopulateMarketPanel());
-        }
-        
-        void UnsubscribeFromEvents()
-        {
-            EventBus.Unsubscribe<OnCashChangedEvent>(UpdateCash);
-            EventBus.Unsubscribe<OnDayTickEvent>(UpdateDate);
-            EventBus.Unsubscribe<OnDayTickEvent>(evt => RefreshEmployeeListIfVisible());
-            EventBus.Unsubscribe<OnSpeedChangedEvent>(UpdateSpeed);
-            EventBus.Unsubscribe<OnReputationChangedEvent>(UpdateReputation);
-            EventBus.Unsubscribe<OnEmployeeHiredEvent>(HandleEmployeeHired);
-            EventBus.Unsubscribe<OnEmployeeFiredEvent>(HandleEmployeeFired);
-            EventBus.Unsubscribe<TechMogul.Products.OnProductStartedEvent>(evt => UpdateSidebarStats());
-            EventBus.Unsubscribe<TechMogul.Products.OnProductReleasedEvent>(evt => UpdateSidebarStats());
-            EventBus.Unsubscribe<OnRivalsInitializedEvent>(evt => PopulateMarketPanel());
+            Subscribe<OnCashChangedEvent>(UpdateCash);
+            Subscribe<OnDayTickEvent>(UpdateDate);
+            Subscribe<OnDayTickEvent>(evt => RefreshEmployeeListIfVisible());
+            Subscribe<OnSpeedChangedEvent>(UpdateSpeed);
+            Subscribe<OnReputationChangedEvent>(UpdateReputation);
+            Subscribe<OnEmployeeHiredEvent>(HandleEmployeeHired);
+            Subscribe<OnEmployeeFiredEvent>(HandleEmployeeFired);
+            Subscribe<TechMogul.Products.OnProductStartedEvent>(evt => UpdateSidebarStats());
+            Subscribe<TechMogul.Products.OnProductReleasedEvent>(evt => UpdateSidebarStats());
+            Subscribe<OnRivalsInitializedEvent>(evt => PopulateMarketPanel());
+            Subscribe<OnEraChangedEvent>(UpdateEra);
+            Subscribe<OnGameStartedEvent>(InitializeEra);
+            Subscribe<OnTechnologiesUpdatedEvent>(UpdateTechnologyPanel);
         }
         
         void UpdateCash(OnCashChangedEvent evt)
@@ -507,6 +540,178 @@ namespace TechMogul.UI
                 string monthStr = months[evt.CurrentDate.Month - 1];
                 dateValue.text = $"{monthStr} {evt.CurrentDate.Day}, {evt.CurrentDate.Year}";
             }
+        }
+        
+        void UpdateEra(OnEraChangedEvent evt)
+        {
+            if (eraValue != null && evt.NewEra != null)
+            {
+                eraValue.text = evt.NewEra.eraName;
+                
+                string trendIndicator = GetMarketTrendIndicator(evt.NewEra.baseMarketSizeMultiplier);
+                eraValue.tooltip = $"{evt.NewEra.description}\n\nMarket Trend: {trendIndicator}";
+            }
+        }
+        
+        void InitializeEra(OnGameStartedEvent evt)
+        {
+            EraSystem eraSystem = ServiceLocator.Instance.Get<EraSystem>();
+            if (eraSystem != null && eraSystem.CurrentEra != null && eraValue != null)
+            {
+                eraValue.text = eraSystem.CurrentEra.eraName;
+                
+                string trendIndicator = GetMarketTrendIndicator(eraSystem.CurrentEra.baseMarketSizeMultiplier);
+                eraValue.tooltip = $"{eraSystem.CurrentEra.description}\n\nMarket Trend: {trendIndicator}";
+            }
+        }
+        
+        string GetMarketTrendIndicator(float multiplier)
+        {
+            if (multiplier >= 2.5f) return "🔥 Explosive Growth";
+            if (multiplier >= 1.5f) return "📈 Strong Growth";
+            if (multiplier >= 1.0f) return "➡️ Steady";
+            if (multiplier >= 0.5f) return "📉 Declining";
+            return "💤 Stagnant";
+        }
+        
+        void UpdateTechnologyPanel(OnTechnologiesUpdatedEvent evt)
+        {
+            if (technologyPanel == null)
+            {
+                return;
+            }
+            
+            ScrollView techList = technologyPanel.Q<ScrollView>("technology-list");
+            if (techList == null)
+            {
+                return;
+            }
+            
+            techList.Clear();
+            
+            TechnologySystem techSystem = ServiceLocator.Instance.Get<TechnologySystem>();
+            if (techSystem == null)
+            {
+                return;
+            }
+            
+            foreach (var kvp in evt.AdoptionRates)
+            {
+                string techId = kvp.Key;
+                float adoption = kvp.Value;
+                TechAdoptionPhase phase = evt.Phases.ContainsKey(techId) ? evt.Phases[techId] : TechAdoptionPhase.Locked;
+                
+                TechnologySO tech = techSystem.GetTechnology(techId);
+                if (tech == null)
+                {
+                    continue;
+                }
+                
+                VisualElement techItem = CreateTechnologyItem(tech, adoption, phase);
+                techList.Add(techItem);
+            }
+        }
+        
+        VisualElement CreateTechnologyItem(TechnologySO tech, float adoption, TechAdoptionPhase phase)
+        {
+            VisualElement item = new VisualElement();
+            item.AddToClassList("tech-item");
+            item.style.flexDirection = FlexDirection.Row;
+            item.style.justifyContent = Justify.SpaceBetween;
+            item.style.alignItems = Align.Center;
+            item.style.paddingLeft = 12;
+            item.style.paddingRight = 12;
+            item.style.paddingTop = 12;
+            item.style.paddingBottom = 12;
+            item.style.marginBottom = new StyleLength(8);
+            item.style.backgroundColor = new Color(0.08f, 0.08f, 0.09f, 0.9f);
+            item.style.borderTopLeftRadius = 8;
+            item.style.borderTopRightRadius = 8;
+            item.style.borderBottomLeftRadius = 8;
+            item.style.borderBottomRightRadius = 8;
+            
+            VisualElement leftSection = new VisualElement();
+            leftSection.style.flexGrow = 1;
+            
+            Label nameLabel = new Label(tech.techName);
+            nameLabel.style.fontSize = 16;
+            nameLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
+            nameLabel.style.color = new Color(0.9f, 0.9f, 0.96f);
+            
+            Label categoryLabel = new Label($"{tech.category} • {tech.researchYear}");
+            categoryLabel.style.fontSize = 12;
+            categoryLabel.style.color = new Color(0.7f, 0.7f, 0.75f);
+            categoryLabel.style.marginTop = 2;
+            
+            leftSection.Add(nameLabel);
+            leftSection.Add(categoryLabel);
+            
+            VisualElement rightSection = new VisualElement();
+            rightSection.style.flexDirection = FlexDirection.Row;
+            rightSection.style.alignItems = Align.Center;
+            
+            Label adoptionLabel = new Label($"{adoption:P0}");
+            adoptionLabel.style.fontSize = 18;
+            adoptionLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
+            adoptionLabel.style.marginRight = 12;
+            adoptionLabel.style.color = GetAdoptionColor(adoption);
+            
+            Label phaseLabel = new Label(GetPhaseText(phase));
+            phaseLabel.style.fontSize = 12;
+            phaseLabel.style.paddingLeft = 4;
+            phaseLabel.style.paddingRight = 4;
+            phaseLabel.style.paddingTop = 4;
+            phaseLabel.style.paddingBottom = 4;
+            phaseLabel.style.borderTopLeftRadius = 4;
+            phaseLabel.style.borderTopRightRadius = 4;
+            phaseLabel.style.borderBottomLeftRadius = 4;
+            phaseLabel.style.borderBottomRightRadius = 4;
+            phaseLabel.style.backgroundColor = GetPhaseColor(phase);
+            phaseLabel.style.color = Color.white;
+            
+            rightSection.Add(adoptionLabel);
+            rightSection.Add(phaseLabel);
+            
+            item.Add(leftSection);
+            item.Add(rightSection);
+            
+            item.tooltip = $"{tech.description}\n\nInnovation: +{tech.innovationBonus:P0} | Bug Risk: {tech.bugRiskMultiplier:F2}x | Market Relevance: {tech.marketRelevanceMultiplier:F2}x";
+            
+            return item;
+        }
+        
+        Color GetAdoptionColor(float adoption)
+        {
+            if (adoption >= 0.75f) return new Color(0.2f, 0.8f, 0.3f);
+            if (adoption >= 0.40f) return new Color(0.3f, 0.7f, 0.9f);
+            if (adoption >= 0.15f) return new Color(0.9f, 0.7f, 0.3f);
+            return new Color(0.6f, 0.6f, 0.65f);
+        }
+        
+        Color GetPhaseColor(TechAdoptionPhase phase)
+        {
+            return phase switch
+            {
+                TechAdoptionPhase.Mandatory => new Color(0.15f, 0.65f, 0.2f),
+                TechAdoptionPhase.Mainstream => new Color(0.2f, 0.6f, 0.75f),
+                TechAdoptionPhase.Growth => new Color(0.75f, 0.6f, 0.2f),
+                TechAdoptionPhase.EarlyAdoption => new Color(0.75f, 0.5f, 0.2f),
+                TechAdoptionPhase.Research => new Color(0.6f, 0.4f, 0.7f),
+                _ => new Color(0.4f, 0.4f, 0.45f)
+            };
+        }
+        
+        string GetPhaseText(TechAdoptionPhase phase)
+        {
+            return phase switch
+            {
+                TechAdoptionPhase.Mandatory => "Mandatory",
+                TechAdoptionPhase.Mainstream => "Mainstream",
+                TechAdoptionPhase.Growth => "Growth",
+                TechAdoptionPhase.EarlyAdoption => "Early",
+                TechAdoptionPhase.Research => "Research",
+                _ => "Locked"
+            };
         }
         
         void UpdateReputation(OnReputationChangedEvent evt)
@@ -604,7 +809,7 @@ namespace TechMogul.UI
             
             if (employeeCount != null && employeeSystem != null)
             {
-                int count = employeeSystem.Employees.Count(e => !e.isFired);
+                int count = employeeSystem.Employees.Count;
                 employeeCount.text = count.ToString();
             }
             
@@ -732,10 +937,17 @@ namespace TechMogul.UI
             AddDetailField(container, "Average", avgSkill.ToString("F1"));
             
             AddDetailSeparator(container);
+            AddDetailHeader(container, "TRAITS");
+            
+            AddTraitSection(container, employee);
+            
+            AddDetailSeparator(container);
             AddDetailHeader(container, "WELL-BEING");
             
             AddProgressBar(container, "Morale", employee.morale, GetMoraleColor(employee.morale));
             AddProgressBar(container, "Burnout", employee.burnout, new Color(0.95f, 0.26f, 0.21f));
+            AddProgressBar(container, "Stress", employee.stress, new Color(0.95f, 0.6f, 0.21f));
+            AddProgressBar(container, "Fatigue", employee.fatigue, new Color(0.6f, 0.6f, 0.8f));
             
             AddDetailSeparator(container);
             AddDetailHeader(container, "SKILL PROGRESSION");
@@ -761,7 +973,7 @@ namespace TechMogul.UI
             
             AddDetailField(container, "Salary", "$" + employee.monthlySalary.ToString("N0") + "/month");
             AddDetailField(container, "Status", employee.isAvailable ? "Available" : "Busy");
-            AddDetailField(container, "Assignment", employee.currentAssignment);
+            AddDetailField(container, "Assignment", employee.currentAssignment?.displayName ?? "Idle");
             AddDetailField(container, "Days Hired", employee.daysSinceHired.ToString());
             
             employeeDetailContent.Add(container);
@@ -1119,6 +1331,171 @@ namespace TechMogul.UI
             container.Add(chartContainer);
         }
         
+        void AddTraitSection(VisualElement container, Employee employee)
+        {
+            if (TechMogul.Traits.TraitSystem.Instance == null)
+            {
+                var noTraitLabel = new Label("Trait system not initialized");
+                noTraitLabel.style.fontSize = 13;
+                noTraitLabel.style.color = new Color(0.59f, 0.59f, 0.63f);
+                noTraitLabel.style.unityFontStyleAndWeight = FontStyle.Italic;
+                container.Add(noTraitLabel);
+                return;
+            }
+            
+            var traitSystem = TechMogul.Traits.TraitSystem.Instance;
+            
+            // Get traits
+            TechMogul.Traits.TraitDefinitionSO majorTrait = null;
+            List<TechMogul.Traits.TraitDefinitionSO> minorTraits = new List<TechMogul.Traits.TraitDefinitionSO>();
+            
+            if (!string.IsNullOrEmpty(employee.majorTraitId))
+            {
+                majorTrait = traitSystem.GetTrait(employee.majorTraitId);
+            }
+            
+            if (employee.minorTraitIds != null)
+            {
+                for (int i = 0; i < employee.minorTraitIds.Count; i++)
+                {
+                    var minorTrait = traitSystem.GetTrait(employee.minorTraitIds[i]);
+                    if (minorTrait != null)
+                    {
+                        minorTraits.Add(minorTrait);
+                    }
+                }
+            }
+            
+            // Display major trait
+            if (majorTrait != null)
+            {
+                var majorContainer = new VisualElement();
+                majorContainer.style.marginBottom = 8;
+                majorContainer.style.paddingTop = 8;
+                majorContainer.style.paddingBottom = 8;
+                majorContainer.style.paddingLeft = 10;
+                majorContainer.style.paddingRight = 10;
+                majorContainer.style.backgroundColor = new Color(0.2f, 0.15f, 0.3f, 0.4f);
+                majorContainer.style.borderTopLeftRadius = 4;
+                majorContainer.style.borderTopRightRadius = 4;
+                majorContainer.style.borderBottomLeftRadius = 4;
+                majorContainer.style.borderBottomRightRadius = 4;
+                
+                var majorLabel = new Label(majorTrait.displayName);
+                majorLabel.style.fontSize = 14;
+                majorLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
+                majorLabel.style.color = new Color(0.8f, 0.6f, 1.0f);
+                majorLabel.style.marginBottom = 3;
+                
+                var majorDesc = new Label(majorTrait.description);
+                majorDesc.style.fontSize = 11;
+                majorDesc.style.color = new Color(0.71f, 0.71f, 0.75f);
+                majorDesc.style.whiteSpace = WhiteSpace.Normal;
+                
+                majorContainer.Add(majorLabel);
+                majorContainer.Add(majorDesc);
+                container.Add(majorContainer);
+            }
+            else
+            {
+                var noMajorLabel = new Label("No major trait");
+                noMajorLabel.style.fontSize = 12;
+                noMajorLabel.style.color = new Color(0.59f, 0.59f, 0.63f);
+                noMajorLabel.style.unityFontStyleAndWeight = FontStyle.Italic;
+                container.Add(noMajorLabel);
+            }
+            
+            // Display minor traits
+            if (minorTraits.Count > 0)
+            {
+                var minorsContainer = new VisualElement();
+                minorsContainer.style.marginTop = 8;
+                
+                for (int i = 0; i < minorTraits.Count; i++)
+                {
+                    var minorTrait = minorTraits[i];
+                    
+                    var minorContainer = new VisualElement();
+                    minorContainer.style.marginBottom = 6;
+                    minorContainer.style.paddingLeft = 4;
+                    
+                    var minorRow = new VisualElement();
+                    minorRow.style.flexDirection = FlexDirection.Row;
+                    minorRow.style.marginBottom = 2;
+                    
+                    var bullet = new Label("•");
+                    bullet.style.fontSize = 12;
+                    bullet.style.color = new Color(0.5f, 0.7f, 0.9f);
+                    bullet.style.marginRight = 6;
+                    bullet.style.unityTextAlign = TextAnchor.UpperLeft;
+                    bullet.style.flexShrink = 0;
+                    
+                    var minorLabel = new Label(minorTrait.displayName);
+                    minorLabel.style.fontSize = 12;
+                    minorLabel.style.color = new Color(0.71f, 0.71f, 0.75f);
+                    minorLabel.style.whiteSpace = WhiteSpace.Normal;
+                    minorLabel.style.flexShrink = 1;
+                    minorLabel.style.flexGrow = 1;
+                    
+                    minorRow.Add(bullet);
+                    minorRow.Add(minorLabel);
+                    minorContainer.Add(minorRow);
+                    
+                    if (!string.IsNullOrEmpty(minorTrait.description))
+                    {
+                        var minorDesc = new Label(minorTrait.description);
+                        minorDesc.style.fontSize = 10;
+                        minorDesc.style.color = new Color(0.59f, 0.59f, 0.63f);
+                        minorDesc.style.whiteSpace = WhiteSpace.Normal;
+                        minorDesc.style.marginLeft = 18;
+                        minorDesc.style.marginTop = 2;
+                        minorContainer.Add(minorDesc);
+                    }
+                    
+                    minorsContainer.Add(minorContainer);
+                }
+                
+                container.Add(minorsContainer);
+            }
+            
+            // Display active synergies
+            var tagCounts = traitSystem.CountTraitTags(employee.majorTraitId, employee.minorTraitIds);
+            bool hasSynergies = false;
+            
+            foreach (var kvp in tagCounts)
+            {
+                if (kvp.Value >= 2)
+                {
+                    hasSynergies = true;
+                    break;
+                }
+            }
+            
+            if (hasSynergies)
+            {
+                var synergyHeader = new Label("Active Synergies:");
+                synergyHeader.style.fontSize = 12;
+                synergyHeader.style.unityFontStyleAndWeight = FontStyle.Bold;
+                synergyHeader.style.color = new Color(0.4f, 0.8f, 0.4f);
+                synergyHeader.style.marginTop = 10;
+                synergyHeader.style.marginBottom = 4;
+                container.Add(synergyHeader);
+                
+                foreach (var kvp in tagCounts)
+                {
+                    if (kvp.Value >= 2)
+                    {
+                        string tier = kvp.Value >= 3 ? "Tier 2" : "Tier 1";
+                        var synergyLabel = new Label($"• {kvp.Key} ({tier})");
+                        synergyLabel.style.fontSize = 11;
+                        synergyLabel.style.color = new Color(0.5f, 0.9f, 0.5f);
+                        synergyLabel.style.marginBottom = 2;
+                        container.Add(synergyLabel);
+                    }
+                }
+            }
+        }
+        
         void PopulateMarketPanel()
         {
             if (rivalList == null || RivalSystem.Instance == null)
@@ -1129,30 +1506,27 @@ namespace TechMogul.UI
             
             rivalList.Clear();
             
-            var rivals = RivalSystem.Instance.Rivals;
-            float totalRivalShare = RivalSystem.Instance.GetTotalRivalMarketShare();
-            float playerShare = 0f;
-            float unclaimedShare = 100f - totalRivalShare - playerShare;
+            var companies = RivalSystem.Instance.AllCompanies;
             
-            if (playerMarketShare != null)
-                playerMarketShare.text = $"{playerShare:F1}%";
-            
-            if (rivalMarketShare != null)
-                rivalMarketShare.text = $"{totalRivalShare:F1}%";
-            
-            if (unclaimedMarketShare != null)
-                unclaimedMarketShare.text = $"{unclaimedShare:F1}%";
-            
-            foreach (var rival in rivals)
+            if (companies.Count == 0)
             {
-                var rivalCard = CreateRivalCard(rival);
+                Debug.LogWarning("No companies in market yet");
+                return;
+            }
+            
+            foreach (var company in companies)
+            {
+                if (company.IsPlayerCompany)
+                    continue;
+                    
+                var rivalCard = CreateRivalCard(company);
                 rivalList.Add(rivalCard);
             }
             
-            Debug.Log($"Populated market panel with {rivals.Count} rivals");
+            Debug.Log($"Populated market panel with {companies.Count - 1} rivals");
         }
         
-        VisualElement CreateRivalCard(RivalCompanyData rival)
+        VisualElement CreateRivalCard(RivalCompany rival)
         {
             var card = new VisualElement();
             card.AddToClassList("rival-card");
@@ -1167,40 +1541,38 @@ namespace TechMogul.UI
             nameLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
             nameLabel.style.color = new Color(0.9f, 0.9f, 0.95f);
             
-            var industryLabel = new Label(rival.Industry);
-            industryLabel.style.fontSize = 12;
-            industryLabel.style.color = new Color(0.5f, 0.7f, 0.9f);
-            industryLabel.style.backgroundColor = new Color(0.1f, 0.2f, 0.3f, 0.5f);
-            industryLabel.style.paddingTop = 2;
-            industryLabel.style.paddingBottom = 2;
-            industryLabel.style.paddingLeft = 6;
-            industryLabel.style.paddingRight = 6;
-            industryLabel.style.borderTopLeftRadius = 3;
-            industryLabel.style.borderTopRightRadius = 3;
-            industryLabel.style.borderBottomLeftRadius = 3;
-            industryLabel.style.borderBottomRightRadius = 3;
+            var typeLabel = new Label(rival.Type.ToString());
+            typeLabel.style.fontSize = 12;
+            typeLabel.style.color = new Color(0.5f, 0.7f, 0.9f);
+            typeLabel.style.backgroundColor = new Color(0.1f, 0.2f, 0.3f, 0.5f);
+            typeLabel.style.paddingTop = 2;
+            typeLabel.style.paddingBottom = 2;
+            typeLabel.style.paddingLeft = 6;
+            typeLabel.style.paddingRight = 6;
+            typeLabel.style.borderTopLeftRadius = 3;
+            typeLabel.style.borderTopRightRadius = 3;
+            typeLabel.style.borderBottomLeftRadius = 3;
+            typeLabel.style.borderBottomRightRadius = 3;
             
             header.Add(nameLabel);
-            header.Add(industryLabel);
-            
-            var description = new Label(rival.Description);
-            description.style.fontSize = 13;
-            description.style.color = new Color(0.7f, 0.7f, 0.75f);
-            description.style.marginBottom = 10;
-            description.style.whiteSpace = WhiteSpace.Normal;
+            header.Add(typeLabel);
             
             var statsRow = new VisualElement();
             statsRow.style.flexDirection = FlexDirection.Row;
             statsRow.style.justifyContent = Justify.SpaceBetween;
+            statsRow.style.marginTop = 8;
             
-            var marketShareStat = CreateStatElement("Market Share", $"{rival.MarketShare:F1}%");
-            var employeeStat = CreateStatElement("Employees", rival.EmployeeCount.ToString());
+            var cashStat = CreateStatElement("Cash", $"${rival.Cash / 1000000f:F1}M");
+            var revenueStat = CreateStatElement("Revenue", $"${rival.Revenue / 1000000f:F1}M");
+            var categoryStat = CreateStatElement("Categories", rival.CategoryPositions.Count.ToString());
+            var strategyStat = CreateStatElement("Strategy", rival.StrategyState.ToString());
             
-            statsRow.Add(marketShareStat);
-            statsRow.Add(employeeStat);
+            statsRow.Add(cashStat);
+            statsRow.Add(revenueStat);
+            statsRow.Add(categoryStat);
+            statsRow.Add(strategyStat);
             
             card.Add(header);
-            card.Add(description);
             card.Add(statsRow);
             
             return card;

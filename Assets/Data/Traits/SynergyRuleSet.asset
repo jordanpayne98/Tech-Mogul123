@@ -1,0 +1,492 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47dbebaecdb88fe4a8e63ec0f3ac6b4d, type: 3}
+  m_Name: SynergyRuleSet
+  m_EditorClassIdentifier: Assembly-CSharp::TechMogul.Traits.SynergyRuleSetSO
+  tier1Rules:
+  - tag: 0
+    requiredCount: 2
+    modifiers:
+    - stat: 0
+      op: 0
+      value: 0.04
+      eventCategory: 0
+      condition:
+        type: 0
+        op: 0
+        value: 0
+        phaseValue: 0
+        multitaskingValue: 0
+        eventCategory: 0
+        boolValue: 0
+        compositeConditions: []
+    - stat: 0
+      op: 0
+      value: 0.02
+      eventCategory: 0
+      condition:
+        type: 2
+        op: 0
+        value: 0.4
+        phaseValue: 0
+        multitaskingValue: 0
+        eventCategory: 0
+        boolValue: 0
+        compositeConditions: []
+  - tag: 1
+    requiredCount: 2
+    modifiers:
+    - stat: 2
+      op: 0
+      value: -0.06
+      eventCategory: 0
+      condition:
+        type: 0
+        op: 0
+        value: 0
+        phaseValue: 0
+        multitaskingValue: 0
+        eventCategory: 0
+        boolValue: 0
+        compositeConditions: []
+  - tag: 2
+    requiredCount: 2
+    modifiers:
+    - stat: 3
+      op: 0
+      value: -0.08
+      eventCategory: 0
+      condition:
+        type: 0
+        op: 0
+        value: 0
+        phaseValue: 0
+        multitaskingValue: 0
+        eventCategory: 0
+        boolValue: 0
+        compositeConditions: []
+  - tag: 3
+    requiredCount: 2
+    modifiers:
+    - stat: 0
+      op: 0
+      value: 0.06
+      eventCategory: 0
+      condition:
+        type: 1
+        op: 2
+        value: 0.6
+        phaseValue: 0
+        multitaskingValue: 0
+        eventCategory: 0
+        boolValue: 0
+        compositeConditions: []
+    - stat: 2
+      op: 0
+      value: 0.03
+      eventCategory: 0
+      condition:
+        type: 1
+        op: 2
+        value: 0.6
+        phaseValue: 0
+        multitaskingValue: 0
+        eventCategory: 0
+        boolValue: 0
+        compositeConditions: []
+  - tag: 4
+    requiredCount: 2
+    modifiers:
+    - stat: 2
+      op: 0
+      value: 0.03
+      eventCategory: 0
+      condition:
+        type: 6
+        op: 0
+        value: 0
+        phaseValue: 0
+        multitaskingValue: 0
+        eventCategory: 0
+        boolValue: 1
+        compositeConditions: []
+  - tag: 5
+    requiredCount: 2
+    modifiers:
+    - stat: 7
+      op: 0
+      value: 0.05
+      eventCategory: 0
+      condition:
+        type: 9
+        op: 0
+        value: 0
+        phaseValue: 0
+        multitaskingValue: 0
+        eventCategory: 0
+        boolValue: 1
+        compositeConditions: []
+  - tag: 6
+    requiredCount: 2
+    modifiers:
+    - stat: 11
+      op: 0
+      value: -0.1
+      eventCategory: 0
+      condition:
+        type: 0
+        op: 0
+        value: 0
+        phaseValue: 0
+        multitaskingValue: 0
+        eventCategory: 0
+        boolValue: 0
+        compositeConditions: []
+  - tag: 7
+    requiredCount: 2
+    modifiers:
+    - stat: 9
+      op: 0
+      value: 0.08
+      eventCategory: 0
+      condition:
+        type: 0
+        op: 0
+        value: 0
+        phaseValue: 0
+        multitaskingValue: 0
+        eventCategory: 0
+        boolValue: 0
+        compositeConditions: []
+  - tag: 8
+    requiredCount: 2
+    modifiers:
+    - stat: 7
+      op: 0
+      value: 0.04
+      eventCategory: 0
+      condition:
+        type: 0
+        op: 0
+        value: 0
+        phaseValue: 0
+        multitaskingValue: 0
+        eventCategory: 0
+        boolValue: 0
+        compositeConditions: []
+    - stat: 8
+      op: 0
+      value: 0.04
+      eventCategory: 0
+      condition:
+        type: 0
+        op: 0
+        value: 0
+        phaseValue: 0
+        multitaskingValue: 0
+        eventCategory: 0
+        boolValue: 0
+        compositeConditions: []
+  - tag: 9
+    requiredCount: 2
+    modifiers:
+    - stat: 13
+      op: 0
+      value: 0.06
+      eventCategory: 0
+      condition:
+        type: 0
+        op: 0
+        value: 0
+        phaseValue: 0
+        multitaskingValue: 0
+        eventCategory: 0
+        boolValue: 0
+        compositeConditions: []
+  tier2Rules:
+  - tag: 0
+    requiredCount: 3
+    modifiers:
+    - stat: 0
+      op: 0
+      value: 0.1
+      eventCategory: 0
+      condition:
+        type: 0
+        op: 2
+        value: 0.6
+        phaseValue: 0
+        multitaskingValue: 0
+        eventCategory: 0
+        boolValue: 0
+        compositeConditions: []
+    - stat: 3
+      op: 0
+      value: 0.05
+      eventCategory: 0
+      condition:
+        type: 0
+        op: 0
+        value: 0
+        phaseValue: 0
+        multitaskingValue: 0
+        eventCategory: 0
+        boolValue: 0
+        compositeConditions: []
+  - tag: 1
+    requiredCount: 3
+    modifiers:
+    - stat: 2
+      op: 0
+      value: -0.12
+      eventCategory: 0
+      condition:
+        type: 0
+        op: 0
+        value: 0
+        phaseValue: 0
+        multitaskingValue: 0
+        eventCategory: 0
+        boolValue: 0
+        compositeConditions: []
+    - stat: 0
+      op: 0
+      value: -0.05
+      eventCategory: 0
+      condition:
+        type: 0
+        op: 0
+        value: 0
+        phaseValue: 0
+        multitaskingValue: 0
+        eventCategory: 0
+        boolValue: 0
+        compositeConditions: []
+  - tag: 2
+    requiredCount: 3
+    modifiers:
+    - stat: 3
+      op: 0
+      value: -0.15
+      eventCategory: 0
+      condition:
+        type: 0
+        op: 0
+        value: 0
+        phaseValue: 0
+        multitaskingValue: 0
+        eventCategory: 0
+        boolValue: 0
+        compositeConditions: []
+    - stat: 8
+      op: 0
+      value: -0.1
+      eventCategory: 0
+      condition:
+        type: 0
+        op: 0
+        value: 0
+        phaseValue: 0
+        multitaskingValue: 0
+        eventCategory: 0
+        boolValue: 0
+        compositeConditions: []
+  - tag: 3
+    requiredCount: 3
+    modifiers:
+    - stat: 0
+      op: 0
+      value: 0.12
+      eventCategory: 0
+      condition:
+        type: 2
+        op: 0
+        value: 0.3
+        phaseValue: 0
+        multitaskingValue: 0
+        eventCategory: 0
+        boolValue: 0
+        compositeConditions: []
+    - stat: 2
+      op: 0
+      value: 0.05
+      eventCategory: 0
+      condition:
+        type: 2
+        op: 0
+        value: 0.3
+        phaseValue: 0
+        multitaskingValue: 0
+        eventCategory: 0
+        boolValue: 0
+        compositeConditions: []
+  - tag: 4
+    requiredCount: 3
+    modifiers:
+    - stat: 2
+      op: 0
+      value: 0.1
+      eventCategory: 0
+      condition:
+        type: 6
+        op: 0
+        value: 0
+        phaseValue: 0
+        multitaskingValue: 0
+        eventCategory: 0
+        boolValue: 1
+        compositeConditions: []
+  - tag: 5
+    requiredCount: 3
+    modifiers:
+    - stat: 7
+      op: 0
+      value: 0.1
+      eventCategory: 0
+      condition:
+        type: 9
+        op: 0
+        value: 0
+        phaseValue: 0
+        multitaskingValue: 0
+        eventCategory: 0
+        boolValue: 1
+        compositeConditions: []
+    - stat: 10
+      op: 0
+      value: 0.08
+      eventCategory: 0
+      condition:
+        type: 0
+        op: 0
+        value: 0
+        phaseValue: 0
+        multitaskingValue: 0
+        eventCategory: 0
+        boolValue: 0
+        compositeConditions: []
+  - tag: 6
+    requiredCount: 3
+    modifiers:
+    - stat: 11
+      op: 0
+      value: -0.2
+      eventCategory: 0
+      condition:
+        type: 0
+        op: 0
+        value: 0
+        phaseValue: 0
+        multitaskingValue: 0
+        eventCategory: 0
+        boolValue: 0
+        compositeConditions: []
+    - stat: 0
+      op: 0
+      value: -0.05
+      eventCategory: 0
+      condition:
+        type: 0
+        op: 0
+        value: 0
+        phaseValue: 0
+        multitaskingValue: 0
+        eventCategory: 0
+        boolValue: 0
+        compositeConditions: []
+  - tag: 7
+    requiredCount: 3
+    modifiers:
+    - stat: 9
+      op: 0
+      value: 0.15
+      eventCategory: 0
+      condition:
+        type: 0
+        op: 0
+        value: 0
+        phaseValue: 0
+        multitaskingValue: 0
+        eventCategory: 0
+        boolValue: 0
+        compositeConditions: []
+    - stat: 10
+      op: 0
+      value: 0.05
+      eventCategory: 0
+      condition:
+        type: 0
+        op: 0
+        value: 0
+        phaseValue: 0
+        multitaskingValue: 0
+        eventCategory: 0
+        boolValue: 0
+        compositeConditions: []
+  - tag: 8
+    requiredCount: 3
+    modifiers:
+    - stat: 7
+      op: 0
+      value: 0.1
+      eventCategory: 0
+      condition:
+        type: 0
+        op: 0
+        value: 0
+        phaseValue: 0
+        multitaskingValue: 0
+        eventCategory: 0
+        boolValue: 0
+        compositeConditions: []
+    - stat: 8
+      op: 0
+      value: 0.1
+      eventCategory: 0
+      condition:
+        type: 0
+        op: 0
+        value: 0
+        phaseValue: 0
+        multitaskingValue: 0
+        eventCategory: 0
+        boolValue: 0
+        compositeConditions: []
+  - tag: 9
+    requiredCount: 3
+    modifiers:
+    - stat: 13
+      op: 0
+      value: 0.12
+      eventCategory: 0
+      condition:
+        type: 0
+        op: 0
+        value: 0
+        phaseValue: 0
+        multitaskingValue: 0
+        eventCategory: 0
+        boolValue: 0
+        compositeConditions: []
+    - stat: 11
+      op: 0
+      value: 0.15
+      eventCategory: 0
+      condition:
+        type: 0
+        op: 0
+        value: 0.6
+        phaseValue: 0
+        multitaskingValue: 0
+        eventCategory: 0
+        boolValue: 0
+        compositeConditions: []

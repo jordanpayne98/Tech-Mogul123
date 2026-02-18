@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f57f2874becbfe429ba38cb2a86b95f, type: 3}
+  m_Name: DefinitionRegistry
+  m_EditorClassIdentifier: Assembly-CSharp::TechMogul.Core.DefinitionRegistrySO
+  roles:
+  - {fileID: 11400000, guid: 3dce698519e6e014ea9b2dbb31fc75ae, type: 2}
+  - {fileID: 11400000, guid: a1638acd0df99f541bdbbdc00d6e1b9b, type: 2}
+  - {fileID: 11400000, guid: 29d0e41746d1899499d2df72c49294d8, type: 2}
+  productCategories:
+  - {fileID: 11400000, guid: a7a5ee0d35f0cb548914dfed4cfedfd9, type: 2}
+  - {fileID: 11400000, guid: 1ff6bd42de6eb5344a2680cfd8aef090, type: 2}
+  - {fileID: 11400000, guid: 9cfeadaa436edb442b6a7a5a7b2346ed, type: 2}
+  contractTemplates:
+  - {fileID: 11400000, guid: 106c7aabdf9bd714fbefb3d7fe1a5b71, type: 2}
+  - {fileID: 11400000, guid: 4f47259bea97c7b4e9e07bd2638e1ea0, type: 2}
+  - {fileID: 11400000, guid: 775e81386e0e71a47857a5d5d5ff7948, type: 2}
+  - {fileID: 11400000, guid: 62b37f79d13e6634aab978dc30cf7993, type: 2}
+  - {fileID: 11400000, guid: 0b3e43be39099d848b08f51f1fef3d3a, type: 2}
+  features:
+  - {fileID: 11400000, guid: aed21261ecb56684baf32b5ec09fb861, type: 2}
+  - {fileID: 11400000, guid: c16438e1797dfb84db66c9c4fea64b05, type: 2}
+  - {fileID: 11400000, guid: c2a5f13872811d740be544c628a74346, type: 2}
+  - {fileID: 11400000, guid: 32d14bf41a234c143aff3ff3f33c9d9d, type: 2}
+  - {fileID: 11400000, guid: ccd95f2b54c8baf499898f0837a1a560, type: 2}
+  - {fileID: 11400000, guid: 3b7987b93841695459f6629284738a38, type: 2}
+  - {fileID: 11400000, guid: 5d133f8560541c54c9d261ff129dd3ea, type: 2}
+  - {fileID: 11400000, guid: 5530cba391e77db4e8cf3ba9456feeda, type: 2}
+  qaTiers:
+  - {fileID: 11400000, guid: 0ca721c489241944998371735fe0800d, type: 2}
+  - {fileID: 11400000, guid: af5aefec9f75faf41a87d04c3ba3d476, type: 2}
+  - {fileID: 11400000, guid: 10667a76e1fc1694b8d2095c0f5b1c0f, type: 2}
+  - {fileID: 11400000, guid: b1e0fc1db110dbc4890dba8fee4c10f1, type: 2}
+  eras:
+  - {fileID: 11400000, guid: a901d3472f08fd14e89bab9b61156a44, type: 2}
+  - {fileID: 11400000, guid: 998b315d37bfed241a3d51f7eaf50ac5, type: 2}
+  - {fileID: 11400000, guid: 5e0b471c625452844a6ba7c029863239, type: 2}
+  - {fileID: 11400000, guid: 0248697497883a346890b2c5f76ab072, type: 2}
+  - {fileID: 11400000, guid: 7fb8d68c6999de44cb9e9f4f70a08841, type: 2}
+  technologies:
+  - {fileID: 11400000, guid: 06d34ebd88c26ea42ba1f2631054291b, type: 2}
+  - {fileID: 11400000, guid: 31e693a1085a7a5498c70d50e49beada, type: 2}
+  - {fileID: 11400000, guid: ae19a9b9ffe2a694589ad1d89d8ace70, type: 2}
+  - {fileID: 11400000, guid: 4c67e024349aa3e4f859e25bd157d794, type: 2}
+  - {fileID: 11400000, guid: ccff27ef8b273b54aa02e55243b029a5, type: 2}
+  - {fileID: 11400000, guid: e126e1d58a8296748b3542ddec19c18f, type: 2}
+  - {fileID: 11400000, guid: 980ff1ca36103194ebca978c2128d1e3, type: 2}
+  marketCategories:
+  - {fileID: 11400000, guid: 12fc331b48d9a754b8055c8ca93325fb, type: 2}
+  - {fileID: 11400000, guid: 6954a4fb5fe70404192c2ceceb8b5fd8, type: 2}
+  - {fileID: 11400000, guid: 599af2eedfc87014e9c988df8efe93eb, type: 2}
+  - {fileID: 11400000, guid: 013b36fbe52edac439fcd0744d01817c, type: 2}
+  - {fileID: 11400000, guid: a3c4c372892f62943b841a9dcd969782, type: 2}

@@ -5,19 +5,14 @@ using TechMogul.Systems;
 
 namespace TechMogul.UI
 {
-    public class SpeedIndicator : MonoBehaviour
+    public class SpeedIndicator : UIController
     {
         [SerializeField] private TextMeshProUGUI speedText;
         [SerializeField] private bool showMultiplier = true;
         
-        void OnEnable()
+        protected override void SubscribeToEvents()
         {
-            EventBus.Subscribe<OnSpeedChangedEvent>(HandleSpeedChanged);
-        }
-        
-        void OnDisable()
-        {
-            EventBus.Unsubscribe<OnSpeedChangedEvent>(HandleSpeedChanged);
+            Subscribe<OnSpeedChangedEvent>(HandleSpeedChanged);
         }
         
         void HandleSpeedChanged(OnSpeedChangedEvent evt)

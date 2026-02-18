@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69e4034d4bcd1f74aa5def2157638005, type: 3}
   m_Name: DeveloperRole
   m_EditorClassIdentifier: Assembly-CSharp::TechMogul.Data.RoleSO
+  id: role.dev_junior
   roleName: Developer
   description: Specializes in software development and programming. High dev skills,
     low design and marketing.
