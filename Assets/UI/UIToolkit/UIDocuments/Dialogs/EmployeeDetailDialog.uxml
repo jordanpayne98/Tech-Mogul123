@@ -11,7 +11,7 @@
     <ui:VisualElement name="overlay" class="dialog-overlay">
         
         <!-- Dialog Window -->
-        <ui:VisualElement name="dialog" class="dialog" style="max-width: 550px; min-width: 450px;">
+        <ui:VisualElement name="dialog" class="dialog" style="max-width: 700px; min-width: 600px;">
             
             <!-- Header -->
             <ui:VisualElement class="dialog-header">
@@ -20,7 +20,7 @@
             </ui:VisualElement>
             
             <!-- Content -->
-            <ui:VisualElement name="employee-detail-content" class="dialog-content" style="max-height: 750px; overflow: scroll; padding: 20px;" />
+            <ui:VisualElement name="employee-detail-content" class="dialog-content" style="max-height: 900px; overflow: scroll; padding: 20px;" />
             
             <!-- Footer -->
             <ui:VisualElement class="dialog-footer">
